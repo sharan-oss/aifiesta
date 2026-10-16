@@ -1,0 +1,32 @@
+---
+import { testimonials } from '../data/content';
+---
+<section class="wrap tst">
+  <h2 class="section-title">Loved by 1M+<br />users who <br /><span class="accent">get things done.</span></h2>
+  <ul class="track">
+    {testimonials.map((t) => (
+      <li>
+        <div>
+          <p class="stars" aria-label="5 stars">★★★★★</p>
+          <p class="txt">{t.text}</p>
+        </div>
+        <div class="who">
+          <img src={`/images/${t.img}`} alt="" width="48" height="48" loading="lazy" />
+          <div><p class="nm">{t.name}</p><p class="rl">{t.role}</p></div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+<style>
+  .tst { padding-block: 44px 16px; display: grid; gap: 24px; }
+  .track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+  .track::-webkit-scrollbar { display: none; }
+  li { flex: 0 0 min(320px, 82vw); scroll-snap-align: start; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; }
+  .stars { color: #be7917; font-size: 23px; font-weight: 500; margin-bottom: 16px; }
+  .txt { font-size: 18px; font-weight: 500; color: var(--muted); }
+  .who { display: flex; align-items: center; gap: 14px; }
+  .who img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+  .nm { font-size: 18px; font-weight: 600; color: var(--brand); }
+  .rl { font-size: 14px; font-weight: 500; color: var(--muted); }
+</style>

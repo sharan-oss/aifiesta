@@ -1,0 +1,31 @@
+---
+import { faqs, CTA, CTA_HREF } from '../data/content';
+---
+<section class="cta wrap"><a class="btn btn--block" href={CTA_HREF}>{CTA}</a></section>
+<section class="faq">
+  <div class="wrap in">
+    <h2 class="section-title">Questions?<br />We have answers.</h2>
+    <div class="list">
+      {faqs.map((f, i) => (
+        <details open={i === 0}>
+          <summary>{f.q}</summary>
+          {f.a && <p>{f.a}</p>}
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .cta { padding-block: 0 36px; max-width: 640px; }
+  .faq { background: #fff; padding-block: 44px; }
+  .in { display: grid; gap: 24px; max-width: 720px; }
+  .list { display: grid; gap: 10px; }
+  details { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
+  details[open] { border-radius: 16px; }
+  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 12px; padding: 16px; font-size: 15px; font-weight: 600; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-size: 20px; font-weight: 500; }
+  details[open] summary { background: var(--brand-tint); }
+  details[open] summary::after { content: '−'; }
+  details p { padding: 16px; font-size: 14px; font-weight: 500; color: var(--muted); }
+</style>

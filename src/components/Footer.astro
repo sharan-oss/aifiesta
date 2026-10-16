@@ -1,0 +1,25 @@
+---
+import { CTA, CTA_HREF } from '../data/content';
+---
+<footer class="wrap foot">
+  <div class="banner">
+    <span class="chip">Grok</span>
+    <h2>One subscription<br />for <em>100+</em> AI<br />models</h2>
+    <a class="btn btn--pill" href={CTA_HREF}>{CTA}</a>
+  </div>
+  <div class="links">
+    <b>AI Fiesta</b>
+    <nav><a href="#">Privacy Policy</a><a href="#">Terms &amp; Refund Policy</a></nav>
+  </div>
+</footer>
+<style>
+  .foot { padding-block: 30px 24px; max-width: 640px; }
+  .banner { position: relative; background: var(--brand); color: #fff; border-radius: 26px; padding: 72px 16px 58px; display: grid; justify-items: center; gap: 22px; text-align: center; }
+  h2 { font-size: 40px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  em { font-style: normal; color: var(--sun); }
+  .chip { position: absolute; top: 11px; right: 16px; background: var(--brand-soft); color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 13px; border-radius: 999px; }
+  .banner .btn { background: var(--sun); color: var(--ink); height: 48px; font-size: 14px; }
+  .links { display: flex; justify-content: space-between; align-items: center; padding: 25px 8px; color: var(--muted); }
+  .links b { font-size: 16px; }
+  nav { display: flex; gap: 22px; font-size: 13px; font-weight: 500; }
+</style>

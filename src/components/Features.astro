@@ -1,0 +1,33 @@
+---
+import { features, CTA, CTA_HREF } from '../data/content';
+---
+<section class="wrap feat">
+  <h2 class="section-title">Create faster without paying for <span class="accent">5 different AI tools</span></h2>
+  <div class="grid">
+    {features.map((f, i) => (
+      <>
+        <article class:list={['card', { alt: i % 2 === 1 }]}>
+          <div class="top"><span class="num">{f.n}</span>{f.isNew && <span class="badge">NEW</span>}</div>
+          <h3>{f.title.map((t, j) => <>{j > 0 && <br />}{t}</>)}</h3>
+          <p>{f.body}</p>
+          <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
+        </article>
+        {f.cta && <a class="btn btn--block cta" href={CTA_HREF}>{CTA}</a>}
+      </>
+    ))}
+  </div>
+</section>
+<style>
+  .feat { padding-block: 16px 48px; display: grid; gap: 24px; }
+  .grid { display: grid; gap: 24px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; display: grid; gap: 8px; align-content: start; }
+  .card.alt { background: var(--brand-soft); }
+  .top { display: flex; justify-content: space-between; align-items: center; min-height: 25px; }
+  .num { font-size: 14px; font-weight: 500; color: var(--brand); }
+  .badge { background: var(--brand); color: #fff; font-size: 14px; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
+  h3 { font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  .card p { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; margin-top: 12px; background: #05080f; }
+  .cta { grid-column: 1 / -1; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+</style>

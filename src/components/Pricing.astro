@@ -1,0 +1,76 @@
+---
+import { plan, pay, CTA } from '../data/content';
+---
+<section class="price" id="pricing">
+  <div class="wrap grid">
+    <div class="plan">
+      <div class="head">
+        <p class="name">{plan.name}</p>
+        <span class="save">{plan.save}</span>
+      </div>
+      <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
+      <p class="sub">{plan.monthly}</p>
+      <hr />
+      <p class="eyebrow">MONTHLY YOU GET:</p>
+      <ul>
+        {plan.rows.map(([k, v]) => <li><span>{k}</span><b>{v}</b></li>)}
+      </ul>
+      <p class="note">{plan.note}</p>
+      <a class="btn btn--pill btn--block" href="#">{CTA}</a>
+      <p class="cancel">Cancel anytime</p>
+    </div>
+
+    <div class="pay">
+      <div class="phead">
+        <span class="chip">⚠ WHAT YOU PAY TODAY</span>
+        <span class="tools">3 TOOLS</span>
+      </div>
+      <p class="q">Which AI tools do you pay for?</p>
+      <ul class="rows">
+        {pay.tools.map((t) => (
+          <li><span class="logo">{t.name[0]}</span><span class="tn">{t.name}</span><b>{t.cost}</b></li>
+        ))}
+      </ul>
+      <div class="total">
+        <div><p class="tt">Total</p><p class="ts">3 separate logins · 3 bills to track</p></div>
+        <p class="tv"><b>{pay.total}</b> <span>/year</span></p>
+      </div>
+      <p class="saving">{pay.saving}</p>
+    </div>
+  </div>
+</section>
+<style>
+  .price { background: var(--brand-tint); padding-block: 40px; }
+  .grid { display: grid; gap: 24px; max-width: 900px; align-items: start; }
+  .plan, .pay { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: grid; gap: 16px; }
+  .plan { box-shadow: 0 8px 20px rgba(36,32,61,.07); }
+  .head { display: flex; justify-content: space-between; align-items: center; }
+  .name { font-size: 17px; font-weight: 600; }
+  .save { background: var(--brand-soft); color: var(--muted); font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 99px; }
+  .amt b { font-size: 46px; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
+  .amt span { font-size: 15px; font-weight: 500; }
+  .sub { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: -12px; }
+  hr { border: 0; height: 1px; background: var(--line); width: 100%; margin: 0; }
+  .eyebrow { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .plan ul li { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; font-weight: 500; }
+  .plan ul li b { font-weight: 600; }
+  .note { background: var(--brand-soft); border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 500; color: var(--muted); text-align: center; }
+  .cancel { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; }
+
+  .pay { border-radius: 26px; padding: 16px; box-shadow: 0 30px 60px -40px rgba(11,18,32,.35); }
+  .phead { display: flex; justify-content: space-between; align-items: center; }
+  .chip { border: 1px solid rgba(220,60,40,.35); border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .tools { font-size: 11px; font-weight: 500; }
+  .q { font-size: 15px; font-weight: 600; padding-block: 6px; }
+  .rows li { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(194,120,90,.18); font-size: 15px; }
+  .logo { width: 32px; height: 32px; border: 1px solid rgba(11,18,32,.1); border-radius: 9px; display: grid; place-items: center; font-weight: 700; }
+  .tn { flex: 1; font-weight: 500; }
+  .rows b { font-weight: 600; }
+  .total { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-radius: 18px; border: 1px solid rgba(220,80,60,.25); background: linear-gradient(#fff, #fff7f5); }
+  .tt { font-size: 17px; font-weight: 600; }
+  .ts { font-size: 12px; font-weight: 500; max-width: 130px; margin-top: 3px; }
+  .tv b { font-size: 26px; color: var(--danger); font-weight: 700; }
+  .tv span { font-size: 13px; font-weight: 600; }
+  .saving { text-align: center; font-size: 13px; font-weight: 600; color: var(--brand); }
+  @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+</style>

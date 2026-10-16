@@ -1,0 +1,17 @@
+---
+import { models } from '../data/content';
+const hue = (s: string) => ([...s].reduce((a, c) => a + c.charCodeAt(0), 0) * 47) % 360;
+---
+<section class="strip">
+  <ul class="wrap strip__in">
+    {models.map((m) => (
+      <li><span class="ic" style={`background:hsl(${hue(m)} 70% 45%)`}>{m[0]}</span>{m}</li>
+    ))}
+  </ul>
+</section>
+<style>
+  .strip { background: #fff; padding-block: 28px; }
+  .strip__in { display: flex; flex-wrap: wrap; gap: 20px 28px; justify-content: center; }
+  li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .ic { width: 28px; height: 28px; border-radius: 8px; color: #fff; font: 700 13px/28px Inter, sans-serif; text-align: center; }
+</style>
