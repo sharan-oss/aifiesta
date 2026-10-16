@@ -10,6 +10,7 @@
   --gold: #ffb01f;
   --sun: #ffd480;
   --danger: #dc2626;
+  --section-y: 48px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -44,3 +45,5 @@ h2.section-title {
   letter-spacing: -0.02em; text-align: center;
 }
 .accent { color: var(--brand); }
+
+@media (min-width: 768px) { :root { --section-y: 80px; } }

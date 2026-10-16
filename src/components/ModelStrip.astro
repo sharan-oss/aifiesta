@@ -14,8 +14,9 @@ import { models } from '../data/content';
   </ul>
 </section>
 <style>
-  .strip { background: #fff; padding-block: 28px; }
-  .strip__in { display: flex; flex-wrap: wrap; gap: 20px 28px; justify-content: center; }
+  .strip { background: #fff; padding-block: 32px; }
+  .strip__in { display: grid; grid-template-columns: repeat(2, max-content); gap: 20px 40px; justify-content: center; }
+  @media (min-width: 640px) { .strip__in { grid-template-columns: repeat(5, max-content); gap: 24px 48px; } }
   li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
   img { width: 28px; height: 28px; object-fit: contain; }
   .kimi { background: #1783ff; }

@@ -14,10 +14,11 @@ import { benefits, CTA, CTA_HREF } from '../data/content';
   <a class="btn btn--block" href={CTA_HREF}>{CTA}</a>
 </section>
 <style>
-  .ben { padding-block: 16px 48px; display: grid; gap: 16px; max-width: 640px; }
-  h2 { font-size: 25px; font-weight: 700; text-align: center; }
+  .ben { padding-block: 24px var(--section-y); display: grid; gap: 20px; max-width: 640px; }
+  h2 { font-size: clamp(25px, 4vw, 32px); font-weight: 700; text-align: center; }
   ul { display: grid; gap: 16px; margin-block: 0 8px; }
   li { display: flex; gap: 12px; }
   svg { flex: none; margin-top: 2px; }
   p { font-size: 14px; font-weight: 700; color: var(--muted); }
+  @media (min-width: 768px) { p { font-size: 16px; } ul { gap: 20px; } }
 </style>

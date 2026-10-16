@@ -17,7 +17,7 @@ import { CTA, CTA_HREF } from '../data/content';
   </a>
 </section>
 <style>
-  .hero { display: grid; gap: 24px; padding-block: 20px 40px; text-align: center; }
+  .hero { display: grid; gap: 24px; padding-block: 24px var(--section-y); text-align: center; }
   .hero__rate { display: grid; gap: 5px; }
   .stars { color: var(--gold); font-size: 17px; }
   .hero__rate p { font-size: 12px; font-weight: 500; color: var(--muted); }
@@ -28,7 +28,7 @@ import { CTA, CTA_HREF } from '../data/content';
   .hero__media img { width: 100%; height: auto; }
   .dots { height: 28px; width: auto; margin-left: 4px; }
   @media (min-width: 900px) {
-    .hero { grid-template-columns: 1fr 1fr; align-items: center; text-align: left; padding-block: 56px; gap: 48px; }
+    .hero { grid-template-columns: 1fr 1fr; align-items: center; text-align: left; padding-block: 72px var(--section-y); gap: 56px; }
     .lead { margin-inline: 0; }
     .hero__copy { grid-column: 1; grid-row: 1; }
     .hero__media { grid-column: 2; grid-row: 1 / span 2; }

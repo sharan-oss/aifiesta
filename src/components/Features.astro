@@ -6,9 +6,9 @@ import { features, CTA, CTA_HREF } from '../data/content';
   <div class="grid">
     {features.map((f, i) => (
       <>
-        <article class:list={['card', { alt: i % 2 === 1 }]}>
+        <article class:list={['card', { alt: i % 2 === 1, 'wide-md': i === 2, wide: i === features.length - 1 }]}>
           <div class="top"><span class="num">{f.n}</span>{f.isNew && <span class="badge">NEW</span>}</div>
-          <h3>{f.title.map((t, j) => <>{j > 0 && <br />}{t}</>)}</h3>
+          <h3>{f.title.join(' ')}</h3>
           <p>{f.body}</p>
           <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
         </article>
@@ -18,17 +18,29 @@ import { features, CTA, CTA_HREF } from '../data/content';
   </div>
 </section>
 <style>
-  .feat { padding-block: 16px 48px; display: grid; gap: 24px; }
+  .feat { padding-block: 16px var(--section-y); display: grid; gap: 28px; }
   .grid { display: grid; gap: 24px; }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; display: grid; gap: 8px; align-content: start; }
+  .card { display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; }
   .card.alt { background: var(--brand-soft); }
   .top { display: flex; justify-content: space-between; align-items: center; min-height: 25px; }
   .num { font-size: 14px; font-weight: 500; color: var(--brand); }
   .badge { background: var(--brand); color: #fff; font-size: 14px; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
-  h3 { font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  h3 { text-wrap: balance; font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
   .card p { font-size: 15px; font-weight: 500; color: var(--muted); }
-  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; margin-top: 12px; background: #05080f; }
+  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; margin-top: auto; background: #05080f; }
+  .card .top + h3 { margin-top: 0; }
+  .card p { margin-bottom: 12px; }
   .cta { grid-column: 1 / -1; }
-  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 768px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .wide-md, .wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-items: center; }
+    .wide-md .top, .wide .top { grid-column: 1; }
+    .wide-md h3, .wide h3, .wide-md p, .wide p { grid-column: 1; }
+    .wide-md img, .wide img { grid-column: 2; grid-row: 1 / span 4; margin: 0; }
+  }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .wide-md { grid-column: auto; display: flex; align-items: stretch; }
+    .wide-md img { margin-top: auto; }
+  }
 </style>
