@@ -3,7 +3,7 @@ export const CTA_HREF = '#pricing';
 
 export const models = [
   'ChatGPT', 'Perplexity', 'Qwen', 'Claude', 'Grok', 'Mistral', 'Gemini', 'DeepSeek', 'Kimi', 'Kling',
-];
+].map((name) => ({ name, icon: `/logos/strip-${name.toLowerCase()}.png` }));
 
 export const benefits = [
   'Priced for India. Pay in rupees, no international card needed.',
@@ -41,9 +41,9 @@ export const plan = {
 
 export const pay = {
   tools: [
-    { name: 'ChatGPT', cost: '₹23,400' },
-    { name: 'Claude', cost: '₹19,200' },
-    { name: 'Gemini', cost: '₹23,400' },
+    { name: 'ChatGPT', icon: '/logos/strip-chatgpt.png', cost: '₹23,400' },
+    { name: 'Claude', icon: '/logos/strip-claude.png', cost: '₹19,200' },
+    { name: 'Gemini', icon: '/logos/strip-gemini.png', cost: '₹23,400' },
   ],
   total: '₹66,000',
   saving: 'With AI Fiesta Plus you save ₹58,001 a year',

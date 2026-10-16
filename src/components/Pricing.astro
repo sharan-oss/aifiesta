@@ -1,4 +1,4 @@
----
+﻿---
 import { plan, pay, CTA } from '../data/content';
 ---
 <section class="price" id="pricing">
@@ -22,17 +22,18 @@ import { plan, pay, CTA } from '../data/content';
 
     <div class="pay">
       <div class="phead">
-        <span class="chip">⚠ WHAT YOU PAY TODAY</span>
+        <span class="chip">âš  WHAT YOU PAY TODAY</span>
         <span class="tools">3 TOOLS</span>
       </div>
       <p class="q">Which AI tools do you pay for?</p>
+      <img class="grid-img" src="/logos/pay-grid.png" alt="Selected tools: ChatGPT, Claude and Gemini" width="326" height="198" loading="lazy" />
       <ul class="rows">
         {pay.tools.map((t) => (
-          <li><span class="logo">{t.name[0]}</span><span class="tn">{t.name}</span><b>{t.cost}</b></li>
+          <li><span class="logo"><img src={t.icon} alt="" width="18" height="18" /></span><span class="tn">{t.name}</span><b>{t.cost}</b></li>
         ))}
       </ul>
       <div class="total">
-        <div><p class="tt">Total</p><p class="ts">3 separate logins · 3 bills to track</p></div>
+        <div><p class="tt">Total</p><p class="ts">3 separate logins Â· 3 bills to track</p></div>
         <p class="tv"><b>{pay.total}</b> <span>/year</span></p>
       </div>
       <p class="saving">{pay.saving}</p>
@@ -64,6 +65,8 @@ import { plan, pay, CTA } from '../data/content';
   .q { font-size: 15px; font-weight: 600; padding-block: 6px; }
   .rows li { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(194,120,90,.18); font-size: 15px; }
   .logo { width: 32px; height: 32px; border: 1px solid rgba(11,18,32,.1); border-radius: 9px; display: grid; place-items: center; font-weight: 700; }
+  .grid-img { width: 100%; height: auto; }
+  .logo img { width: 18px; height: 18px; object-fit: contain; }
   .tn { flex: 1; font-weight: 500; }
   .rows b { font-weight: 600; }
   .total { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-radius: 18px; border: 1px solid rgba(220,80,60,.25); background: linear-gradient(#fff, #fff7f5); }

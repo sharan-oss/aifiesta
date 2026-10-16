@@ -1,11 +1,15 @@
 ---
 import { models } from '../data/content';
-const hue = (s: string) => ([...s].reduce((a, c) => a + c.charCodeAt(0), 0) * 47) % 360;
 ---
 <section class="strip">
   <ul class="wrap strip__in">
     {models.map((m) => (
-      <li><span class="ic" style={`background:hsl(${hue(m)} 70% 45%)`}>{m[0]}</span>{m}</li>
+      <li>
+        {m.name === 'Kimi'
+          ? <span class="ic kimi" aria-hidden="true">K</span>
+          : <img src={m.icon} alt="" width="28" height="28" loading="lazy" />}
+        {m.name}
+      </li>
     ))}
   </ul>
 </section>
@@ -13,5 +17,7 @@ const hue = (s: string) => ([...s].reduce((a, c) => a + c.charCodeAt(0), 0) * 47
   .strip { background: #fff; padding-block: 28px; }
   .strip__in { display: flex; flex-wrap: wrap; gap: 20px 28px; justify-content: center; }
   li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  img { width: 28px; height: 28px; object-fit: contain; }
+  .kimi { background: #1783ff; }
   .ic { width: 28px; height: 28px; border-radius: 8px; color: #fff; font: 700 13px/28px Inter, sans-serif; text-align: center; }
 </style>
