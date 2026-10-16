@@ -1,24 +1,54 @@
 ---
 import { models } from '../data/content';
+import ModelItem from './ModelItem.astro';
+
+// Mobile: three marquee rows, alternating direction and speed.
+const rows = [models.slice(0, 4), models.slice(4, 7), models.slice(7)];
+const motion = [
+  { dir: 'normal', dur: '28s' },
+  { dir: 'reverse', dur: '34s' },
+  { dir: 'normal', dur: '30s' },
+];
 ---
-<section class="strip">
-  <ul class="wrap strip__in">
-    {models.map((m) => (
-      <li>
-        {m.name === 'Kimi'
-          ? <span class="ic kimi" aria-hidden="true">K</span>
-          : <img src={m.icon} alt="" width="28" height="28" loading="lazy" />}
-        {m.name}
-      </li>
-    ))}
+<section class="strip" aria-label="Supported AI models">
+  <ul class="wrap grid">
+    {models.map((m) => <li><ModelItem name={m.name} icon={m.icon} /></li>)}
   </ul>
+
+  <div class="marquee" aria-hidden="true">
+    {rows.map((row, i) => (
+      <div class="row">
+        <div class="track" style={`animation-direction:${motion[i].dir};animation-duration:${motion[i].dur}`}>
+          {[0, 1].map(() => (
+            <ul class="set">
+              {[...row, ...row].map((m) => <li><ModelItem name={m.name} icon={m.icon} /></li>)}
+            </ul>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
 </section>
 <style>
-  .strip { background: #fff; padding-block: 32px; }
-  .strip__in { display: grid; grid-template-columns: repeat(2, max-content); gap: 20px 40px; justify-content: center; }
-  @media (min-width: 640px) { .strip__in { grid-template-columns: repeat(5, max-content); gap: 24px 48px; } }
-  li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
-  img { width: 28px; height: 28px; object-fit: contain; }
-  .kimi { background: #1783ff; }
-  .ic { width: 28px; height: 28px; border-radius: 8px; color: #fff; font: 700 13px/28px Inter, sans-serif; text-align: center; }
+  .strip { background: #fff; padding-block: 28px; overflow: hidden; }
+
+  /* Desktop grid */
+  .grid { display: none; }
+
+  /* Mobile marquee */
+  .marquee { display: grid; gap: 20px; }
+  .row { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .track { display: flex; width: max-content; animation: scroll linear infinite; }
+  .set { display: flex; gap: 40px; padding-right: 40px; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  @media (min-width: 640px) {
+    .strip { padding-block: 32px; }
+    .marquee { display: none; }
+    .grid { display: grid; grid-template-columns: repeat(5, max-content); gap: 24px 48px; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; }
+    .row { overflow-x: auto; }
+  }
 </style>

@@ -1,0 +1,15 @@
+---
+interface Props { name: string; icon: string }
+const { name, icon } = Astro.props;
+---
+<span class="item">
+  {name === 'Kimi'
+    ? <span class="kimi" aria-hidden="true">K</span>
+    : <img src={icon} alt="" width="28" height="28" loading="lazy" />}
+  {name}
+</span>
+<style>
+  .item { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  img { width: 28px; height: 28px; object-fit: contain; }
+  .kimi { width: 28px; height: 28px; border-radius: 8px; background: #1783ff; color: #fff; font: 700 13px/28px Inter, sans-serif; text-align: center; }
+</style>
