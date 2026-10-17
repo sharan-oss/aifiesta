@@ -1,4 +1,5 @@
 export const CTA = 'Get AIFiesta';
+// TODO: point to the payment page once it's ready.
 export const CTA_HREF = '#pricing';
 
 export const models = [
@@ -56,11 +57,12 @@ export const testimonials = [
   { name: 'Simi', role: 'Copywriter', img: 'avatar-simi.png', text: 'I have been using this app especially for my exams. It explains complex topics in very simple words and helps with everything from academics to everyday decisions.' },
 ];
 
+// TODO: answers marked 'TODO: pending' are awaiting team review.
 export const faqs = [
   { q: 'How is AI Fiesta different from subscribing to each AI separately?', a: 'AI Fiesta brings together Grok 4, ChatGPT 5, Gemini 2.5 Pro, DeepSeek, Claude Sonnet 4, Perplexity Sonar Pro, Kimi K2, Qwen 3 Max, Mistral, and many more in one place.' },
-  { q: 'Do I get unlimited messages?', a: '' },
-  { q: 'What happens if I run out of tokens?', a: '' },
-  { q: 'Can I switch plans or cancel?', a: '' },
-  { q: 'Is my data used to train AI models?', a: '' },
-  { q: 'Can I delete my chats or my account?', a: '' },
+  { q: 'Do I get unlimited messages?', a: 'TODO: pending' },
+  { q: 'What happens if I run out of tokens?', a: 'TODO: pending' },
+  { q: 'Can I switch plans or cancel?', a: 'TODO: pending' },
+  { q: 'Is my data used to train AI models?', a: 'TODO: pending' },
+  { q: 'Can I delete my chats or my account?', a: 'TODO: pending' },
 ];
