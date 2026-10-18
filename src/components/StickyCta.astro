@@ -1,0 +1,50 @@
+---
+import { plan, CTA, CTA_HREF } from '../data/content';
+---
+<aside class="sticky" data-sticky-cta aria-label="Pricing offer">
+  <div class="price">
+    <p class="amt"><b>{plan.price}</b><span>{plan.per}</span> <s>{plan.was}</s></p>
+    <p class="offer">{plan.offer}</p>
+  </div>
+  <a class="btn btn--pill" href={CTA_HREF}>{CTA}</a>
+</aside>
+<style>
+  .sticky {
+    position: fixed; z-index: 20; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 12px 12px 12px 18px;
+    box-shadow: 0 18px 40px -12px rgba(36,32,61,.35);
+    transform: translateY(calc(100% + 24px)); visibility: hidden;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s;
+  }
+  .sticky.is-shown { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+  .amt { display: flex; align-items: baseline; gap: 2px; white-space: nowrap; }
+  .amt b { font-size: 24px; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
+  .amt span { font-size: 13px; font-weight: 600; }
+  .amt s { margin-left: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+  .offer { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .btn { flex: none; height: 48px; padding-inline: 22px; font-size: 14px; }
+  @media (min-width: 768px) { .sticky { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .sticky, .sticky.is-shown { transition: none; } }
+</style>
+<script>
+  // Show once the hero CTA has scrolled away; step aside while another CTA block is on screen.
+  const bar = document.querySelector('[data-sticky-cta]');
+  const trigger = document.querySelector('[data-sticky-after]');
+  if (bar && trigger) {
+    let past = false;
+    const blocking = new Set<Element>();
+    const update = () => bar.classList.toggle('is-shown', past && blocking.size === 0);
+
+    new IntersectionObserver(([e]) => {
+      past = !e.isIntersecting && e.boundingClientRect.top < 0;
+      update();
+    }).observe(trigger);
+
+    const hiders = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? blocking.add(e.target) : blocking.delete(e.target);
+      update();
+    });
+    document.querySelectorAll('[data-sticky-hide]').forEach((el) => hiders.observe(el));
+  }
+</script>

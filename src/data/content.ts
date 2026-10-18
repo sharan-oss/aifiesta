@@ -27,6 +27,8 @@ export const plan = {
   name: 'AI Fiesta Plus',
   save: 'Save ₹3,989',
   price: '₹7,999',
+  was: '₹11,988',
+  offer: 'Limited time offer',
   per: '/yr',
   monthly: 'Just ₹667/month, billed yearly',
   rows: [
