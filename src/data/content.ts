@@ -57,12 +57,16 @@ export const testimonials = [
   { name: 'Simi', role: 'Copywriter', img: 'avatar-simi.png', text: 'I have been using this app especially for my exams. It explains complex topics in very simple words and helps with everything from academics to everyday decisions.' },
 ];
 
-// TODO: answers marked 'TODO: pending' are awaiting team review.
+// Answers after the first are taken from subscriptionplans.aifiesta.ai/single-subscription-plan-t2.
 export const faqs = [
   { q: 'How is AI Fiesta different from subscribing to each AI separately?', a: 'AI Fiesta brings together Grok 4, ChatGPT 5, Gemini 2.5 Pro, DeepSeek, Claude Sonnet 4, Perplexity Sonar Pro, Kimi K2, Qwen 3 Max, Mistral, and many more in one place.' },
-  { q: 'Do I get unlimited messages?', a: 'TODO: pending' },
-  { q: 'What happens if I run out of tokens?', a: 'TODO: pending' },
-  { q: 'Can I switch plans or cancel?', a: 'TODO: pending' },
-  { q: 'Is my data used to train AI models?', a: 'TODO: pending' },
-  { q: 'Can I delete my chats or my account?', a: 'TODO: pending' },
+  { q: 'Can I choose which AI models to use?', a: 'Yes. You can toggle AI models on or off at any time during your chat and turn them back on later without losing your chat history.' },
+  { q: 'Do I get unlimited messages?', a: 'You get 3,000,000 tokens per month. Each token is approximately ¾ of a word. For most users this is far more than needed - the average usage is around 200,000 tokens per month. Standard models consume tokens at 1x rate whereas Premium models consume tokens at 4x rate.' },
+  { q: 'What happens if I run out of tokens?', a: "3 million tokens is a very large allowance and 99% of users never come close to exhausting it. You'll see warnings before hitting zero. If you reach the limit, reach out to support to get more tokens on a paid basis." },
+  { q: 'Do you offer refunds?', a: 'No. All payments are non-refundable regardless of usage. You may cancel any time to stop future billing.' },
+  { q: 'How can I manage or cancel my subscription?', a: 'Log in to AI Fiesta, go to Settings, and select your subscription management option.' },
+  { q: 'Where can I access the Community and the Promptbook?', a: 'You can log in at community.aifiesta.ai using your registered email. This feature is only available to paid users.' },
+  { q: 'Can I use AI Fiesta on my phone?', a: 'Yes. AI Fiesta is available on mobile browsers at chat.aifiesta.ai or as a dedicated Android and iOS app.' },
+  { q: 'Will I get free upgrades when new AI versions are released?', a: 'Yes. If ChatGPT releases Model 6 or another AI provider launches a higher version, you will get access at no extra cost.' },
+  { q: 'Who owns AI Fiesta?', a: 'AI Fiesta is an all-in-one AI subscription platform owned by Fiesta Labs Inc. Fiesta Labs Inc is owned by Dhruv Rathee, an entrepreneur and digital content creator.' },
 ];
