@@ -16,11 +16,11 @@ export const benefits = [
 export const features = [
   { n: '01', isNew: true, title: ['Generate images in', 'seconds'], body: 'Create social media posts, thumbnails, photos and more.', img: 'feature-images.png', alt: 'Image Studio prompt screen' },
   { n: '02', isNew: true, title: ['Create scroll-stopping', 'videos'], body: 'From idea to video in minutes, using top video generation models.', img: 'feature-videos.png', alt: 'Video generation screen' },
-  { n: '03', isNew: false, title: ['Compare all AIs at once'], body: 'Ask the same question to all AIs at once. No more juggling between tabs.', img: 'feature-compare.png', alt: 'Side-by-side AI comparison', cta: true },
+  { n: '03', isNew: false, title: ['Compare all AIs at once'], body: 'Ask the same question to all AIs at once. No more juggling between tabs.', img: 'feature-compare.png', alt: 'Side-by-side AI comparison' },
   { n: '04', isNew: true, title: ['Build websites with a', 'single prompt'], body: 'Create fully-functioning websites and landing pages without coding.', img: 'feature-websites.png', alt: 'Website builder screen' },
   { n: '05', isNew: true, title: ['Make impressive', 'presentations'], body: 'Choose from existing templates or explain your idea.', img: 'feature-presentations.png', alt: 'Presentation builder screen' },
   { n: '06', isNew: false, title: ['Talk to an Expert'], body: 'Career, finances, fitness, health - get your queries answered instantly.', img: 'feature-expert.png', alt: 'Expert chat selection' },
-  { n: '07', isNew: false, title: ['Skip hours of research'], body: 'AI does the digging and the comparing. You just get the answers, fully cited.', img: 'feature-research.png', alt: 'Deep research screen', cta: true },
+  { n: '07', isNew: false, title: ['Skip hours of research'], body: 'AI does the digging and the comparing. You just get the answers, fully cited.', img: 'feature-research.png', alt: 'Deep research screen' },
 ];
 
 export const plan = {

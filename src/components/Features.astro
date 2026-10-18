@@ -3,44 +3,67 @@ import { features, CTA, CTA_HREF } from '../data/content';
 ---
 <section class="wrap feat">
   <h2 class="section-title">Create faster without paying for <span class="accent">5 different AI tools</span></h2>
-  <div class="grid">
+  <div class="stack">
     {features.map((f, i) => (
-      <>
-        <article class:list={['card', { alt: i % 2 === 1, 'wide-md': i === 2, wide: i === features.length - 1 }]}>
+      <article class:list={['card', { alt: i % 2 === 1 }]} style={`--i:${i}`} data-stack>
+        <div class="copy">
           <div class="top"><span class="num">{f.n}</span>{f.isNew && <span class="badge">NEW</span>}</div>
           <h3>{f.title.join(' ')}</h3>
           <p>{f.body}</p>
-          <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
-        </article>
-        {f.cta && <a class="btn btn--block cta" href={CTA_HREF}>{CTA}</a>}
-      </>
+        </div>
+        <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
+      </article>
     ))}
   </div>
+  <a class="btn btn--block cta" href={CTA_HREF}>{CTA}</a>
 </section>
 <style>
-  .feat { padding-block: 16px var(--section-y); display: grid; gap: 28px; }
-  .grid { display: grid; gap: 24px; }
-  .card { display: flex; flex-direction: column; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; }
+  .feat { padding-block: 16px var(--section-y); display: grid; gap: 28px; --stack-top: 16px; }
+  .stack { display: flex; flex-direction: column; gap: 24px; }
+  .card {
+    position: sticky; top: calc(var(--stack-top) + var(--i) * 10px);
+    display: flex; flex-direction: column; gap: 16px;
+    background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px;
+    box-shadow: 0 -20px 50px -30px rgba(36,32,61,.35);
+    transform-origin: 50% 0%; will-change: transform;
+  }
   .card.alt { background: var(--brand-soft); }
+  .copy { display: grid; gap: 8px; }
   .top { display: flex; justify-content: space-between; align-items: center; min-height: 25px; }
   .num { font-size: 14px; font-weight: 500; color: var(--brand); }
   .badge { background: var(--brand); color: #fff; font-size: 14px; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
   h3 { text-wrap: balance; font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
   .card p { font-size: 15px; font-weight: 500; color: var(--muted); }
-  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; margin-top: auto; background: #05080f; }
-  .card .top + h3 { margin-top: 0; }
-  .card p { margin-bottom: 12px; }
-  .cta { grid-column: 1 / -1; }
+  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; background: #05080f; }
+  .cta { max-width: 640px; justify-self: center; }
+
   @media (min-width: 768px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-    .wide-md, .wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-items: center; }
-    .wide-md .top, .wide .top { grid-column: 1; }
-    .wide-md h3, .wide h3, .wide-md p, .wide p { grid-column: 1; }
-    .wide-md img, .wide img { grid-column: 2; grid-row: 1 / span 4; margin: 0; }
-  }
-  @media (min-width: 1024px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-    .wide-md { grid-column: auto; display: flex; align-items: stretch; }
-    .wide-md img { margin-top: auto; }
+    .feat { --stack-top: 40px; }
+    .stack { gap: 40px; }
+    .card { display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; column-gap: 48px; padding: 40px; border-radius: 28px; }
+    .copy { gap: 12px; }
+    h3 { font-size: 40px; }
+    .card p { font-size: 17px; max-width: 42ch; }
   }
 </style>
+<script>
+  // Shrink each pinned card a little as the next one slides over it.
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-stack]')];
+  if (cards.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const vh = innerHeight;
+      cards.forEach((card, i) => {
+        const next = cards[i + 1];
+        if (!next) return;
+        const p = Math.min(1, Math.max(0, (vh - next.getBoundingClientRect().top) / (vh * 0.75)));
+        card.style.transform = `scale(${1 - 0.06 * p})`;
+      });
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    update();
+  }
+</script>
