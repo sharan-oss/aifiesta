@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const APP_URL = 'https://chat.aifiesta.ai';
+const SUPPORT_EMAIL = 'support@aifiesta.ai';
+
+const steps = [
+  { title: 'Check your email', body: "Look for your subscription confirmation and access instructions in your registered email inbox. Check your spam folder if you don't see it." },
+  { title: 'Access AI Fiesta', body: 'Follow the instructions provided to log in and activate your subscription.' },
+  { title: 'Start exploring 100+ AI tools', body: 'Discover the tools available to you and find new ways to work smarter, create faster, and get better results.' },
+];
+---
+<Layout title="Welcome to AI Fiesta" description="Your AI Fiesta subscription is active. Here's what happens next." noindex>
+  <Header cta={false} />
+  <main class="wrap ty">
+    <section class="intro">
+      <p class="pop" aria-hidden="true">🎉</p>
+      <h1>You're in! Welcome to AI Fiesta.</h1>
+      <p class="kicker">Your AI upgrade starts here.</p>
+      <p class="lead">You've just unlocked <b>1 year of access to 100+ AI tools</b> with AI Fiesta.</p>
+      <p class="lead">No more juggling multiple subscriptions. It's time to explore more AI possibilities, simplify your workflows, and get more done.</p>
+    </section>
+
+    <section class="next" aria-labelledby="next-title">
+      <h2 id="next-title">🚀 Here's what happens next</h2>
+      <ol>
+        {steps.map((s, i) => (
+          <li>
+            <span class="dot" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h3><span class="sr">Step {i + 1}: </span>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="go">
+      <h2>Your AI journey starts now.</h2>
+      <a class="btn btn--pill btn--block" href={APP_URL}>Access AI Fiesta</a>
+      <p class="help">Have questions or need help accessing your subscription? <a href={`mailto:${SUPPORT_EMAIL}`}>Contact our support team.</a></p>
+    </section>
+
+    <p class="sign">Welcome aboard! 🎊<br /><b>Team AI Fiesta</b></p>
+  </main>
+  <Footer banner={false} />
+</Layout>
+<style>
+  .ty { max-width: 640px; display: grid; gap: 28px; padding-block: 40px 16px; }
+
+  .intro { display: grid; gap: 12px; text-align: center; justify-items: center; }
+  .pop { font-size: 56px; line-height: 1; animation: pop .7s cubic-bezier(.3,1.6,.5,1) both; }
+  @keyframes pop { from { transform: scale(.4) rotate(-12deg); opacity: 0; } }
+  h1 { font-size: clamp(34px, 7vw, 52px); line-height: 1.08; font-weight: 700; letter-spacing: -0.025em; text-wrap: balance; margin-top: 8px; }
+  .kicker { font-size: 18px; font-weight: 600; color: var(--brand); }
+  .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 52ch; text-wrap: pretty; }
+  .lead b { color: var(--ink); font-weight: 600; }
+
+  .next { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 24px 20px; box-shadow: 0 8px 20px rgba(36,32,61,.07); }
+  .next h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 20px; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; }
+  li { position: relative; display: grid; grid-template-columns: 36px 1fr; gap: 14px; padding-bottom: 22px; }
+  li:last-child { padding-bottom: 0; }
+  /* Rail joining the step markers. */
+  li:not(:last-child)::before { content: ''; position: absolute; left: 17px; top: 40px; bottom: 4px; width: 2px; background: var(--line); }
+  .dot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--brand-tint); color: var(--brand); font-size: 15px; font-weight: 700; }
+  li:first-child .dot { background: var(--brand); color: #fff; }
+  h3 { margin: 6px 0 4px; font-size: 17px; font-weight: 600; }
+  li p { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .go { display: grid; gap: 16px; text-align: center; justify-items: center; padding-top: 8px; }
+  .go h2 { font-size: clamp(26px, 5vw, 34px); font-weight: 700; letter-spacing: -0.02em; }
+  .go .btn { max-width: 360px; height: 56px; font-size: 16px; }
+  .help { font-size: 14px; font-weight: 500; color: var(--muted); max-width: 44ch; }
+  .help a { color: var(--brand); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  .sign { text-align: center; font-size: 15px; font-weight: 500; color: var(--muted); line-height: 1.6; }
+  .sign b { color: var(--ink); font-weight: 600; }
+
+  @media (min-width: 768px) {
+    .ty { gap: 36px; padding-top: 72px; }
+    .next { padding: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
+</style>

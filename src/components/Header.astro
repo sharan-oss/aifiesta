@@ -1,10 +1,12 @@
 ---
 import { CTA, CTA_HREF } from '../data/content';
+interface Props { cta?: boolean }
+const { cta = true } = Astro.props;
 ---
 <header class="hdr">
   <div class="wrap hdr__in">
     <a href="/" aria-label="AI Fiesta"><img src="/images/logo.png" alt="AI Fiesta" width="147" height="32" /></a>
-    <a class="btn btn--pill hdr__cta" href={CTA_HREF}>{CTA}</a>
+    {cta && <a class="btn btn--pill hdr__cta" href={CTA_HREF}>{CTA}</a>}
   </div>
 </header>
 <style>

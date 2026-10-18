@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-interface Props { title: string; description?: string }
-const { title, description = 'One subscription for 100+ AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
+interface Props { title: string; description?: string; noindex?: boolean }
+const { title, noindex = false, description = 'One subscription for 100+ AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -9,6 +9,7 @@ const { title, description = 'One subscription for 100+ AI models. ChatGPT, Clau
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
