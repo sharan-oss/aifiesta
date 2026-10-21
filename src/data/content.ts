@@ -47,15 +47,25 @@ export const plan = {
   note: 'All unused tokens roll over to next month. They never expire.',
 };
 
-export const pay = {
-  tools: [
-    { name: 'ChatGPT', icon: '/logos/strip-chatgpt.png', cost: '₹23,400' },
-    { name: 'Claude', icon: '/logos/strip-claude.png', cost: '₹19,200' },
-    { name: 'Gemini', icon: '/logos/strip-gemini.png', cost: '₹23,400' },
-  ],
-  total: '₹66,000',
-  saving: 'With AI Fiesta Plus you save ₹58,001 a year',
-};
+// "What you pay today" calculator. Yearly INR prices from the aifiesta.ai pricing calculator;
+// `on` marks the tools selected by default.
+export const payTools = [
+  { name: 'ChatGPT', icon: '/logos/calc-openai.svg', yearly: 23400, on: true },
+  { name: 'Claude', icon: '/logos/calc-claude.svg', yearly: 19200, on: true },
+  { name: 'Gemini', icon: '/logos/calc-gemini.svg', yearly: 23400, on: true },
+  { name: 'Perplexity', icon: '/logos/calc-perplexity.svg', yearly: 19900 },
+  { name: 'Qwen', icon: '/logos/calc-qwen.svg', yearly: 0 },
+  { name: 'Meta AI', icon: '/logos/calc-meta.svg', yearly: 0 },
+  { name: 'Grok', icon: '/logos/calc-grok.svg', yearly: 30000 },
+  { name: 'DeepSeek', icon: '/logos/calc-deepseek.svg', yearly: 0 },
+  { name: 'Mistral', icon: '/logos/calc-mistral.svg', yearly: 15000 },
+  { name: 'ByteDance', icon: '/logos/calc-bytedance.svg', yearly: 8000 },
+  { name: 'Kimi', icon: '/logos/calc-moonshot.svg', yearly: 15000 },
+  { name: 'Kling', icon: '/logos/calc-kling.png', yearly: 8800 },
+  { name: 'Runway', icon: '/logos/calc-runway.png', yearly: 12000 },
+  { name: 'Cohere', icon: '/logos/calc-cohere.svg', yearly: 0 },
+  { name: 'MiniMax', icon: '/logos/calc-minimax.svg', yearly: 21960 },
+];
 
 export const testimonials = [
   { name: 'Saurabh Goswami', role: 'Graphic Designer', img: 'avatar-saurabh.png', text: 'I frequently use AI Fiesta for presentations, statistical analysis, image generation, editing, and day-to-day queries. The automatic prompt enhancement is especially useful.' },

@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="gemini" clip-path="url(#clip0_0_56)">
+<path id="Vector" d="M14 28C13.4664 24.4777 11.8195 21.2186 9.30048 18.6995C6.78141 16.1805 3.52231 14.5336 0 14C3.52231 13.4664 6.78141 11.8195 9.30048 9.30048C11.8195 6.78141 13.4664 3.52231 14 0C14.5338 3.52224 16.1807 6.78124 18.6997 9.30028C21.2188 11.8193 24.4778 13.4662 28 14C24.4778 14.5338 21.2188 16.1807 18.6997 18.6997C16.1807 21.2188 14.5338 24.4778 14 28Z" fill="url(#paint0_linear_0_56)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_56" x1="6.22222" y1="23.7222" x2="21.2917" y2="5.73613" gradientUnits="userSpaceOnUse">
+<stop stop-color="#1C7DFF"/>
+<stop offset="0.439313" stop-color="#1C69FF"/>
+<stop offset="0.841327" stop-color="#F0DCD6"/>
+</linearGradient>
+<clipPath id="clip0_0_56">
+<rect width="28" height="28" fill="white"/>
+</clipPath>
+</defs>
+</svg>
