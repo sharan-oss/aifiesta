@@ -1,9 +1,8 @@
 ---
 // Meta Pixel: PageView on every page, AddToCart when a CTA to the payment page is clicked.
-// The pixel ID comes from PUBLIC_META_PIXEL_ID at build time; without it nothing is rendered.
-import { CTA_HREF, PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
+import { META_PIXEL_ID, CTA_HREF, PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
 
-const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
+const pixelId = META_PIXEL_ID;
 ---
 {pixelId && (
   <>

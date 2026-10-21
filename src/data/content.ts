@@ -1,6 +1,8 @@
 export const CTA = 'Get AIFiesta';
 export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan';
 
+export const META_PIXEL_ID = '1636798967975428';
+
 // Reported to Meta with AddToCart and Purchase.
 export const PLAN_VALUE = 7999;
 export const PLAN_CURRENCY = 'INR';
