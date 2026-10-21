@@ -1,6 +1,9 @@
 export const CTA = 'Get AIFiesta';
-// TODO: point to the payment page once it's ready.
-export const CTA_HREF = '#pricing';
+export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan';
+
+// Reported to Meta with AddToCart and Purchase.
+export const PLAN_VALUE = 7999;
+export const PLAN_CURRENCY = 'INR';
 
 export const models = [
   'ChatGPT', 'Perplexity', 'Qwen', 'Claude', 'Grok', 'Mistral', 'Gemini', 'DeepSeek', 'Kimi', 'Kling',

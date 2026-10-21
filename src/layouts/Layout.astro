@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import MetaPixel from '../components/MetaPixel.astro';
 interface Props { title: string; description?: string; noindex?: boolean }
 const { title, noindex = false, description = 'One subscription for 100+ AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
 ---
@@ -18,6 +19,7 @@ const { title, noindex = false, description = 'One subscription for 100+ AI mode
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <MetaPixel />
   </head>
   <body>
     <slot />

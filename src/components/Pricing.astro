@@ -1,5 +1,5 @@
 ---
-import { plan, pay, CTA } from '../data/content';
+import { plan, pay, CTA, CTA_HREF } from '../data/content';
 ---
 <section class="price" id="pricing">
   <div class="wrap grid">
@@ -16,7 +16,7 @@ import { plan, pay, CTA } from '../data/content';
         {plan.rows.map(([k, v]) => <li><span>{k}</span><b>{v}</b></li>)}
       </ul>
       <p class="note">{plan.note}</p>
-      <a class="btn btn--pill btn--block" href="#">{CTA}</a>
+      <a class="btn btn--pill btn--block" href={CTA_HREF}>{CTA}</a>
       <p class="cancel">Cancel anytime</p>
     </div>
 

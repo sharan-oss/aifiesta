@@ -1,0 +1,32 @@
+---
+// Meta Pixel: PageView on every page, AddToCart when a CTA to the payment page is clicked.
+// The pixel ID comes from PUBLIC_META_PIXEL_ID at build time; without it nothing is rendered.
+import { CTA_HREF, PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
+
+const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
+---
+{pixelId && (
+  <>
+    <script is:inline define:vars={{ pixelId, ctaHref: CTA_HREF, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', pixelId);
+      fbq('track', 'PageView');
+
+      // AddToCart on payment-page CTAs. Plain left clicks wait briefly so the event
+      // is sent before the page unloads; new-tab clicks are tracked without delay.
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.href.indexOf(ctaHref) !== 0) return;
+        fbq('track', 'AddToCart', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan' });
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
+        e.preventDefault();
+        setTimeout(function () { location.href = a.href; }, 150);
+      });
+    </script>
+    <noscript><img height="1" width="1" style="display:none" alt="" src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`} /></noscript>
+  </>
+)}
