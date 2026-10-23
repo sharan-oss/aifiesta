@@ -1,0 +1,50 @@
+---
+import { features } from '../../data/content-v2';
+import Cta from './Cta.astro';
+---
+<section class="section features">
+  <div class="wrap">
+    <h2 class="title title--semi">Generate Images, Videos,<br />Websites, Presentations<br /><span class="grad">And More In One App</span></h2>
+    <p class="sub">Built to help you work faster, think better, and get more accurate results</p>
+    <div class="bar"></div>
+    <div class="grid">
+      {features.map((f) => (
+        <article class="card">
+          <div class="top"><span class="n">{f.n}</span>{f.isNew && <span class="new">NEW</span>}</div>
+          <h3>{f.title}</h3>
+          <p class="lead">{f.lead}</p>
+          <ul>
+            {f.points.map((p) => (
+              <li>
+                <svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="6.1" fill="#3ED478" /><path d="M6 9.2l2.2 2.2 4-4.4" fill="none" stroke="#0A1220" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          {f.img ? <img src={`/v2/${f.img}`} alt={f.title} width="608" height="342" loading="lazy" /> : <div class="ph" aria-hidden="true"></div>}
+          {f.disclaimer && <p class="disc"><b>Disclaimer:</b>{f.disclaimer.replace('Disclaimer:', '')}</p>}
+        </article>
+      ))}
+    </div>
+    <Cta />
+  </div>
+</section>
+<style>
+  .features { background: transparent; }
+  .sub { margin-top: 20px; }
+  .grid { display: grid; gap: 24px; margin-block: 36px 40px; }
+  .card { display: flex; flex-direction: column; gap: 16px; padding: 20px 22px; border-radius: 22px; color: #fff; border: 1px solid rgba(255,255,255,.08); background: linear-gradient(160deg, #17154a 0%, #0c0a35 60%, #0a1220 130%); box-shadow: 0 -20px 60px -30px rgba(10,18,32,.45); overflow: hidden; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .n { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 14px; font-weight: 700; }
+  .new { background: linear-gradient(150deg, #f0145a -8%, #d81e9c 27%, #a020d0 62%, #7b2ff7 108%); border-radius: 999px; padding: 3px 11px; font-size: 14px; font-weight: 700; }
+  h3 { font-size: clamp(28px, 7vw, 34px); line-height: 1.1; font-weight: 700; letter-spacing: -0.01em; margin-top: 12px; }
+  .lead { font-size: 14px; color: rgba(255,255,255,.82); }
+  ul { display: grid; gap: 4px; margin-block: 4px 8px; }
+  li { display: flex; gap: 5px; font-size: 14px; color: rgba(255,255,255,.82); }
+  li svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+  .card img, .ph { width: 100%; height: auto; border-radius: 18px; margin-top: auto; }
+  .ph { aspect-ratio: 608 / 342; background: #0a1220; }
+  .disc { font-size: 13px; color: rgba(255,255,255,.82); padding: 4px 10px 8px; }
+  @media (min-width: 700px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1040px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 28px; } .card:last-child:nth-child(3n + 1) { grid-column: 2; } }
+</style>

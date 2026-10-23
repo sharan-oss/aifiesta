@@ -1,0 +1,27 @@
+---
+import { benefits } from '../../data/content-v2';
+---
+<section class="section benefits">
+  <div class="wrap">
+    <h2>AIFiesta - <span class="grad">India ka AI.</span></h2>
+    <ul>
+      {benefits.map(([b, rest]) => (
+        <li>
+          <i aria-hidden="true"><svg viewBox="0 0 13 13" fill="none"><path d="M10.8 3.25L4.9 9.2 2.2 6.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></i>
+          <p><b>{b}</b><span>{rest}</span></p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .benefits { background: #fff; }
+  .wrap { max-width: 760px; }
+  h2 { font-size: clamp(28px, 4.5vw, 40px); font-weight: 700; margin-bottom: 26px; }
+  ul { display: grid; gap: 18px; }
+  li { display: flex; gap: 12px; align-items: flex-start; }
+  i { width: 24px; height: 24px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; flex: none; margin-top: 2px; }
+  i svg { width: 13px; height: 13px; }
+  p { color: var(--muted); font-size: 16px; }
+  b { color: var(--ink); font-weight: 700; }
+</style>

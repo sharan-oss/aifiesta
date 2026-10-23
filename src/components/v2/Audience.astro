@@ -1,0 +1,41 @@
+---
+import { audience } from '../../data/content-v2';
+import Cta from './Cta.astro';
+const icons: Record<string, string> = {
+  briefcase: '<rect x="12" y="20" width="32" height="24" rx="3"/><path d="M22 20v-3a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3M12 30h32M26 30v3h4v-3"/>',
+  rocket: '<path d="M30 14c6 2 11 8 12 16l-8 8c-8-1-14-6-16-12zM22 34l-6 6M26 38l-3 6M18 30l-6 3"/><circle cx="34" cy="22" r="2.5"/>',
+  pen: '<path d="M14 42l3-10 20-20 7 7-20 20zM33 16l7 7"/>',
+  cap: '<path d="M6 24l22-10 22 10-22 10zM16 29v9c0 3 6 6 12 6s12-3 12-6v-9M50 24v12"/>',
+};
+---
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">WHO IS THIS FOR</p>
+    <h2 class="title"><span class="grad">Built for Everyone</span><i class="under"></i> <span class="semi">Who Can't Afford to Fall Behind</span></h2>
+    <div class="bar"></div>
+    <ul>
+      {audience.map(([ic, t, d]) => (
+        <li>
+          <svg viewBox="0 0 56 56" fill="none" stroke="url(#g)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F0145A" /><stop offset=".3" stop-color="#D81E9C" /><stop offset=".6" stop-color="#A020D0" /><stop offset="1" stop-color="#7B2FF7" /></linearGradient></defs>
+            <g set:html={icons[ic]} />
+          </svg>
+          <h3>{t}</h3>
+          <p>{d}</p>
+        </li>
+      ))}
+    </ul>
+    <Cta />
+  </div>
+</section>
+<style>
+  .eyebrow { text-align: center; font-size: 14px; font-weight: 500; color: rgba(3,0,37,.8); margin-bottom: 12px; }
+  .semi { font-weight: 600; }
+  ul { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin-block: 32px; padding-bottom: 8px; }
+  li { flex: 0 0 min(85%, 308px); scroll-snap-align: start; background: #fff; border-radius: 20px; padding: 20px; display: grid; gap: 12px; justify-items: center; text-align: center; align-content: center; min-height: 268px; }
+  li svg { width: 86px; height: 86px; }
+  h3 { font-size: 18px; font-weight: 700; }
+  p { font-size: 14px; color: rgba(3,0,37,.75); }
+  @media (min-width: 700px) { ul { display: grid; grid-template-columns: repeat(2, 1fr); overflow: visible; gap: 20px; } li { flex: none; } }
+  @media (min-width: 1040px) { ul { grid-template-columns: repeat(4, 1fr); } }
+</style>
