@@ -32,8 +32,20 @@ h1, h2, h3, h4 { font-family: var(--font-head); }
 .under { display: inline-block; width: 13px; height: 4px; background: var(--grad); margin-left: 4px; vertical-align: baseline; }
 
 .btn { position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; background: var(--grad); color: #fff; font-weight: 700; font-size: 14px; padding: 20px; border-radius: 50px; border: 0; cursor: pointer; text-align: center; transition: transform .15s ease, filter .15s ease; }
-.btn::after { content: ''; position: absolute; top: -20px; left: -10px; width: 30px; height: 120%; background: #fff; opacity: .2; transform: skewX(-20deg); }
 .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* Shimmer (same as LP1): a slow 2.5s light sweep, then a 0.5s rest. */
+.btn::after {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 45%; pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.08) 30%, rgba(255,255,255,.38) 50%, rgba(255,255,255,.08) 70%, transparent 100%);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: btn-shimmer 3s ease-in-out .5s infinite;
+}
+@keyframes btn-shimmer {
+  0% { transform: translateX(-120%) skewX(-18deg); }
+  83%, 100% { transform: translateX(340%) skewX(-18deg); }
+}
+@media (prefers-reduced-motion: reduce) { .btn::after { animation: none; display: none; } }
 .btn svg { width: 14px; height: 14px; flex: none; }
 .cta { display: grid; gap: 14px; max-width: 420px; margin-inline: auto; width: 100%; }
 .offer { text-align: center; font-size: 14px; color: rgba(3, 0, 37, 0.8); }
