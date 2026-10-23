@@ -1,21 +1,34 @@
 ---
-import { testimonials } from '../../data/content-v2';
+import { testimonials, PLAY_URL } from '../../data/content-v2';
 import Cta from './Cta.astro';
 const star = '<path d="M12.1 15.4c-.2 0-.4-.1-.5-.2L8 12.6l-3.6 2.6c-.3.2-.7.2-1 0-.3-.2-.4-.6-.4-1l1.4-4.3L.8 7.4c-.3-.2-.4-.6-.3-1 .1-.4.4-.6.8-.6l4.4-.1 1.4-4.2C7.3 1.1 7.6.9 8 .9s.7.2.8.6l1.4 4.3 4.5.1c.4 0 .7.2.8.6.1.4 0 .8-.3 1l-3.6 2.5 1.4 4.4c.1.4 0 .8-.3 1-.2.1-.4.2-.6.2" fill="#FFAC33"/>';
+// Split each review around its highlight so the phrase can be underlined in place.
+const reviews = testimonials.map((t) => {
+  const at = t.text.indexOf(t.highlight);
+  return at < 0
+    ? { ...t, before: t.text, hl: '', after: '' }
+    : { ...t, before: t.text.slice(0, at), hl: t.highlight, after: t.text.slice(at + t.highlight.length) };
+});
 ---
 <section class="section">
   <div class="wrap">
     <h2 class="title title--semi">Testimonials<i class="under"></i></h2>
-    <p class="sub rating">10k+ User Reviews | 4.5 <svg viewBox="0 0 16 16" aria-hidden="true" set:html={star} /> Avg. Star Rating</p>
+    <p class="sub">Real reviews from Google Play users</p>
     <div class="bar"></div>
     <div class="slider">
-      {testimonials.map((t) => (
+      {reviews.map((t) => (
         <figure>
-          <div class="stars" aria-label="5 stars">{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 16 16" aria-hidden="true" set:html={star} />)}</div>
-          <blockquote>{t.text}</blockquote>
+          <div class="stars" role="img" aria-label="5 out of 5 stars">{[0, 1, 2, 3, 4].map(() => <svg viewBox="0 0 16 16" aria-hidden="true" set:html={star} />)}</div>
+          <blockquote>{t.before}{t.hl && <mark>{t.hl}</mark>}{t.after}</blockquote>
           <figcaption>
-            <img src={t.img} alt={t.name} width="40" height="40" loading="lazy" />
-            <div><b>{t.name}</b><span>{t.role}</span></div>
+            <span class="mono" aria-hidden="true">{t.name[0]}</span>
+            <div>
+              <b>{t.name}</b>
+              <a href={PLAY_URL} target="_blank" rel="noopener">
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1l6.2 5L1.5 11z" fill="#00a173" /><path d="M7.7 6l2.3-1.3c.6.4.6 1.4 0 1.8L7.7 6z" fill="#ffbc00" /></svg>
+                Google Play review
+              </a>
+            </div>
           </figcaption>
         </figure>
       ))}
@@ -24,16 +37,26 @@ const star = '<path d="M12.1 15.4c-.2 0-.4-.1-.5-.2L8 12.6l-3.6 2.6c-.3.2-.7.2-1
   </div>
 </section>
 <style>
-  .rating { margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .rating svg { width: 14px; height: 14px; }
+  .sub { margin-top: 12px; }
   .slider { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; margin-block: 32px; padding-bottom: 4px; justify-content: safe center; }
-  figure { margin: 0; flex: 0 0 min(100%, 420px); scroll-snap-align: center; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 16px; }
+  /* Cards are a touch narrower than the screen so the next one peeks in as a swipe hint. */
+  figure { margin: 0; flex: 0 0 min(86%, 420px); scroll-snap-align: center; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+  /* Wide screens show every card as masonry columns instead of a slider. */
+  @media (min-width: 900px) {
+    .slider { display: block; columns: 2; column-gap: 16px; overflow: visible; }
+    figure { break-inside: avoid; margin-bottom: 16px; }
+  }
+  @media (min-width: 1100px) { .slider { columns: 3; } }
   .stars { display: flex; gap: 2px; }
-  .stars svg { width: 16px; height: 16px; }
-  blockquote { margin: 0; font-size: 16px; color: rgba(3,0,37,.8); }
-  figcaption { display: flex; align-items: center; gap: 20px; }
-  figcaption img { width: 40px; height: 40px; border-radius: 50%; }
+  .stars svg { width: 15px; height: 15px; }
+  /* Everything around the highlight stays quiet so the underlined phrase is the focal point. */
+  blockquote { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(3,0,37,.72); }
+  mark { color: var(--ink); font-weight: 600; background: var(--grad) no-repeat 0 100% / 100% 2px; padding-bottom: 1px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  figcaption { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+  .mono { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 600; color: rgba(3,0,37,.55); background: rgba(3,0,37,.05); }
   figcaption div { display: grid; }
-  figcaption b { color: var(--blue); font-size: 16px; }
-  figcaption span { font-size: 12px; }
+  figcaption b { font-size: 15px; font-weight: 600; }
+  figcaption a { display: flex; align-items: center; gap: 5px; font-size: 12px; color: rgba(3,0,37,.5); }
+  figcaption a:hover { color: var(--ink); }
+  figcaption a svg { width: 11px; height: 11px; }
 </style>

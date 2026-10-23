@@ -7,13 +7,13 @@ import Cta from './Cta.astro';
     <h2 class="title">Frequently Asked<br />Questions</h2>
     <div class="bar bar--light"></div>
     <div class="list">
-      {faqs.map(([q, a], i) => (
+      {faqs.map(({ q, a }, i) => (
         <details open={i === 0}>
           <summary>
             <span>{q}</span>
             <svg viewBox="0 0 13 14" aria-hidden="true"><path d="M1.2 4.6l5.3 5.3 5.3-5.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </summary>
-          <p>{a || 'Reach out to us at admin@aifiesta.ai and we will be happy to help with the details.'}</p>
+          <p>{a}</p>
         </details>
       ))}
     </div>

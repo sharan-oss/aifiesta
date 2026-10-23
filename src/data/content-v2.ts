@@ -54,8 +54,17 @@ export const bestFeatures = [
   ['meta', 'Meta AI', 'handles image generation and everyday content creation with ease'],
 ];
 
+// 5-star Google Play reviews, quoted in full. `highlight` is the exact phrase to underline.
+export const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.fiesta.ai';
 export const testimonials = [
-  { name: 'Dr. Danish', role: 'Parent', img: '/v2/avatar-danish.png', text: 'I use your app to write grant proposals for my NGO for the poor.' },
+  { name: "Khushpreet Kaur", highlight: "saves me money compared to buying separate subscriptions.", text: "Honestly, AI Fiesta is a game-changer! I love how I can test ChatGPT, Gemini, Claude, and more all in one place. The interface is clean, results are quick, and it saves me money compared to buying separate subscriptions." },
+  { name: "Arpit Sengar", highlight: "You can ask one question and get answers from different AI models instantly.", text: "Fiesta AI is a helpful tool that combines many powerful AI chatbots in one place. You can ask one question and get answers from different AI models instantly. It’s great for comparing responses, learning new things, and saving time. The platform is easy to use and works smoothly." },
+  { name: "Piyush", highlight: "No need for multiple subscriptions.", text: "Everything under one roof! One of the best AI apps out there. No need for multiple subscriptions. Side by side comparison seems to be very helpful. Affordable, smooth, and highly recommended." },
+  { name: "Aayushi Jain", highlight: "way cheaper than buying them separately.", text: "Been using AI Fiesta for a while now and I love it! Super easy to use, all the best AI tools in one app, and way cheaper than buying them separately. Makes studying, writing, and even day-to-day stuff so much simpler. Honestly feels like a smart buddy that’s always there to help" },
+  { name: "Ashish Pandey", highlight: "No more switching tabs or buying separate subscriptions—it saves both time and money.", text: "AI Fiesta is a real game-changer! I love how smoothly it brings all top AI models together in one app. No more switching tabs or buying separate subscriptions—it saves both time and money. The UI is clean, fast, and feels very professional." },
+  { name: "Amit Patel", highlight: "I personally recommend this app to students for study and research purposes.", text: "It is too convenient to use this app and has handy features that help to switch with different AI models . I personally recommend this app to students for study and research purposes. I save a lot of money as it is cheaper than buying multiple Ai's subscriptions. I think this is the best app I have ever used." },
+  { name: "Umar Shaikh", highlight: "Instead of paying for different AI tools separately, this one brings them all together in one place.", text: "I’ve been using AI Fiesta for a while now and honestly, it’s a very useful app. Instead of paying for different AI tools separately, this one brings them all together in one place. I really like how smooth the interface is and the extra features like prompt boost and image generation are a nice touch." },
+  { name: "Priyanshu Mahato", highlight: "From generating images and editing photos to chatting with AI and writing content , everything works perfectly.", text: "AI Fiesta is one of the best AI app I’ve ever used! The interface is super smooth, easy to use, and full of creative tools. From generating images and editing photos to chatting with AI and writing content , everything works perfectly. The results are fast, accurate, and look professional every time." },
 ];
 
 export const audience = [
@@ -73,15 +82,5 @@ export const why = [
   ['Your models update automatically', "When GPT-6 drops, you get it. When the next Claude launches, it's in your dashboard. You're not locked into yesterday's AI."],
 ];
 
-export const faqs = [
-  ['How is AI Fiesta different from subscribing to each AI separately?', 'AI Fiesta brings together Grok 4, ChatGPT 5, Gemini 2.5 Pro, DeepSeek, Claude Sonnet 4, Perplexity Sonar Pro, Kimi K2, Qwen 3 Max and Mistral in one place. Instead of juggling multiple subscriptions and browser tabs, you get all answers side-by-side in a single chat window, plus exclusive features like Prompt Enhancer and Custom Projects.'],
-  ['Can I choose which AI models to use?', ''],
-  ['Do I get unlimited messages?', 'You get 3,000,000 tokens per month. For most users this is far more than needed — the average usage is around 200,000 tokens per month.'],
-  ['What happens if I run out of tokens?', ''],
-  ['Do you offer refunds?', ''],
-  ['How can I manage or cancel my subscription?', ''],
-  ['Where can I access the Community and the Promptbook?', ''],
-  ['Can I use AI Fiesta on my phone?', ''],
-  ['Will I get free upgrades when new AI versions are released?', ''],
-  ['Who owns Ai Fiesta?', ''],
-];
+// Same FAQs as the home page, so both LPs stay in sync.
+export { faqs } from './content';
