@@ -11,7 +11,10 @@ import { features, CTA, CTA_HREF } from '../data/content';
           <h3>{f.title.join(' ')}</h3>
           <p>{f.body}</p>
         </div>
-        <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
+        <div class="media">
+          <img src={`/images/${f.img}`} alt={f.alt} loading="lazy" />
+          {f.video && <video data-src={`/videos/${f.video}`} muted loop playsinline preload="none" aria-hidden="true"></video>}
+        </div>
       </article>
     ))}
   </div>
@@ -34,7 +37,10 @@ import { features, CTA, CTA_HREF } from '../data/content';
   .badge { background: var(--brand); color: #fff; font-size: 14px; font-weight: 500; padding: 4px 10px; border-radius: 999px; }
   h3 { text-wrap: balance; font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
   .card p { font-size: 15px; font-weight: 500; color: var(--muted); }
-  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; background: #05080f; }
+  .media { position: relative; aspect-ratio: 16/9; border-radius: 18px; overflow: hidden; background: #05080f; }
+  .media img, .media video { width: 100%; height: 100%; object-fit: cover; }
+  .media video { position: absolute; inset: 0; opacity: 0; transition: opacity .4s ease; }
+  .media video.on { opacity: 1; }
   .cta { max-width: 640px; justify-self: center; }
 
   @media (min-width: 768px) {
@@ -47,6 +53,8 @@ import { features, CTA, CTA_HREF } from '../data/content';
   }
 </style>
 <script>
+  import '../scripts/feature-videos';
+
   // Shrink each pinned card a little as the next one slides over it.
   const cards = [...document.querySelectorAll<HTMLElement>('[data-stack]')];
   if (cards.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
