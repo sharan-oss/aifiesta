@@ -55,7 +55,6 @@ export const bestFeatures = [
 ];
 
 // 5-star Google Play reviews, quoted in full. `highlight` is the exact phrase to underline.
-export const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.fiesta.ai';
 export const testimonials = [
   { name: "Khushpreet Kaur", highlight: "saves me money compared to buying separate subscriptions.", text: "Honestly, AI Fiesta is a game-changer! I love how I can test ChatGPT, Gemini, Claude, and more all in one place. The interface is clean, results are quick, and it saves me money compared to buying separate subscriptions." },
   { name: "Arpit Sengar", highlight: "You can ask one question and get answers from different AI models instantly.", text: "Fiesta AI is a helpful tool that combines many powerful AI chatbots in one place. You can ask one question and get answers from different AI models instantly. It’s great for comparing responses, learning new things, and saving time. The platform is easy to use and works smoothly." },
