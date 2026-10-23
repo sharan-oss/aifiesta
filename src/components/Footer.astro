@@ -1,5 +1,5 @@
 ---
-import { CTA, CTA_HREF } from '../data/content';
+import { CTA, PRICING_HREF } from '../data/content';
 interface Props { banner?: boolean }
 const { banner = true } = Astro.props;
 ---
@@ -8,7 +8,7 @@ const { banner = true } = Astro.props;
     <img class="spark" src="/logos/foot-sparkle.png" alt="" width="37" height="37" />
     <img class="mark" src="/logos/foot-logo.png" alt="" width="35" height="31" />
     <h2>One subscription<br />for <em>100+</em> AI<br />models</h2>
-    <a class="btn btn--pill" href={CTA_HREF}>{CTA}</a>
+    <a class="btn btn--pill" href={PRICING_HREF} data-cta="footer">{CTA}</a>
   </div>}
   <div class="links">
     <b>AI Fiesta</b>

@@ -1,10 +1,10 @@
 ---
 import { CTA_TEXT, CTA_HREF } from '../../data/content-v2';
-interface Props { dark?: boolean }
-const { dark = false } = Astro.props;
+interface Props { at: string; dark?: boolean }
+const { at, dark = false } = Astro.props;
 ---
 <div class:list={['cta', { 'on-dark': dark }]}>
-  <a class="btn" href={CTA_HREF}>
+  <a class="btn" href={CTA_HREF} data-cta={at}>
     {CTA_TEXT}
     <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 3l4 4-4 4M7.5 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
   </a>

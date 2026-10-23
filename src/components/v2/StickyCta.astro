@@ -1,17 +1,18 @@
 ---
 import { CTA_HREF } from '../../data/content-v2';
 ---
-<aside class="sticky" aria-label="Pricing offer">
+<aside class="sticky" id="sticky-cta" aria-label="Pricing offer">
   <div class="inner">
     <div class="price">
       <p class="amt"><b class="grad">₹7,999/</b> <s>₹11,988</s></p>
       <p class="lim">Limited Time Offer</p>
     </div>
-    <a class="btn" href={CTA_HREF}>Get AI Fiesta</a>
+    <a class="btn" href={CTA_HREF} data-cta="sticky">Get AI Fiesta</a>
   </div>
 </aside>
 <style>
-  .sticky { position: fixed; inset: auto 0 0 0; z-index: 50; padding-top: 3px; background: var(--grad); border-radius: 24px 24px 0 0; box-shadow: 0 -8px 30px rgba(3, 0, 37, .15); }
+  .sticky { position: fixed; inset: auto 0 0 0; z-index: 50; padding-top: 3px; background: var(--grad); border-radius: 24px 24px 0 0; box-shadow: 0 -8px 30px rgba(3, 0, 37, .15); transition: transform .3s ease, opacity .3s ease; }
+  .sticky.away { transform: translateY(110%); opacity: 0; }
   .inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px var(--pad) calc(14px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: radial-gradient(circle at 0% 100%, rgba(0,109,249,.22), transparent 45%), linear-gradient(180deg, #f2f9ff, #e4f1fb); max-width: none; }
   .amt { font-family: var(--font-head); font-size: 24px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
   .amt s { font-size: 14px; font-weight: 600; color: #b1999a; margin-left: 4px; }
@@ -22,4 +23,8 @@ import { CTA_HREF } from '../../data/content-v2';
     .amt { font-size: 28px; }
     .btn { padding: 16px 40px; font-size: 18px; }
   }
+  @media (prefers-reduced-motion: reduce) { .sticky { transition: none; } }
 </style>
+<script>
+  import '../../scripts/sticky-cta';
+</script>

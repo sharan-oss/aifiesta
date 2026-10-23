@@ -1,6 +1,8 @@
 ---
 import '../styles/v2.css';
+import MetaPixel from '../components/MetaPixel.astro';
 import Clarity from '../components/Clarity.astro';
+import CtaEvents from '../components/CtaEvents.astro';
 interface Props { title: string; description?: string }
 const { title, description = 'One subscription for 100+ premium AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
 ---
@@ -18,7 +20,9 @@ const { title, description = 'One subscription for 100+ premium AI models. ChatG
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <MetaPixel />
     <Clarity />
+    <CtaEvents />
   </head>
   <body>
     <slot />

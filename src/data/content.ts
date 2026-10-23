@@ -1,5 +1,7 @@
 export const CTA = 'Get AIFiesta';
 export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan';
+// Every CTA except the pricing card scrolls here first, so visitors see the plan before paying.
+export const PRICING_HREF = '#pricing';
 
 export const META_PIXEL_ID = '1636798967975428';
 

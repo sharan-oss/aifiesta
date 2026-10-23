@@ -1,5 +1,5 @@
 ---
-import { features, CTA, CTA_HREF } from '../data/content';
+import { features, CTA, PRICING_HREF } from '../data/content';
 ---
 <section class="wrap feat">
   <h2 class="section-title">Create faster without paying for <span class="accent">5 different AI tools</span></h2>
@@ -18,7 +18,7 @@ import { features, CTA, CTA_HREF } from '../data/content';
       </article>
     ))}
   </div>
-  <a class="btn btn--block cta" href={CTA_HREF}>{CTA}</a>
+  <a class="btn btn--block cta" href={PRICING_HREF} data-cta="features">{CTA}</a>
 </section>
 <style>
   .feat { padding-block: 16px var(--section-y); display: grid; gap: 28px; --stack-top: 16px; }

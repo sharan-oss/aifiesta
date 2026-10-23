@@ -45,7 +45,7 @@ h1, h2, h3, h4 { font-family: var(--font-head); }
   0% { transform: translateX(-120%) skewX(-18deg); }
   83%, 100% { transform: translateX(340%) skewX(-18deg); }
 }
-@media (prefers-reduced-motion: reduce) { .btn::after { animation: none; display: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn::after { animation: none; display: none; } }
 .btn svg { width: 14px; height: 14px; flex: none; }
 .cta { display: grid; gap: 14px; max-width: 420px; margin-inline: auto; width: 100%; }
 .offer { text-align: center; font-size: 14px; color: rgba(3, 0, 37, 0.8); }

@@ -1,5 +1,5 @@
 ---
-import { benefits, CTA, CTA_HREF } from '../data/content';
+import { benefits, CTA, PRICING_HREF } from '../data/content';
 ---
 <section class="wrap ben">
   <h2>AIFiesta - India ka AI.</h2>
@@ -11,7 +11,7 @@ import { benefits, CTA, CTA_HREF } from '../data/content';
       </li>
     ))}
   </ul>
-  <a class="btn btn--block" href={CTA_HREF}>{CTA}</a>
+  <a class="btn btn--block" href={PRICING_HREF} data-cta="benefits">{CTA}</a>
 </section>
 <style>
   .ben { padding-block: 24px var(--section-y); display: grid; gap: 20px; max-width: 640px; }
