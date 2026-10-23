@@ -3,6 +3,7 @@ import '../styles/v2.css';
 import MetaPixel from '../components/MetaPixel.astro';
 import Clarity from '../components/Clarity.astro';
 import CtaEvents from '../components/CtaEvents.astro';
+import CheckoutParams from '../components/CheckoutParams.astro';
 interface Props { title: string; description?: string }
 const { title, description = 'One subscription for 100+ premium AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
 ---
@@ -23,6 +24,7 @@ const { title, description = 'One subscription for 100+ premium AI models. ChatG
     <MetaPixel />
     <Clarity />
     <CtaEvents />
+    <CheckoutParams />
   </head>
   <body>
     <slot />

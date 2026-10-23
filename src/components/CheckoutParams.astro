@@ -1,0 +1,15 @@
+---
+// Forward the landing URL's query string (UTMs, ad ids, fbclid) to the Cashfree checkout
+// link, so Cashfree records which ad each payment came from. Existing params on the link win.
+import { CTA_HREF } from '../data/content';
+---
+<script is:inline define:vars={{ checkoutHref: CTA_HREF }}>
+  if (location.search) document.addEventListener('DOMContentLoaded', function () {
+    var params = new URLSearchParams(location.search);
+    document.querySelectorAll('a[href^="' + checkoutHref + '"]').forEach(function (a) {
+      var url = new URL(a.href);
+      params.forEach(function (value, key) { if (!url.searchParams.has(key)) url.searchParams.set(key, value); });
+      a.href = url.toString();
+    });
+  });
+</script>
