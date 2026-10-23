@@ -1,0 +1,30 @@
+---
+import { bestFeatures } from '../data/content';
+import Cta from './Cta.astro';
+---
+<section class="section">
+  <div class="wrap">
+    <h2 class="title"><span class="semi">Pick The Best Features of </span><span class="grad">Every AI Model</span></h2>
+    <div class="bar"></div>
+    <ul>
+      {bestFeatures.map(([k, name, text]) => (
+        <li>
+          <span class="logo"><img src={`/v2/logos/${k}.png`} alt="" width="28" height="28" loading="lazy" /></span>
+          <p><b>{name}</b> {text}</p>
+        </li>
+      ))}
+    </ul>
+    <Cta />
+  </div>
+</section>
+<style>
+  .semi { font-weight: 600; }
+  ul { display: grid; gap: 16px; margin-block: 32px; }
+  li { display: flex; align-items: center; gap: 12px; padding: 20px 16px; border-radius: 16px; background: #fff; border: 1px solid rgba(255,255,255,.09); }
+  .logo { width: 36px; height: 36px; border-radius: 10px; background: #fff; display: grid; place-items: center; flex: none; }
+  .logo img { width: 28px; height: 28px; object-fit: contain; }
+  p { font-size: 15px; color: rgba(17,17,17,.75); }
+  b { font-weight: 600; }
+  @media (min-width: 700px) { ul { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1040px) { ul { grid-template-columns: repeat(3, 1fr); } }
+</style>

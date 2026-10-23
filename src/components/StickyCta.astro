@@ -1,0 +1,37 @@
+---
+import { CTA_HREF } from '../data/content';
+---
+<div class="sticky" id="sticky-cta" aria-hidden="true">
+  <div class="inner">
+    <div class="price">
+      <p class="amt"><b class="grad">₹7,999/</b> <s>₹11,988</s></p>
+      <p class="lim">Limited Time Offer</p>
+    </div>
+    <a class="btn" href={CTA_HREF} tabindex="-1">Get AI Fiesta</a>
+  </div>
+</div>
+<style>
+  .sticky { position: fixed; inset: auto 0 0 0; z-index: 50; padding-top: 3px; background: var(--grad); border-radius: 24px 24px 0 0; box-shadow: 0 -8px 30px rgba(3, 0, 37, .15); transform: translateY(110%); transition: transform .3s ease; }
+  .sticky.show { transform: none; }
+  .inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px var(--pad) calc(14px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: radial-gradient(circle at 0% 100%, rgba(0,109,249,.22), transparent 45%), linear-gradient(180deg, #f2f9ff, #e4f1fb); max-width: none; }
+  .amt { font-family: var(--font-head); font-size: 24px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
+  .amt s { font-size: 14px; font-weight: 600; color: #b1999a; margin-left: 4px; }
+  .lim { color: var(--red); font-size: 14px; margin-top: 2px; }
+  .btn { width: auto; flex: none; padding: 14px 28px; font-family: var(--font-head); font-size: 16px; }
+  @media (min-width: 768px) {
+    .sticky { left: 50%; right: auto; width: min(720px, 100%); translate: -50% 0; }
+    .amt { font-size: 28px; }
+    .btn { padding: 16px 40px; font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sticky { transition: none; } }
+</style>
+<script>
+  const bar = document.getElementById('sticky-cta');
+  const hero = document.querySelector('.hero .btn');
+  if (bar && hero) {
+    new IntersectionObserver(([e]) => {
+      const pastHero = !e.isIntersecting && e.boundingClientRect.top < 0;
+      bar.classList.toggle('show', pastHero);
+    }).observe(hero);
+  }
+</script>

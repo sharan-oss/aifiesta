@@ -1,0 +1,66 @@
+---
+import { compare, badPoints, goodPoints } from '../data/content';
+import Cta from './Cta.astro';
+const ok = '<circle cx="9" cy="9" r="8" fill="#00BA00"/><path d="M5 9l2.6 2.6L13 6.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+const no = '<circle cx="9" cy="9" r="7" fill="none" stroke="#FF3333" stroke-width="1.6"/><path d="M4 14L14 4" stroke="#FF3333" stroke-width="1.6"/>';
+---
+<section class="section">
+  <div class="wrap">
+    <h2 class="title"><span class="grad">One Subscription</span><span class="semi"> to Replace Them All</span></h2>
+    <div class="bar"></div>
+    <div class="cols">
+      <div class="box bad">
+        <p class="badge">✕ Paying Separately</p>
+        <p class="blurb">Individual subscriptions for each AI service</p>
+        <ul class="prices">{compare.map(([n, p]) => <li><span>{n}</span><em>{p}</em></li>)}</ul>
+        <hr />
+        <ul class="pts">{badPoints.map((p) => <li><svg viewBox="0 0 18 18" aria-hidden="true" set:html={no} /><span>{p}</span></li>)}</ul>
+        <div class="total"><p>Total Monthly Cost = ₹8,647/month</p><p class="red">That's ₹1,03,764 every year</p></div>
+      </div>
+      <div class="box good">
+        <p class="badge">✓ One Subscription. All AIs.</p>
+        <p class="blurb">All premium AI models in one workspace</p>
+        <ul class="prices">{compare.map(([n]) => <li><span>{n}</span><svg viewBox="0 0 18 18" aria-hidden="true" set:html={ok} /></li>)}</ul>
+        <hr />
+        <ul class="pts">{goodPoints.map((p) => <li><svg viewBox="0 0 18 18" aria-hidden="true" set:html={ok} /><span>{p}</span></li>)}</ul>
+        <div class="total"><p>AI Fiesta Annual Plan = ₹667/month</p><p class="blue">Billed as ₹7,999/year | <s>₹11,988</s> Save 33%</p></div>
+      </div>
+    </div>
+    <Cta />
+    <div class="save">
+      <p>You save over</p>
+      <p class="amt">₹95,765 every year</p>
+      <p>For access to more models, more features, and a smarter workflow than paying separately</p>
+    </div>
+  </div>
+</section>
+<style>
+  .semi { font-weight: 600; }
+  .cols { display: grid; gap: 20px; margin-block: 32px; }
+  .box { border-radius: 20px; padding: 16px; display: grid; gap: 16px; align-content: start; }
+  .bad { background: #fff7fa; border: 1px solid rgba(255,0,0,.08); }
+  .good { background: var(--bg); border: 1px solid rgba(0,109,249,.08); }
+  .badge { border-radius: 10px; padding: 6px; text-align: center; font-family: var(--font-head); font-size: 18px; font-weight: 600; }
+  .bad .badge { background: rgba(255,0,0,.08); color: var(--red); }
+  .good .badge { background: rgba(0,109,249,.08); color: var(--blue); }
+  .blurb { font-size: 14px; color: rgba(3,0,37,.8); }
+  .prices { display: grid; gap: 10px; }
+  .prices li { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 500; color: rgba(3,0,37,.8); }
+  .prices em { color: var(--red); font-style: normal; font-weight: 400; }
+  .prices svg { width: 18px; height: 18px; }
+  hr { border: 0; height: 1px; background: rgba(3,0,37,.12); width: 100%; margin: 0; }
+  .pts { display: grid; gap: 10px; }
+  .pts li { display: flex; gap: 10px; font-size: 14px; color: rgba(3,0,37,.75); }
+  .pts svg { width: 18px; height: 18px; flex: none; }
+  .total { border-radius: 12px; padding: 12px; text-align: center; font-size: 14px; display: grid; gap: 4px; }
+  .bad .total { background: rgba(255,0,0,.02); border: 1px solid rgba(255,0,0,.06); }
+  .good .total { background: rgba(0,109,249,.02); border: 1px solid rgba(0,109,249,.06); }
+  .total p { font-weight: 500; color: rgba(3,0,37,.8); }
+  .total .red { color: var(--red); }
+  .total .blue { color: var(--blue); }
+  .total s { color: #b1999a; }
+  .save { text-align: center; display: grid; gap: 8px; margin-top: 28px; font-size: 14px; color: rgba(3,0,37,.8); }
+  .amt { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--blue); }
+  .cta { margin-top: 4px; }
+  @media (min-width: 800px) { .cols { grid-template-columns: 1fr 1fr; align-items: stretch; } .box { padding: 24px; } .badge { font-size: 20px; } }
+</style>

@@ -1,0 +1,63 @@
+---
+import { plan } from '../data/content';
+const icons: Record<string, string> = {
+  tokens: '<circle cx="7" cy="14" r="4.4"/><circle cx="14" cy="7" r="4.4"/>',
+  image: '<rect x="2.6" y="2.6" width="15.8" height="15.8" rx="2"/><path d="M2.6 14.9l5.3-5.3 3.5 3.5 3.5-4.4 3.5 4.4"/>',
+  video: '<rect x="2.6" y="7.9" width="15.8" height="10.5" rx="2"/><path d="M2.6 7.9l-.9-4.4 15.8-2.6.9 4.4z"/>',
+  globe: '<circle cx="10.5" cy="10.5" r="7.9"/><ellipse cx="10.5" cy="10.5" rx="3.5" ry="7.9"/><path d="M2.6 10.5h15.8"/>',
+  slides: '<path d="M1.8 2.6h17.5M3.5 2.6V14h14V2.6M10.5 14v4.4M10.5 14l-4.4 4.4M10.5 14l4.4 4.4"/>',
+  research: '<path d="M2.6 8.8l14-4.4 1.8 5.2-14 4.4zM10.5 12.3L7 18.4M11.4 11.4l3.5 6.1"/>',
+};
+---
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <h2 class="title">Everything You Get For <br /><span class="grad">Just ₹7,999/year</span></h2>
+    <div class="card">
+      <div class="head">
+        <p class="name">AI Fiesta Plus</p>
+        <span class="save">Save ₹3,989</span>
+      </div>
+      <p class="amt"><b class="grad">₹7,999</b><span>/year</span></p>
+      <p class="per">Just ₹667/month, billed yearly</p>
+      <a class="btn" href="#pricing">Get AI Fiesta <span aria-hidden="true">»</span></a>
+      <p class="eyebrow">MONTHLY YOU GET:</p>
+      <ul class="rows">
+        {plan.rows.map(([label, val, ic]) => (
+          <li>
+            <svg viewBox="0 0 21 21" fill="none" stroke="#fff" stroke-width="1.575" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[ic]} />
+            <span>{label}</span><b>{val}</b>
+          </li>
+        ))}
+      </ul>
+      <p class="roll">
+        <svg viewBox="0 0 23 23" fill="none" stroke="#80DCA9" stroke-width="1.725" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.9 9.6A9 9 0 0 1 17.3 3.8l2.8 2.9M20.1 1.9v4.8h-4.8M20.1 13.4a9 9 0 0 1-14.4 5.8l-2.8-2.9M2.9 21v-4.7h4.8" /></svg>
+        All unused tokens roll over to next month. They never expire.
+      </p>
+      <p class="foot"><s>₹11,988</s> · Save 33% with annual billing</p>
+    </div>
+  </div>
+</section>
+<style>
+  .pricing { padding-block: 36px; border-bottom: 1px solid var(--line); }
+  .title { margin-bottom: 28px; }
+  .card { max-width: 480px; margin-inline: auto; background: var(--ink); color: #fff; border: 1px solid #35304c; border-radius: 20px; padding: 24px 20px; display: grid; gap: 10px; }
+  .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .name { font-family: var(--font-head); font-size: 24px; font-weight: 700; }
+  .save { background: #110c36; border: 1px solid #35304c; border-radius: 30px; padding: 5px 10px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .amt { display: flex; align-items: baseline; gap: 12px; margin-top: 4px; }
+  .amt b { font-family: var(--font-head); font-size: 44px; font-weight: 700; line-height: 1.2; }
+  .amt span { color: #cbd0de; }
+  .per { padding-bottom: 10px; }
+  .eyebrow { font-size: 13px; font-weight: 700; margin-top: 18px; }
+  .rows li { display: flex; align-items: center; gap: 8px; height: 52px; border-top: 1px solid #35304c; font-size: 15px; padding-inline: 2px; }
+  .rows li:nth-child(odd) { background: #110c36; }
+  .rows li svg { width: 21px; height: 21px; flex: none; }
+  .rows span { flex: 1; }
+  .rows b { font-weight: 500; color: #cbd0de; }
+  .roll { display: flex; gap: 10px; align-items: flex-start; color: #cbd0de; font-size: 15px; margin-top: 12px; padding-left: 2px; }
+  .roll svg { width: 23px; height: 23px; flex: none; margin-top: 2px; }
+  .foot { text-align: center; font-size: 14px; color: #cbd0de; padding-top: 6px; }
+  .foot s { color: #b1999a; }
+  .btn { font-size: 18px; }
+  @media (min-width: 768px) { .pricing { padding-block: 72px; } .card { padding: 32px 28px; } .title { margin-bottom: 40px; } }
+</style>
