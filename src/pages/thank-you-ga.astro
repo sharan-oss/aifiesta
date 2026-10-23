@@ -3,7 +3,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
+import { PLAN_VALUE, PLAN_CURRENCY, GOOGLE_ADS_PURCHASE } from '../data/content';
 
 const APP_URL = 'https://chat.aifiesta.ai';
 const SUPPORT_EMAIL = 'support@aifiesta.ai';
@@ -60,6 +60,16 @@ const steps = [
     try { if (localStorage.getItem(key)) return; } catch (e) {}
     fbq('track', 'Purchase', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan' }, { eventID: orderId });
     try { localStorage.setItem(key, '1'); } catch (e) {}
+  })();
+</script>
+<script is:inline define:vars={{ sendTo: GOOGLE_ADS_PURCHASE, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
+  // Google Ads Purchase conversion: only with a Cashfree order id. Google drops repeats of the
+  // same transaction_id, so reloading this page doesn't count the order twice.
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var orderId = q.get('id') || q.get('order_id');
+    if (!orderId || typeof gtag !== 'function') return;
+    gtag('event', 'conversion', { send_to: sendTo, value: value, currency: currency, transaction_id: orderId });
   })();
 </script>
 <style>

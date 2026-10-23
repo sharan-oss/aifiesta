@@ -5,8 +5,10 @@ export const PRICING_HREF = '#pricing';
 
 export const META_PIXEL_ID = '1636798967975428';
 export const GOOGLE_ADS_ID = 'AW-18532749665';
+// Google Ads "Purchase" conversion action (send_to), fired on /thank-you-ga.
+export const GOOGLE_ADS_PURCHASE = 'AW-18532749665/x5cyCP2vg6cdEOGijYVF';
 
-// Reported to Meta with AddToCart and Purchase.
+// Reported to Meta with AddToCart and Purchase, and to Google Ads with Purchase.
 export const PLAN_VALUE = 7999;
 export const PLAN_CURRENCY = 'INR';
 
