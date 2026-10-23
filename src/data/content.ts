@@ -31,7 +31,7 @@ export const features = [
 ];
 
 export const plan = {
-  name: 'AI Fiesta Plus',
+  name: 'AI Fiesta Basic',
   save: 'Save ₹3,989',
   price: '₹7,999',
   was: '₹11,988',

@@ -47,7 +47,7 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
         <div><p class="tt">Total</p><p class="ts" data-caption>{picked.length} separate logins · {picked.filter((t) => t.yearly).length} bills to track</p></div>
         <p class="tv" aria-live="polite"><b data-total>{inr(total)}</b> <span>/year</span></p>
       </div>
-      <p class="saving" data-saving>With AI Fiesta Plus you save {inr(total - PLAN_VALUE)} a year</p>
+      <p class="saving" data-saving>With AI Fiesta Basic you save {inr(total - PLAN_VALUE)} a year</p>
     </div>
   </div>
 </section>
@@ -139,10 +139,10 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
       total.classList.remove('bump'); void total.offsetWidth; total.classList.add('bump');
       // Only claim a saving when it's meaningful; otherwise lead with what the plan includes.
       $('[data-saving]').textContent = !picked.length
-        ? `AI Fiesta Plus gives you 100+ AI models for ${inr(plan)} a year`
+        ? `AI Fiesta Basic gives you 100+ AI models for ${inr(plan)} a year`
         : sum - plan >= 1000
-          ? `With AI Fiesta Plus you save ${inr(sum - plan)} a year`
-          : `Get ${picked.length === 1 ? 'it' : 'all of these'} and 100+ more AI models with AI Fiesta Plus for ${inr(plan)} a year`;
+          ? `With AI Fiesta Basic you save ${inr(sum - plan)} a year`
+          : `Get ${picked.length === 1 ? 'it' : 'all of these'} and 100+ more AI models with AI Fiesta Basic for ${inr(plan)} a year`;
     };
 
     tiles.forEach((t) => t.addEventListener('click', () => {
