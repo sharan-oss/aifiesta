@@ -4,6 +4,7 @@ export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic
 export const PRICING_HREF = '#pricing';
 
 export const META_PIXEL_ID = '1636798967975428';
+export const GOOGLE_ADS_ID = 'AW-18532749665';
 
 // Reported to Meta with AddToCart and Purchase.
 export const PLAN_VALUE = 7999;

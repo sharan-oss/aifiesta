@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import GoogleTag from '../components/GoogleTag.astro';
 import MetaPixel from '../components/MetaPixel.astro';
 import Clarity from '../components/Clarity.astro';
 import CtaEvents from '../components/CtaEvents.astro';
@@ -11,6 +12,7 @@ const { title, noindex = false, description = 'One subscription for 100+ AI mode
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <GoogleTag />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}

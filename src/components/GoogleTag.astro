@@ -1,0 +1,16 @@
+---
+// Google tag (gtag.js) for Google Ads. Included once by every layout, first thing in <head>,
+// as Google asks. It stores the ad click on our domain; purchase conversions fire from the
+// thank-you pages once a conversion label exists.
+import { GOOGLE_ADS_ID } from '../data/content';
+
+const id = GOOGLE_ADS_ID;
+---
+<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+<script is:inline define:vars={{ id }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', id);
+</script>
