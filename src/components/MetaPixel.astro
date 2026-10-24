@@ -1,12 +1,12 @@
 ---
 // Meta Pixel: PageView on every page, AddToCart when a CTA to the payment page is clicked.
-import { META_PIXEL_ID, CTA_HREF, PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
+import { META_PIXEL_ID, CHECKOUT_PREFIX, PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
 
 const pixelId = META_PIXEL_ID;
 ---
 {pixelId && (
   <>
-    <script is:inline define:vars={{ pixelId, ctaHref: CTA_HREF, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
+    <script is:inline define:vars={{ pixelId, ctaHref: CHECKOUT_PREFIX, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
       n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;

@@ -1,5 +1,7 @@
 ---
 import { plan, payTools, CTA, CTA_HREF, PLAN_VALUE } from '../data/content';
+interface Props { checkoutHref?: string }
+const { checkoutHref = CTA_HREF } = Astro.props;
 
 const inr = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
 const picked = payTools.filter((t) => t.on);
@@ -20,7 +22,7 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
         {plan.rows.map(([k, v]) => <li><span>{k}</span><b>{v}</b></li>)}
       </ul>
       <p class="note">{plan.note}</p>
-      <a class="btn btn--pill btn--block" href={CTA_HREF}>{CTA}</a>
+      <a class="btn btn--pill btn--block" href={checkoutHref}>{CTA}</a>
       <p class="cancel">Cancel anytime</p>
     </div>
 
