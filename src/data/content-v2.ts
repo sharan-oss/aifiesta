@@ -8,10 +8,10 @@ export const strip = ['deepseek', 'meta', 'moonshot', 'qwen'].map((n) => ({ name
 export const plan = {
   rows: [
     ['Tokens / month', '3M', 'tokens'],
-    ['Images', 'Up to 350', 'image'],
-    ['Videos', 'Up to 1', 'video'],
+    ['Images', 'Up to 300', 'image'],
+    ['Videos', 'Up to 30', 'video'],
     ['Websites', 'Up to 5', 'globe'],
-    ['Slides', 'Up to 40', 'slides'],
+    ['Slides', 'Up to 300', 'slides'],
     ['Deep research runs', 'Up to 20', 'research'],
   ],
 };
@@ -37,10 +37,10 @@ export const features = [
 
 export const compare = [
   ['ChatGPT 5.4', '₹1,999/month'],
-  ['Claude Sonnet 4.6', '₹1,999/month'],
+  ['Claude Sonnet 4.6', '₹2,399/month'],
   ['Gemini 3.1 Pro', '₹1,950/month'],
-  ['Perplexity Sonar Pro', '₹1,999/month'],
-  ['Grok 4', '₹700/month'],
+  ['Perplexity Sonar Pro', '₹1,700/month'],
+  ['Grok 4', '₹2,900/month'],
 ];
 export const badPoints = ['Need to pay separate bills for 5+ AI tools', 'Constant tab switching', 'No side-by-side comparison', '5 different logins to manage', 'Switch apps just to generate images'];
 export const goodPoints = ['Multiple AI tool access in one dashboard under one subscription', 'Side-by-side comparison built in', 'Super Fiesta auto-picks best AI', 'Latest models added automatically', 'Top 3 AI image models included'];
