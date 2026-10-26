@@ -8,11 +8,11 @@ export const strip = ['deepseek', 'meta', 'moonshot', 'qwen'].map((n) => ({ name
 export const plan = {
   rows: [
     ['Tokens / month', '3M', 'tokens'],
-    ['Images', 'Up to 300', 'image'],
-    ['Videos', 'Up to 30', 'video'],
-    ['Websites', 'Up to 5', 'globe'],
-    ['Slides', 'Up to 300', 'slides'],
-    ['Deep research runs', 'Up to 20', 'research'],
+    ['Images', '300', 'image'],
+    ['Videos', '30', 'video'],
+    ['Websites', '5', 'globe'],
+    ['Slides', '300', 'slides'],
+    ['Deep research runs', '20', 'research'],
   ],
 };
 
