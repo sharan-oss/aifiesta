@@ -47,11 +47,11 @@ export const plan = {
   monthly: 'Just ₹667/month, billed yearly',
   rows: [
     ['Tokens / month', '3M'],
-    ['Images', 'Up to 350'],
-    ['Videos', 'Up to 1'],
-    ['Websites', 'Up to 5'],
-    ['Slides', 'Up to 40'],
-    ['Deep research runs', 'Up to 20'],
+    ['Images', '300'],
+    ['Videos', '30'],
+    ['Websites', '5'],
+    ['Slides', '300'],
+    ['Deep research runs', '20'],
   ],
   note: 'All unused tokens roll over to next month. They never expire.',
 };
@@ -60,12 +60,12 @@ export const plan = {
 // `on` marks the tools selected by default.
 export const payTools = [
   { name: 'ChatGPT', icon: '/logos/calc-openai.svg', yearly: 23400, on: true },
-  { name: 'Claude', icon: '/logos/calc-claude.svg', yearly: 19200, on: true },
+  { name: 'Claude', icon: '/logos/calc-claude.svg', yearly: 28788, on: true },
   { name: 'Gemini', icon: '/logos/calc-gemini.svg', yearly: 23400, on: true },
-  { name: 'Perplexity', icon: '/logos/calc-perplexity.svg', yearly: 19900 },
+  { name: 'Perplexity', icon: '/logos/calc-perplexity.svg', yearly: 20400 },
   { name: 'Qwen', icon: '/logos/calc-qwen.svg', yearly: 0 },
   { name: 'Meta AI', icon: '/logos/calc-meta.svg', yearly: 0 },
-  { name: 'Grok', icon: '/logos/calc-grok.svg', yearly: 30000 },
+  { name: 'Grok', icon: '/logos/calc-grok.svg', yearly: 34800 },
   { name: 'DeepSeek', icon: '/logos/calc-deepseek.svg', yearly: 0 },
   { name: 'Mistral', icon: '/logos/calc-mistral.svg', yearly: 15000 },
   { name: 'ByteDance', icon: '/logos/calc-bytedance.svg', yearly: 8000 },
