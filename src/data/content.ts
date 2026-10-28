@@ -2,6 +2,8 @@ export const CTA = 'Get AIFiesta';
 export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan';
 // The Google Ads LP (/basic-plan-ga) checks out on its own Cashfree form.
 export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga';
+// The Meta LP (/basic-plan-v2-fb) checks out on its own Cashfree form.
+export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-meta';
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
 // Every CTA except the pricing card scrolls here first, so visitors see the plan before paying.
