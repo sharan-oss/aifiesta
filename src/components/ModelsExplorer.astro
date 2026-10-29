@@ -1,0 +1,72 @@
+---
+import { modelGroups, modelCount } from '../data/models-list';
+let n = 0;
+---
+<button type="button" class="explore" data-models-open>Explore AI models <span aria-hidden="true">→</span></button>
+<dialog class="mdl" data-models-dialog aria-labelledby="mdl-title">
+  <div class="mdl__head">
+    <h2 id="mdl-title">{modelCount} AI models, one subscription</h2>
+    <button type="button" class="mdl__x" data-models-close aria-label="Close">×</button>
+  </div>
+  <input type="search" class="mdl__search" data-models-search placeholder="Search models, e.g. Claude, GPT, Veo" aria-label="Search AI models" autocomplete="off" />
+  <div class="mdl__body" data-models-body>
+    {modelGroups.map((g) => (
+      <section data-group>
+        <h3>{g.title} <span>{g.models.length}</span></h3>
+        <ul>
+          {g.models.map((m) => <li data-name={m.toLowerCase()}><i>{++n}</i>{m}</li>)}
+        </ul>
+      </section>
+    ))}
+    <p class="mdl__none" data-models-none hidden>No models match your search.</p>
+  </div>
+</dialog>
+<style>
+  .explore { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; height: 48px; padding-inline: 28px; background: #fff; color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+  .explore:hover { background: var(--brand-soft); transform: translateY(-1px); }
+  .explore:focus-visible, .mdl__x:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .mdl { width: min(560px, calc(100vw - 24px)); max-height: min(640px, calc(100dvh - 24px)); margin: auto; padding: 0; border: 0; border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 30px 80px rgba(11,18,32,.35); text-align: left; }
+  .mdl[open] { display: flex; flex-direction: column; }
+  .mdl::backdrop { background: rgba(36,32,61,.55); }
+  .mdl__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 20px 8px; }
+  .mdl__head h2 { font-size: 19px; font-weight: 700; }
+  .mdl__x { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--brand-soft); font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink); }
+  .mdl__search { margin: 8px 20px 12px; height: 46px; padding-inline: 16px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: 15px; background: var(--brand-soft); color: var(--ink); }
+  .mdl__search:focus { outline: 2px solid var(--brand); outline-offset: 0; background: #fff; }
+  .mdl__body { overflow-y: auto; overscroll-behavior: contain; padding: 0 20px 20px; display: grid; gap: 18px; }
+  .mdl__body h3 { position: sticky; top: 0; background: #fff; padding-block: 6px; font-size: 14px; font-weight: 700; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .mdl__body h3 span { background: var(--brand-soft); font-size: 12px; padding: 2px 9px; border-radius: 99px; }
+  .mdl__body ul { display: grid; gap: 6px; }
+  .mdl__body li { display: flex; gap: 10px; font-size: 15px; font-weight: 500; padding: 9px 12px; background: var(--brand-soft); border-radius: 10px; }
+  .mdl__body i { font-style: normal; color: var(--muted); min-width: 24px; }
+  .mdl [hidden] { display: none; }
+  .mdl__none { text-align: center; color: var(--muted); padding-block: 24px; }
+</style>
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('[data-models-dialog]');
+  const search = document.querySelector<HTMLInputElement>('[data-models-search]');
+  if (dlg && search) {
+    const items = [...dlg.querySelectorAll<HTMLElement>('li[data-name]')];
+    const groups = [...dlg.querySelectorAll<HTMLElement>('[data-group]')];
+    const none = dlg.querySelector<HTMLElement>('[data-models-none]')!;
+    const body = dlg.querySelector<HTMLElement>('[data-models-body]')!;
+
+    document.querySelector('[data-models-open]')!.addEventListener('click', () => {
+      dlg.showModal();
+      search.focus();
+    });
+    dlg.querySelector('[data-models-close]')!.addEventListener('click', () => dlg.close());
+    // Click on the backdrop (outside the dialog box) closes it.
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => { search.value = ''; filter(); });
+
+    function filter() {
+      const q = search!.value.trim().toLowerCase();
+      items.forEach((li) => { li.hidden = !!q && !li.dataset.name!.includes(q); });
+      groups.forEach((g) => { g.hidden = !g.querySelector('li:not([hidden])'); });
+      none.hidden = groups.some((g) => !g.hidden);
+      body.scrollTop = 0;
+    }
+    search.addEventListener('input', filter);
+  }
+</script>

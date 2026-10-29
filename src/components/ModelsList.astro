@@ -1,0 +1,32 @@
+---
+import { modelGroups, modelCount } from '../data/models-list';
+let n = 0;
+---
+<section class="models" id="all-models">
+  <div class="wrap">
+    <h2>All {modelCount} AI models included</h2>
+    <p class="sub">Every model below comes with your AI Fiesta plan.</p>
+    <div class="groups">
+      {modelGroups.map((g) => (
+        <details open={g.title !== 'Chat models'}>
+          <summary>{g.title} <span>{g.models.length}</span></summary>
+          <ol>
+            {g.models.map((m) => <li><i>{++n}</i>{m}</li>)}
+          </ol>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .models { padding-block: var(--section-y); }
+  h2 { font-size: 24px; font-weight: 700; text-align: center; }
+  .sub { text-align: center; font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .groups { max-width: 900px; margin: 24px auto 0; display: grid; gap: 12px; }
+  details { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 4px 18px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 16px; padding: 14px 0; display: flex; justify-content: space-between; align-items: center; }
+  summary span { background: var(--brand-soft); color: var(--muted); font-size: 12px; padding: 4px 10px; border-radius: 99px; }
+  ol { list-style: none; margin: 0; padding: 0 0 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  ol li { display: flex; gap: 8px; font-size: 14px; font-weight: 500; background: var(--brand-soft); border-radius: 10px; padding: 8px 12px; }
+  ol i { font-style: normal; color: var(--muted); min-width: 22px; }
+</style>

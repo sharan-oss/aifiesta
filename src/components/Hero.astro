@@ -1,5 +1,6 @@
 ---
 import { CTA, PRICING_HREF } from '../data/content';
+import ModelsExplorer from './ModelsExplorer.astro';
 ---
 <section class="hero wrap">
   <div class="hero__copy">
@@ -9,6 +10,7 @@ import { CTA, PRICING_HREF } from '../data/content';
     </div>
     <h1>One Subscription for <span class="hl">100+</span> AI Models 🚀</h1>
     <p class="lead">One stop solution to all your AI needs: chat, compare, create images, videos, presentations, and websites.</p>
+    <ModelsExplorer />
   </div>
   <div class="hero__media"><img src="/images/hero-dhruv.png" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
   <a class="btn btn--block hero__cta" href={PRICING_HREF} data-cta="hero">
