@@ -1,5 +1,6 @@
 ---
 import { strip } from '../../data/content-v2';
+import ModelsExplorer from '../ModelsExplorer.astro';
 const items = [...strip, ...strip, ...strip, ...strip];
 ---
 <section class="strip">
@@ -10,11 +11,13 @@ const items = [...strip, ...strip, ...strip, ...strip];
       {items.map((m, i) => <li aria-hidden={i >= strip.length}><img src={m.src} alt={i < strip.length ? m.name : ''} width="152" height="67" loading="lazy" /></li>)}
     </ul>
   </div>
+  <ModelsExplorer />
 </section>
 <style>
   .strip { background: var(--ink); padding-block: 32px; overflow: hidden; }
   .title { color: #fff; font-weight: 600; font-size: clamp(22px, 3.6vw, 32px); }
   .track { margin-top: 28px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .strip :global(.explore) { margin: 28px auto 0; }
   ul { display: flex; gap: 16px; width: max-content; animation: scroll 28s linear infinite; }
   li { background: #fff; border-radius: 12px; width: 152px; height: 67px; overflow: hidden; flex: none; }
   li img { width: 100%; height: 100%; object-fit: cover; }
