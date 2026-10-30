@@ -1,6 +1,7 @@
 ---
 import { models } from '../data/content';
 import ModelItem from './ModelItem.astro';
+import ModelsExplorer from './ModelsExplorer.astro';
 
 // Mobile: three marquee rows, alternating direction and speed.
 const rows = [models.slice(0, 4), models.slice(4, 7), models.slice(7)];
@@ -11,6 +12,7 @@ const motion = [
 ];
 ---
 <section class="strip" aria-label="Supported AI models">
+  <ModelsExplorer />
   <ul class="wrap grid">
     {models.map((m) => <li><ModelItem name={m.name} icon={m.icon} /></li>)}
   </ul>

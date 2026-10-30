@@ -1,6 +1,5 @@
 ---
 import { CTA, PRICING_HREF } from '../data/content';
-import ModelsExplorer from './ModelsExplorer.astro';
 ---
 <section class="hero wrap">
   <div class="hero__copy">
@@ -12,13 +11,10 @@ import ModelsExplorer from './ModelsExplorer.astro';
     <p class="lead">One stop solution to all your AI needs: chat, compare, create images, videos, presentations, and websites.</p>
   </div>
   <div class="hero__media"><img src="/images/hero-dhruv.png" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
-  <div class="hero__actions">
-    <a class="btn btn--block" href={PRICING_HREF} data-cta="hero">
-      {CTA}
-      <img class="dots" src="/logos/cta-dots.png" alt="" width="108" height="30" />
-    </a>
-    <ModelsExplorer />
-  </div>
+  <a class="btn btn--block hero__cta" href={PRICING_HREF} data-cta="hero">
+    {CTA}
+    <img class="dots" src="/logos/cta-dots.png" alt="" width="108" height="30" />
+  </a>
 </section>
 <style>
   .hero { display: grid; gap: 24px; padding-block: 24px var(--section-y); text-align: center; }
@@ -30,14 +26,12 @@ import ModelsExplorer from './ModelsExplorer.astro';
   .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 520px; margin-inline: auto; }
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
   .hero__media img { width: 100%; height: auto; }
-  .hero__actions { display: grid; gap: 4px; }
   .dots { height: 30px; width: auto; flex: none; }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; align-items: center; text-align: left; padding-block: 72px var(--section-y); gap: 56px; }
     .lead { margin-inline: 0; }
     .hero__copy { grid-column: 1; grid-row: 1; }
     .hero__media { grid-column: 2; grid-row: 1 / span 2; }
-    .hero__actions { grid-column: 1; grid-row: 2; max-width: 360px; align-self: start; }
-    .hero__actions :global(.explore) { justify-content: flex-start; }
+    .hero__cta { grid-column: 1; grid-row: 2; max-width: 360px; align-self: start; }
   }
 </style>
