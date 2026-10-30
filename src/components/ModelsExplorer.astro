@@ -1,11 +1,11 @@
 ---
-import { modelGroups, modelCount } from '../data/models-list';
+import { modelGroups } from '../data/models-list';
 let n = 0;
 ---
 <button type="button" class="explore" data-models-open>Explore AI models <span aria-hidden="true">→</span></button>
 <dialog class="mdl" data-models-dialog aria-labelledby="mdl-title">
   <div class="mdl__head">
-    <h2 id="mdl-title">{modelCount} AI models, one subscription</h2>
+    <h2 id="mdl-title">AI models, one subscription</h2>
     <button type="button" class="mdl__x" data-models-close aria-label="Close">×</button>
   </div>
   <input type="search" class="mdl__search" data-models-search placeholder="Search models, e.g. Claude, GPT, Veo" aria-label="Search AI models" autocomplete="off" />
@@ -22,8 +22,8 @@ let n = 0;
   </div>
 </dialog>
 <style>
-  .explore { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; height: 48px; padding-inline: 28px; background: #fff; color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform .15s ease, background .15s ease; }
-  .explore:hover { background: var(--brand-soft); transform: translateY(-1px); }
+  .explore { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; padding-inline: 8px; background: none; color: var(--ink); border: 0; font: inherit; font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .explore:hover { color: var(--brand); }
   .explore:focus-visible, .mdl__x:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
   .mdl { width: min(560px, calc(100vw - 24px)); max-height: min(640px, calc(100dvh - 24px)); margin: auto; padding: 0; border: 0; border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 30px 80px rgba(11,18,32,.35); text-align: left; }
   .mdl[open] { display: flex; flex-direction: column; }
@@ -53,7 +53,13 @@ let n = 0;
 
     document.querySelector('[data-models-open]')!.addEventListener('click', () => {
       dlg.showModal();
-      search.focus();
+      // On phones, focusing the search box would raise the keyboard over the list.
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) search.focus();
+      else dlg.querySelector<HTMLElement>('[data-models-close]')!.blur();
+    });
+    // Escape closes the popup straight away instead of first clearing the search box.
+    search.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); dlg.close(); }
     });
     dlg.querySelector('[data-models-close]')!.addEventListener('click', () => dlg.close());
     // Click on the backdrop (outside the dialog box) closes it.
