@@ -12,7 +12,7 @@ const motion = [
 ];
 ---
 <section class="strip" aria-label="Supported AI models">
-  <ModelsExplorer />
+  <h2 class="strip__title">100+ AI models, one subscription</h2>
   <ul class="wrap grid">
     {models.map((m) => <li><ModelItem name={m.name} icon={m.icon} /></li>)}
   </ul>
@@ -30,9 +30,14 @@ const motion = [
       </div>
     ))}
   </div>
+
+  <ModelsExplorer />
 </section>
 <style>
   .strip { background: #fff; padding-block: 28px; overflow: hidden; }
+
+  .strip__title { text-align: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin: 0 16px 20px; }
+  .strip :global(.explore) { margin: 28px auto 0; }
 
   /* Desktop grid */
   .grid { display: none; }
