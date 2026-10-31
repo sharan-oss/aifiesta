@@ -1,7 +1,7 @@
 export const PRICE = '₹7,999/year';
 export const CTA_TEXT = `Get AI Fiesta for ${PRICE}`;
 export const CTA_HREF = '#pricing';
-export { CTA_HREF as CHECKOUT_HREF } from './content';
+export { CTA_HREF_META as CHECKOUT_HREF } from './content';
 
 export const strip = ['deepseek', 'meta', 'moonshot', 'qwen'].map((n) => ({ name: n, src: `/v2/logo-${n}.png` }));
 

@@ -14,6 +14,7 @@ import Testimonials from '../components/Testimonials.astro';
 import Faq from '../components/Faq.astro';
 import Footer from '../components/Footer.astro';
 import StickyCta from '../components/StickyCta.astro';
+import { CTA_HREF_GA } from '../data/content';
 ---
 <Layout title="AI Fiesta - One subscription for 100+ AI models" noindex>
   <Header />
@@ -23,7 +24,7 @@ import StickyCta from '../components/StickyCta.astro';
     <Benefits />
     <Features />
     <DomainBonus />
-    <Pricing />
+    <Pricing checkoutHref={CTA_HREF_GA} />
     <ModelsList />
     <Testimonials />
     <Faq />
