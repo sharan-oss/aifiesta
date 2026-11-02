@@ -1,5 +1,6 @@
 ---
 import { plan, payTools, CTA, CTA_HREF, PLAN_VALUE } from '../data/content';
+import OfferTable from './OfferTable.astro';
 interface Props { checkoutHref?: string }
 const { checkoutHref = CTA_HREF } = Astro.props;
 
@@ -17,11 +18,9 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
       <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
       <p class="sub">{plan.monthly}</p>
       <hr />
-      <p class="eyebrow">MONTHLY YOU GET:</p>
-      <ul>
-        {plan.rows.map(([k, v]) => <li><span>{k}</span><b>{v}</b></li>)}
-      </ul>
-      <p class="note">{plan.note}</p>
+      <OfferTable>
+        <p class="note">{plan.note}</p>
+      </OfferTable>
       <a class="btn btn--pill btn--block" href={checkoutHref}>{CTA}</a>
       <p class="cancel">Cancel anytime</p>
     </div>
@@ -65,9 +64,6 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
   .amt span { font-size: 15px; font-weight: 500; }
   .sub { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: -12px; }
   hr { border: 0; height: 1px; background: var(--line); width: 100%; margin: 0; }
-  .eyebrow { font-size: 13px; font-weight: 600; color: var(--muted); }
-  .plan ul li { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; font-weight: 500; }
-  .plan ul li b { font-weight: 600; }
   .note { background: var(--brand-soft); border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 500; color: var(--muted); text-align: center; }
   .cancel { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; }
 

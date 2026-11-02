@@ -5,17 +5,6 @@ export { CTA_HREF_META as CHECKOUT_HREF } from './content';
 
 export const strip = ['deepseek', 'meta', 'moonshot', 'qwen'].map((n) => ({ name: n, src: `/v2/logo-${n}.png` }));
 
-export const plan = {
-  rows: [
-    ['Tokens / month', '3M', 'tokens'],
-    ['Images', '300', 'image'],
-    ['Videos', '30', 'video'],
-    ['Websites', '5', 'globe'],
-    ['Slides', '300', 'slides'],
-    ['Deep research runs', '20', 'research'],
-  ],
-};
-
 export const benefits = [
   ['Priced for India.', ' Pay in rupees, no international card needed.'],
   ['One login, every top AI.', ' ChatGPT, Claude, Gemini and 100+ more, side by side.'],

@@ -47,15 +47,24 @@ export const plan = {
   offer: 'Limited time offer',
   per: '/yr',
   monthly: 'Just ₹667/month, billed yearly',
-  rows: [
-    ['Tokens / month', '3M'],
-    ['Images', '300'],
-    ['Videos', '30'],
-    ['Websites', '5'],
-    ['Slides', '300'],
-    ['Deep research runs', '20'],
-  ],
   note: 'All unused tokens roll over to next month. They never expire.',
+};
+
+// 4x offer on the yearly plan, copied from anniversary.aifiesta.ai's yearly card.
+// Rows: label, usual monthly amount, offer amount, icon key, optional info note.
+export const offer = {
+  multiple: '4x',
+  rows: [
+    ['Images', '300', '1200', 'image'],
+    ['Videos', '30', '120', 'video', 'Numbers may vary based on models & settings'],
+    ['Slides', '300', '1200', 'slides'],
+    ['Websites', '5', '20', 'globe'],
+    ['Deep research', '20', '80', 'research'],
+    ['Tokens', '3M', '12M', 'tokens', '9M bonus tokens added'],
+  ] as [string, string, string, string, string?][],
+  footnote: '*Bonus tokens apply to your first month only',
+  policy: 'Token Usage Policy Applies',
+  policyHref: 'https://aifiesta.ai/terms',
 };
 
 // "What you pay today" calculator. Yearly INR prices from the aifiesta.ai pricing calculator;

@@ -1,0 +1,88 @@
+---
+// "Get 4x of everything" table for the yearly plan card. The slot (rollover note) sits
+// between the table and the bonus-token footnote.
+import { offer } from '../data/content';
+interface Props { theme?: 'light' | 'dark' }
+const { theme = 'light' } = Astro.props;
+const icons: Record<string, string> = {
+  tokens: '<circle cx="7" cy="14" r="4.4"/><circle cx="14" cy="7" r="4.4"/>',
+  image: '<rect x="2.6" y="2.6" width="15.8" height="15.8" rx="2"/><path d="M2.6 14.9l5.3-5.3 3.5 3.5 3.5-4.4 3.5 4.4"/>',
+  video: '<rect x="2.6" y="7.9" width="15.8" height="10.5" rx="2"/><path d="M2.6 7.9l-.9-4.4 15.8-2.6.9 4.4z"/>',
+  globe: '<circle cx="10.5" cy="10.5" r="7.9"/><ellipse cx="10.5" cy="10.5" rx="3.5" ry="7.9"/><path d="M2.6 10.5h15.8"/>',
+  slides: '<path d="M1.8 2.6h17.5M3.5 2.6V14h14V2.6M10.5 14v4.4M10.5 14l-4.4 4.4M10.5 14l4.4 4.4"/>',
+  research: '<path d="M2.6 8.8l14-4.4 1.8 5.2-14 4.4zM10.5 12.3L7 18.4M11.4 11.4l3.5 6.1"/>',
+};
+---
+<div class:list={['offer4x', theme]}>
+  <p class="banner">
+    <span class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
+    <span>Get <b>{offer.multiple}</b> of everything</span>
+  </p>
+  <table>
+    <thead>
+      <tr><th scope="col">In your plan</th><th scope="col">Usually</th><th scope="col" class="now">Current Offer*<small>Upto</small></th></tr>
+    </thead>
+    <tbody>
+      {offer.rows.map(([label, usual, now, ic, info]) => (
+        <tr>
+          <th scope="row">
+            <span class="lbl">
+              <svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.575" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[ic]} />
+              {label}
+              {info && (
+                <span class="info">
+                  <button type="button" aria-label={`${label} info`} aria-expanded="false" data-info><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+                  <span class="tip" role="tooltip" hidden>{info}</span>
+                </span>
+              )}
+            </span>
+          </th>
+          <td>{usual}</td>
+          <td><b>{now}</b></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <slot />
+  <p class="fine">{offer.footnote} · <a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>
+</div>
+<style>
+  .offer4x { --accent: #3f9b6a; --chip: #e6f4ea; --rule: var(--line); --soft: var(--muted); display: grid; gap: 12px; }
+  .dark { --accent: #80dca9; --chip: rgba(128,220,169,.14); --rule: #35304c; --soft: #cbd0de; }
+  .banner { display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; border-radius: 16px; background: var(--chip); font-size: 19px; font-weight: 700; }
+  .banner b { color: var(--accent); font-size: 1.25em; }
+  .gift { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: #fff; color: #3f9b6a; box-shadow: 0 0 0 4px rgba(63,155,106,.15); }
+  .gift svg { width: 24px; height: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { padding: 10px 0; border-bottom: 1px solid var(--rule); text-align: center; font-weight: 500; }
+  tbody tr:last-child > * { border-bottom: 0; }
+  th:first-child { text-align: left; }
+  thead th { font-size: 14px; color: var(--soft); vertical-align: bottom; }
+  thead .now { color: var(--accent); font-weight: 600; }
+  thead small { display: block; font-size: 11px; color: var(--soft); font-weight: 500; }
+  td { color: var(--soft); width: 26%; }
+  td b { display: inline-block; min-width: 64px; padding: 6px 10px; border-radius: 99px; background: var(--chip); color: inherit; font-weight: 700; }
+  .light td b { color: var(--ink); }
+  .dark td b { color: #fff; }
+  .lbl { display: flex; align-items: center; gap: 8px; }
+  .lbl > svg { width: 20px; height: 20px; flex: none; }
+  .info { position: relative; display: inline-flex; }
+  .info button { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 0; background: none; color: var(--soft); cursor: pointer; }
+  .info button svg { width: 15px; height: 15px; }
+  .tip { position: absolute; bottom: calc(100% + 8px); left: -6px; z-index: 5; width: max-content; max-width: 196px; padding: 8px 12px; border: 1px solid #9fd9bb; border-radius: 8px; background: #fff; color: #52525b; font-size: 12px; line-height: 1.45; font-weight: 400; text-align: left; box-shadow: 0 10px 24px -8px rgba(15,23,20,.12); }
+  .info:hover .tip { display: block; }
+  .fine { text-align: center; font-size: 12px; color: var(--soft); }
+  .fine a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+</style>
+<script>
+  // Info tips open on tap (hover covers mouse users); tapping anywhere else closes them.
+  const tips = [...document.querySelectorAll<HTMLButtonElement>('[data-info]')];
+  const closeAll = () => tips.forEach((b) => { b.setAttribute('aria-expanded', 'false'); (b.nextElementSibling as HTMLElement).hidden = true; });
+  tips.forEach((b) => b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    closeAll();
+    b.setAttribute('aria-expanded', String(open));
+    (b.nextElementSibling as HTMLElement).hidden = !open;
+  }));
+  document.addEventListener('click', (e) => { if (!(e.target as Element).closest('[data-info]')) closeAll(); });
+</script>
