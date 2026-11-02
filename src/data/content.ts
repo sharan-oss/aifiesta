@@ -64,7 +64,7 @@ export const offer = {
   ] as [string, string, string, string, string?][],
   footnote: '*Bonus tokens apply to your first month only',
   policy: 'Token Usage Policy Applies',
-  policyHref: 'https://aifiesta.ai/terms',
+  policyHref: 'https://anniversary.aifiesta.ai/terms',
 };
 
 // "What you pay today" calculator. Yearly INR prices from the aifiesta.ai pricing calculator;
