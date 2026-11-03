@@ -1,8 +1,10 @@
 ---
 import Cta from './Cta.astro';
+import YcBadge from '../YcBadge.astro';
 ---
 <section class="hero">
   <div class="wrap inner">
+    <YcBadge />
     <span class="pill"><i></i>One single subscription just ₹7,999/year</span>
     <h1>Access <span class="grad">100+ Premium</span> AI Models like <span class="grad">Claude, Gemini, Perplexity,</span> in one Subscription</h1>
     <p class="lead">More tools to explore, more ways to get work done, and one simple annual subscription.</p>
@@ -18,13 +20,15 @@ import Cta from './Cta.astro';
   h1 { font-size: clamp(30px, 6.4vw, 60px); line-height: 1.1; font-weight: 700; letter-spacing: -0.015em; max-width: 14em; }
   .lead { font-size: 14px; color: rgba(3,0,37,.8); max-width: 34em; }
   img { width: 100%; max-width: 520px; height: auto; }
+  .inner :global(.yc) { margin-bottom: -8px; }
+  @media (max-width: 899px) { img { max-height: 250px; object-fit: contain; } }
   @media (min-width: 900px) {
     .hero { padding-block: 56px 72px; }
     .inner { grid-template-columns: 1.1fr 1fr; justify-items: start; text-align: left; column-gap: 48px; align-items: center; }
-    .pill { grid-column: 1; }
+    .inner :global(.yc), .pill { grid-column: 1; }
     h1 { grid-column: 1; }
     .lead { grid-column: 1; font-size: 17px; }
-    img { grid-column: 2; grid-row: 1 / span 4; justify-self: center; max-width: 560px; }
+    img { grid-column: 2; grid-row: 1 / span 5; justify-self: center; max-width: 560px; }
     .inner :global(.cta) { grid-column: 1; margin-inline: 0; }
     .inner :global(.offer) { text-align: left; }
   }
