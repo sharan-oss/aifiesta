@@ -1,8 +1,10 @@
 ---
 import { CTA, PRICING_HREF } from '../data/content';
+import YcBadge from './YcBadge.astro';
 ---
 <section class="hero wrap">
   <div class="hero__copy">
+    <YcBadge />
     <div class="hero__rate">
       <span class="stars" aria-hidden="true">★★★★★</span>
       <p>Trusted worldwide by 1M+ users</p>
@@ -18,6 +20,7 @@ import { CTA, PRICING_HREF } from '../data/content';
 </section>
 <style>
   .hero { display: grid; gap: 24px; padding-block: 24px var(--section-y); text-align: center; }
+  .hero__copy :global(.yc) { margin-bottom: 14px; }
   .hero__rate { display: grid; gap: 5px; }
   .stars { color: var(--gold); font-size: 17px; }
   .hero__rate p { font-size: 12px; font-weight: 500; color: var(--muted); }
@@ -30,8 +33,11 @@ import { CTA, PRICING_HREF } from '../data/content';
   /* Phones: tighter stack so the CTA stays above the sticky bar with the Diwali banner on top. */
   @media (max-width: 899px) {
     .hero { gap: 16px; padding-top: 12px; }
+    .hero__copy :global(.yc) { margin-bottom: 10px; }
+    .hero__rate { display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .stars { font-size: 15px; }
     h1 { margin-block: 10px; }
-    .hero__media img { max-height: 290px; object-fit: contain; object-position: center bottom; }
+    .hero__media img { max-height: 260px; object-fit: contain; object-position: center bottom; }
   }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; align-items: center; text-align: left; padding-block: 72px var(--section-y); gap: 56px; }
