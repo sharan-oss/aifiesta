@@ -4,6 +4,7 @@ import Hero from '../components/v2/Hero.astro';
 import ModelStrip from '../components/v2/ModelStrip.astro';
 import Pricing from '../components/v2/Pricing.astro';
 import DomainBonus from '../components/DomainBonus.astro';
+import DiwaliBanner from '../components/DiwaliBanner.astro';
 import Benefits from '../components/v2/Benefits.astro';
 import Features from '../components/v2/Features.astro';
 import Compare from '../components/v2/Compare.astro';
@@ -15,13 +16,14 @@ import Faq from '../components/v2/Faq.astro';
 import StickyCta from '../components/v2/StickyCta.astro';
 ---
 <Layout title="AI Fiesta - 100+ Premium AI Models in One Subscription">
+  <DiwaliBanner />
   <main>
     <Hero />
     <ModelStrip />
+    <DomainBonus variant="v2" />
     <Pricing />
     <Benefits />
     <Features />
-    <DomainBonus variant="v2" />
     <Compare />
     <BestFeatures />
     <Testimonials />
