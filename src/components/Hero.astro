@@ -1,8 +1,10 @@
 ---
 import { CTA, PRICING_HREF } from '../data/content';
+import BuiltBy from './BuiltBy.astro';
 ---
 <section class="hero wrap">
   <div class="hero__copy">
+    <BuiltBy />
     <div class="hero__rate">
       <span class="stars" aria-hidden="true">★★★★★</span>
       <p>Trusted worldwide by 1M+ users</p>
@@ -18,6 +20,7 @@ import { CTA, PRICING_HREF } from '../data/content';
 </section>
 <style>
   .hero { display: grid; gap: 24px; padding-block: 24px var(--section-y); text-align: center; }
+  .hero__copy :global(.built) { margin-bottom: 14px; }
   .hero__rate { display: grid; gap: 5px; }
   .stars { color: var(--gold); font-size: 17px; }
   .hero__rate p { font-size: 12px; font-weight: 500; color: var(--muted); }

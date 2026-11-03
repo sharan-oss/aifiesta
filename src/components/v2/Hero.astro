@@ -1,8 +1,10 @@
 ---
 import Cta from './Cta.astro';
+import BuiltBy from '../BuiltBy.astro';
 ---
 <section class="hero">
   <div class="wrap inner">
+    <BuiltBy />
     <span class="pill"><i></i>One single subscription just ₹7,999/year</span>
     <h1>Access <span class="grad">100+ Premium</span> AI Models like <span class="grad">Claude, Gemini, Perplexity,</span> in one Subscription</h1>
     <p class="lead">More tools to explore, more ways to get work done, and one simple annual subscription.</p>
@@ -22,9 +24,10 @@ import Cta from './Cta.astro';
     .hero { padding-block: 56px 72px; }
     .inner { grid-template-columns: 1.1fr 1fr; justify-items: start; text-align: left; column-gap: 48px; align-items: center; }
     .pill { grid-column: 1; }
+    .inner :global(.built) { grid-column: 1; justify-self: start; }
     h1 { grid-column: 1; }
     .lead { grid-column: 1; font-size: 17px; }
-    img { grid-column: 2; grid-row: 1 / span 4; justify-self: center; max-width: 560px; }
+    img { grid-column: 2; grid-row: 1 / span 5; justify-self: center; max-width: 560px; }
     .inner :global(.cta) { grid-column: 1; margin-inline: 0; }
     .inner :global(.offer) { text-align: left; }
   }
