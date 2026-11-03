@@ -1,7 +1,6 @@
 ---
 import { models } from '../data/content';
 import ModelItem from './ModelItem.astro';
-import ModelsExplorer from './ModelsExplorer.astro';
 
 // Mobile: three marquee rows, alternating direction and speed.
 const rows = [models.slice(0, 4), models.slice(4, 7), models.slice(7)];
@@ -30,14 +29,11 @@ const motion = [
       </div>
     ))}
   </div>
-
-  <ModelsExplorer />
 </section>
 <style>
   .strip { background: #fff; padding-block: 28px; overflow: hidden; }
 
   .strip__title { text-align: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin: 0 16px 20px; }
-  .strip :global(.explore) { margin: 28px auto 0; }
 
   /* Desktop grid */
   .grid { display: none; }

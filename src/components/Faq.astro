@@ -1,5 +1,6 @@
 ---
 import { faqs, CTA, PRICING_HREF } from '../data/content';
+import { modelGroups } from '../data/models-list';
 ---
 <section class="cta wrap"><a class="btn btn--block" href={PRICING_HREF} data-cta="faq">{CTA}</a></section>
 <section class="faq">
@@ -10,6 +11,7 @@ import { faqs, CTA, PRICING_HREF } from '../data/content';
         <details name="faq" open={i === 0}>
           <summary>{f.q}</summary>
           {f.a && <p>{f.a}</p>}
+          {f.models && modelGroups.map((g) => <p class="models"><b>{g.title}:</b> {g.models.join(', ')}</p>)}
         </details>
       ))}
     </div>
@@ -29,4 +31,7 @@ import { faqs, CTA, PRICING_HREF } from '../data/content';
   details[open] summary { background: var(--brand-tint); }
   details[open] summary::after { content: '−'; }
   details p { padding: 16px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  details p.models { padding-top: 0; }
+  details p.models b { color: var(--ink); }
+  details p:has(+ .models) { padding-bottom: 8px; }
 </style>
