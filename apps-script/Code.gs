@@ -4,8 +4,8 @@
  * Called ONLY by api/cashfree-webhook.js (Vercel), never by Cashfree directly:
  * Apps Script can't set an HTTP status, so it can't tell Cashfree to retry.
  *
+ * Bound to the Sheet (Extensions > Apps Script), so it writes to that Sheet.
  * Script Properties (Project Settings > Script properties):
- *   SHEET_ID       id of the Google Sheet (the long string in its URL)
  *   SHARED_SECRET  same value as APPS_SCRIPT_SECRET in Vercel
  *
  * Tabs (created on first write):
@@ -55,7 +55,7 @@ function doPost(e) {
     var receivedAt = body.received_at || new Date().toISOString();
 
     lock.waitLock(20000);
-    var ss = SpreadsheetApp.openById(props.getProperty('SHEET_ID'));
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
 
     // Raw log first: even a payload we can't parse is kept.
     sheet_(ss, RAW_TAB, RAW_HEADERS)

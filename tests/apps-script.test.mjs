@@ -60,9 +60,9 @@ beforeEach(() => {
   lockEvents = [];
   ctx = vm.createContext({
     LockService: { getScriptLock: () => ({ waitLock: () => lockEvents.push('wait'), releaseLock: () => lockEvents.push('release') }) },
-    PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => ({ SHEET_ID: 's', SHARED_SECRET: 'shh' })[k] }) },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => ({ SHARED_SECRET: 'shh' })[k] }) },
     SpreadsheetApp: {
-      openById: () => ({
+      getActiveSpreadsheet: () => ({
         getSheetByName: (n) => sheets[n] || null,
         insertSheet: (n) => (sheets[n] = fakeSheet()),
       }),

@@ -14,11 +14,10 @@ Apps Script editor and redeploy.
 
 ## One-time setup
 
-1. Create a Google Sheet (any name). Copy its id (the long string in the URL).
-2. In the Sheet: Extensions > Apps Script. Replace `Code.gs` with this folder's `Code.gs`.
-3. Project Settings > Script properties, add:
-   - `SHEET_ID` = the sheet id
-   - `SHARED_SECRET` = a long random string (e.g. `openssl rand -hex 24`)
+1. Create a Google Sheet (any name).
+2. In the Sheet: Extensions > Apps Script (the script must be opened from the Sheet, so it's bound to it).
+   Replace `Code.gs` with this folder's `Code.gs`.
+3. Project Settings > Script properties, add `SHARED_SECRET` = a long random string (e.g. `openssl rand -hex 24`).
 4. Deploy > New deployment > type **Web app**. Execute as **Me**, access **Anyone**. Copy the `/exec` URL.
    After later code changes use Deploy > Manage deployments > edit > New version (the URL stays the same).
 5. Vercel > Project > Settings > Environment Variables (Production):
