@@ -1,5 +1,5 @@
 ---
-// Google Ads thank-you page: a copy of /thank-you, kept separate so GA-specific tracking can be added here.
+// Google Ads thank-you page: a copy of /thank-you, kept separate for GA-specific tracking.
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -50,18 +50,6 @@ const steps = [
   </main>
   <Footer banner={false} />
 </Layout>
-<script is:inline define:vars={{ value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
-  // Purchase: only with a Cashfree order id (?id=), and once per order so reloads don't recount.
-  (function () {
-    var q = new URLSearchParams(location.search);
-    var orderId = q.get('id') || q.get('order_id');
-    if (!orderId || typeof fbq !== 'function') return;
-    var key = 'fb_purchase_' + orderId;
-    try { if (localStorage.getItem(key)) return; } catch (e) {}
-    fbq('track', 'Purchase', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan' }, { eventID: orderId });
-    try { localStorage.setItem(key, '1'); } catch (e) {}
-  })();
-</script>
 <script is:inline define:vars={{ sendTo: GOOGLE_ADS_PURCHASE, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
   // Google Ads Purchase conversion: only with a Cashfree order id. Google drops repeats of the
   // same transaction_id, so reloading this page doesn't count the order twice.
