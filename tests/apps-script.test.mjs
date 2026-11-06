@@ -75,6 +75,7 @@ function fakeSheet() {
     appendRow: (r) => rows.push([...r]),
     setFrozenRows() {},
     getLastRow: () => rows.length,
+    getLastColumn: () => Math.max(0, ...rows.map((r) => r.length)),
     getRange: range,
     getDataRange: () => range(1, 1, rows.length, Math.max(...rows.map((r) => r.length))),
   };
@@ -97,6 +98,8 @@ beforeEach(() => {
       MimeType: { JSON: 'json' },
       createTextOutput: (s) => ({ text: s, setMimeType() { return this; } }),
     },
+    // IST = UTC+05:30, formatted like Utilities.formatDate(d, 'Asia/Kolkata', 'yyyy-MM-dd HH:mm:ss').
+    Utilities: { formatDate: (d) => new Date(d.getTime() + 330 * 60000).toISOString().slice(0, 19).replace('T', ' ') },
     JSON, String, Date, Math,
   });
   vm.runInContext(code, ctx);
@@ -284,7 +287,7 @@ test('auth events before the order (usual order): row gets payment details and f
   assert.equal(p.payment_method, 'upi');
   assert.equal(p.payment_channel, 'link');
   assert.equal(p.upi_id, 'buyer@oksbi');
-  assert.equal(p.paid_at, '2026-11-05T17:06:51+05:30');
+  assert.equal(p.paid_at, '2026-11-05 17:06:51');
   assert.equal(p.failed_attempts, 2);
   assert.equal(p.last_failure, 'No active account');
   assert.equal(p.cf_subscription_id, '401640257');
@@ -389,4 +392,39 @@ test('attribution text that looks like a formula stays text', () => {
   attribution({ ...AD, utm_campaign: '=IMPORTXML("x")' });
   hook();
   assert.equal(payments()[0].utm_campaign, '\'=IMPORTXML("x")');
+});
+
+// --- IST times ---
+
+test('times are written in IST: UTC received_at, +05:30 event_time, paid_at, landed_at', () => {
+  post({ secret: 'shh', raw: JSON.stringify(subAuth('SUCCESS', { txn: 99 })), received_at: '2026-11-05T11:36:51.209Z' });
+  const f = structuredClone(FORM);
+  f.event_time = '2026-11-05T17:06:53+05:30';
+  post({ secret: 'shh', raw: JSON.stringify(f), received_at: '2026-11-05T11:36:54.042Z' });
+  post({ secret: 'shh', kind: 'attribution', received_at: '2026-11-05T11:37:00.000Z',
+    data: { order_id: ORDER, landing_lp: 'home', utm_source: 'fb', landed_at: '2026-11-05T11:30:00.000Z' } });
+  const [p] = payments();
+  assert.equal(p.received_at, '2026-11-05 17:06:54');
+  assert.equal(p.event_time, '2026-11-05 17:06:53');
+  assert.equal(p.paid_at, '2026-11-05 17:06:51');
+  assert.equal(p.landed_at, '2026-11-05 17:00:00');
+  assert.equal(sheets.Payments_Raw.rows[1][0], '2026-11-05 17:06:51');
+  assert.equal(sheets.Attribution.rows[1][0], '2026-11-05 17:07:00');
+});
+
+test('convertTimesToIst rewrites old ISO cells once and leaves the rest', () => {
+  hook();
+  attribution({ landing_lp: 'home', landed_at: 'x' });
+  const pay = sheets.Payments, H = pay.rows[0];
+  pay.rows[1][H.indexOf('received_at')] = '2026-11-05T19:14:55.064Z';
+  pay.rows[1][H.indexOf('event_time')] = '2026-11-06T00:44:54+05:30';
+  sheets.Payments_Raw.rows[1][0] = '2026-11-05T11:36:54.042Z';
+  sheets.Attribution.rows[1][0] = '2026-11-06T03:48:28.642Z';
+  assert.equal(ctx.convertTimesToIst(), 4);
+  assert.equal(payments()[0].received_at, '2026-11-06 00:44:55');
+  assert.equal(payments()[0].event_time, '2026-11-06 00:44:54');
+  assert.equal(sheets.Payments_Raw.rows[1][0], '2026-11-05 17:06:54');
+  assert.equal(sheets.Attribution.rows[1][0], '2026-11-06 09:18:28');
+  assert.equal(payments()[0].order_id, ORDER); // other columns untouched
+  assert.equal(ctx.convertTimesToIst(), 0);
 });

@@ -25,6 +25,10 @@
  * Run by hand from the Apps Script editor when needed:
  *   removeOtherForms()  drop rows from forms that aren't ours
  *   backfill()          fill lp_name + payment details on existing rows
+ *   convertTimesToIst() rewrite old UTC/ISO time cells as IST
+ *
+ * All times are written in IST as "yyyy-MM-dd HH:mm:ss" (Sheets reads that as a
+ * date-time). Set File > Settings > Time zone to India to match.
  */
 
 // Cashfree form id -> landing page. Each landing page has its own form.
@@ -34,6 +38,9 @@ var LP_NAMES = {
   'am-yearly-basic-plan-meta': 'meta',
 };
 var LP_FORMS = Object.keys(LP_NAMES);
+
+var TZ = 'Asia/Kolkata';
+var TIME_COLUMNS = ['received_at', 'event_time', 'paid_at', 'landed_at'];
 
 var RAW_TAB = 'Payments_Raw';
 var PAYMENTS_TAB = 'Payments';
@@ -97,7 +104,7 @@ function doPost(e) {
 
     // Raw log first: even a payload we can't parse is kept.
     sheet_(ss, RAW_TAB, RAW_HEADERS)
-      .appendRow([receivedAt, key, payload.type || '', body.raw].map(safe_));
+      .appendRow([ist_(receivedAt), key, payload.type || '', body.raw].map(safe_));
 
     if (!p) {
       // Autopay auth success: add its payment details to the order it paid
@@ -110,7 +117,7 @@ function doPost(e) {
 
     var tags = p.tags || {};
     var row = [
-      receivedAt, payload.type, payload.event_time || '', p.order_id, p.status, p.payment_id,
+      ist_(receivedAt), payload.type, ist_(payload.event_time || ''), p.order_id, p.status, p.payment_id,
       p.amount, p.currency, p.name, p.email, phoneCell_(p.phone), p.method, p.error, p.form_id,
     ].concat(
       TAG_KEYS.map(function (k) { return tags[k] || ''; }),
@@ -326,7 +333,7 @@ function enrich_(ss, paySheet, rowIndex) {
     add[col('payment_method')] = ad.payment_group || kind;
     add[col('payment_channel')] = m.channel || '';
     add[col('upi_id')] = m.upi_id || '';
-    add[col('paid_at')] = ad.authorization_time || auth.event_time || '';
+    add[col('paid_at')] = ist_(ad.authorization_time || auth.event_time || '');
     add[col('failed_attempts')] = fails.length;
     add[col('last_failure')] = lastFail.failure_reason || '';
     add[col('cf_subscription_id')] = subId;
@@ -339,7 +346,10 @@ function enrich_(ss, paySheet, rowIndex) {
     var a2 = {};
     ATTR_HEADERS.forEach(function (h, i) { a2[h] = av[i]; });
     ATTR_HEADERS.forEach(function (h) {
-      if (h !== 'received_at' && h !== 'order_id' && col(h) !== -1) add[col(h)] = a2[h] === undefined ? '' : String(a2[h]);
+      if (h === 'received_at' || h === 'order_id' || col(h) === -1) return;
+      var v = a2[h];
+      // Time cells come back from Sheets as Date objects: copy them as they are.
+      add[col(h)] = v === undefined ? '' : (v instanceof Date ? v : String(v));
     });
     // ad: arrived from an ad click; organic: we saw the landing but no ad
     // params; unknown: thank-you page reached with nothing stored.
@@ -358,8 +368,9 @@ function saveAttribution_(ss, body) {
   var attr = sheet_(ss, ATTR_TAB, ATTR_HEADERS);
   if (findRow_(attr, orderId, ATTR_HEADERS.indexOf('order_id') + 1)) return { ok: true, stored: 'duplicate' };
   attr.appendRow(ATTR_HEADERS.map(function (h) {
-    if (h === 'received_at') return body.received_at || new Date().toISOString();
-    return d[h] === undefined || d[h] === null ? '' : String(d[h]);
+    if (h === 'received_at') return ist_(body.received_at || new Date().toISOString());
+    var v = d[h] === undefined || d[h] === null ? '' : String(d[h]);
+    return h === 'landed_at' ? ist_(v) : v;
   }).map(safe_));
 
   var pay = ss.getSheetByName(PAYMENTS_TAB);
@@ -383,6 +394,45 @@ function backfill() {
     var pay = sheet_(ss, PAYMENTS_TAB, PAYMENT_HEADERS);
     var changed = 0;
     for (var r = 2; r <= pay.getLastRow(); r++) if (enrich_(ss, pay, r)) changed++;
+    return changed;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ISO timestamps (UTC "Z" from Vercel/the browser, "+05:30" from Cashfree) ->
+// "yyyy-MM-dd HH:mm:ss" in IST. Anything else is returned unchanged.
+function ist_(v) {
+  if (typeof v !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(v)) return v;
+  var d = new Date(v);
+  return isNaN(d.getTime()) ? v : Utilities.formatDate(d, TZ, 'yyyy-MM-dd HH:mm:ss');
+}
+
+// Run once by hand: rewrites time cells written before IST formatting, in all
+// tabs. Cells already converted are left alone, so it is safe to re-run.
+function convertTimesToIst() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var changed = 0;
+    [RAW_TAB, PAYMENTS_TAB, ATTR_TAB].forEach(function (name) {
+      var sh = ss.getSheetByName(name);
+      var last = sh ? sh.getLastRow() : 0;
+      if (last < 2) return;
+      var header = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+      header.forEach(function (h, i) {
+        if (TIME_COLUMNS.indexOf(h) === -1) return;
+        var range = sh.getRange(2, i + 1, last - 1, 1);
+        var values = range.getValues();
+        var dirty = false;
+        values.forEach(function (r) {
+          var v = ist_(r[0]);
+          if (v !== r[0]) { r[0] = v; dirty = true; changed++; }
+        });
+        if (dirty) range.setValues(values);
+      });
+    });
     return changed;
   } finally {
     lock.releaseLock();
