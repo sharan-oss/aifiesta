@@ -1,0 +1,53 @@
+---
+// First-party attribution. Landing pages remember how the visitor arrived (ad params,
+// landing page, referrer); the thank-you page sends that with the Cashfree order id
+// (?id= in the return URL) to /api/attribution, which puts it on the order's row in the
+// payments sheet. Cashfree keeps the URL params as order tags but never sends them back.
+---
+<script is:inline>
+  (function () {
+    var KEY = 'af_attr', DAYS = 30;
+    var PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+      'ad_id', 'adset_content', 'device', 'gclid', 'gbraid', 'wbraid', 'fbclid'];
+    var LP = { '/': 'home', '/basic-plan-ga': 'ga', '/basic-plan-v2-fb': 'meta' };
+    var path = location.pathname.replace(/\/+$/, '') || '/';
+    var q = new URLSearchParams(location.search);
+    function load() {
+      try {
+        var r = JSON.parse(localStorage.getItem(KEY));
+        return r && Date.now() - r.landed_at < DAYS * 864e5 ? r : null;
+      } catch (e) { return null; }
+    }
+
+    if (!/^\/thank-you(-ga)?$/.test(path)) {
+      var params = {}, fromAd = false;
+      PARAMS.forEach(function (k) { var v = q.get(k); if (v) { params[k] = v.slice(0, 500); fromAd = true; } });
+      // The latest ad click wins; a plain visit only counts when nothing is stored.
+      if (fromAd || !load()) {
+        try {
+          localStorage.setItem(KEY, JSON.stringify({
+            landed_at: Date.now(), landing_lp: LP[path] || path, landing_url: location.href.slice(0, 500),
+            referrer: document.referrer.slice(0, 500), params: params,
+          }));
+        } catch (e) {}
+      }
+      return;
+    }
+
+    var orderId = q.get('id') || q.get('order_id') || '';
+    if (!/^CFPay_[\w-]+$/.test(orderId)) return;
+    var sentKey = 'af_attr_sent_' + orderId;
+    try { if (localStorage.getItem(sentKey)) return; } catch (e) {}
+    var r = load() || {};
+    var body = {
+      order_id: orderId, thank_you_page: path, landing_lp: r.landing_lp || '', landing_url: r.landing_url || '',
+      referrer: r.referrer || '', landed_at: r.landed_at ? new Date(r.landed_at).toISOString() : '',
+    };
+    PARAMS.forEach(function (k) { body[k] = (r.params || {})[k] || ''; });
+    var data = JSON.stringify(body), sent = false;
+    // sendBeacon survives the tab closing; text/plain keeps it a simple request.
+    try { sent = navigator.sendBeacon('/api/attribution', new Blob([data], { type: 'text/plain' })); } catch (e) {}
+    if (!sent) { try { fetch('/api/attribution', { method: 'POST', body: data, keepalive: true }); sent = true; } catch (e) {} }
+    if (sent) { try { localStorage.setItem(sentKey, '1'); } catch (e) {} }
+  })();
+</script>

@@ -52,6 +52,36 @@ means adding its form id to `LP_FORMS` and redeploying.
 
 Rows written before this filter existed: run `removeOtherForms()` once from the Apps Script editor.
 
+## Payment details
+
+Each sale also sends a `SUBSCRIPTION_PAYMENT_SUCCESS` (autopay auth) event. It joins the order on
+`cf_txn_id` = `transaction_id` and fills `payment_method`, `payment_channel`, `upi_id`, `paid_at`,
+`cf_subscription_id`, plus `failed_attempts` / `last_failure` from earlier `SUBSCRIPTION_PAYMENT_FAILED`
+events of the same subscription. `lp_name` comes from the form id (`LP_NAMES` in `Code.gs`).
+
+## Attribution (UTMs) — how it actually works
+
+Cashfree keeps the URL params as order tags but **never sends them in any webhook** (verified on
+real deliveries and by inspecting the form's submit request). So we record them ourselves:
+
+1. `src/components/Attribution.astro` (every page): on landing, stores the ad params (`utm_*`, `ad_id`,
+   `adset_content`, `device`, `gclid`, `gbraid`, `wbraid`, `fbclid`), landing page and referrer in
+   localStorage. Latest ad click wins; a plain visit only counts when nothing is stored; 30-day expiry.
+2. On `/thank-you` and `/thank-you-ga`, Cashfree's return URL carries `?id=<order_id>`; the script sends
+   the stored record with that id (once per order, `sendBeacon`) to `api/attribution.js`.
+3. `api/attribution.js` accepts only our three forms' order ids and known fields, then forwards to
+   Apps Script with the shared secret.
+4. Apps Script appends to the `Attribution` tab (first record per order wins) and copies it into the
+   order's `Payments` row, whichever arrives first. `attribution` column: `ad` (ad params present),
+   `organic` (landing seen, no ad params), `unknown` (thank-you reached with nothing stored), blank
+   (buyer never reached the thank-you page).
+
+Match rate (paid orders with UTMs): `=COUNTIFS(Payments!E:E,"PAID",Payments!AQ:AQ,"ad")/COUNTIF(Payments!E:E,"PAID")`
+(`E` = status, `AQ` = attribution).
+
+Gap: buyers who never return to the thank-you page (e.g. pay in a UPI app and close the browser) get
+no attribution. If the match rate is low, add a visible prefilled field on the Cashfree forms.
+
 ## Landing-page params (order_tags)
 
 The Cashfree form turns URL params that don't match a form field into `order_tags` on the order,

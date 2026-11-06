@@ -42,19 +42,31 @@ const sub = (type, subscriptionId) => ({
 
 function fakeSheet() {
   const rows = [];
+  const cell = (r, c) => (rows[r - 1] && rows[r - 1][c - 1] !== undefined ? rows[r - 1][c - 1] : '');
   const range = (row, col, n = 1, m = 1) => ({
-    createTextFinder: (text) => ({
-      matchEntireCell: () => ({
-        findNext: () => {
-          const i = rows.slice(row - 1, row - 1 + n).findIndex((r) => r[col - 1] === text);
-          return i === -1 ? null : { getRow: () => row + i };
-        },
-      }),
-    }),
-    getValues: () => rows.slice(row - 1, row - 1 + n).map((r) => r.slice(col - 1, col - 1 + m)),
+    createTextFinder: (text) => {
+      let whole = false;
+      const hits = () => {
+        const out = [];
+        for (let r = row; r < row + n; r++) {
+          for (let c = col; c < col + m; c++) {
+            const v = String(cell(r, c));
+            if (whole ? v === text : v.includes(text)) out.push({ getRow: () => r, getValue: () => cell(r, c) });
+          }
+        }
+        return out;
+      };
+      const finder = {
+        matchEntireCell: (b) => { whole = b; return finder; },
+        findNext: () => hits()[0] || null,
+        findAll: () => hits(),
+      };
+      return finder;
+    },
+    getValues: () => Array.from({ length: n }, (_, i) => Array.from({ length: m }, (_, j) => cell(row + i, col + j))),
     setValues: (vals) => vals.forEach((v, i) => {
-      rows[row - 1 + i] = rows[row - 1 + i] || [];
-      rows[row - 1 + i].splice(col - 1, m, ...v);
+      const r = (rows[row - 1 + i] = rows[row - 1 + i] || []);
+      v.forEach((x, j) => { r[col - 1 + j] = x; });
     }),
     clearContent: () => { rows.splice(row - 1, n); },
   });
@@ -231,4 +243,150 @@ test('removeOtherForms keeps only landing-page rows in both tabs, re-escaped', (
   assert.equal(rows[0].form_id, LP_FORM);
   assert.equal(rows[0].phone, "'9999999999");
   assert.equal(rows[0].name, "'=1+1");
+});
+
+// --- lp_name + payment details (Phase 1) ---
+
+const subAuth = (status, { txn = 99, subId = '401640257', time = '2026-11-05T17:06:51+05:30', reason = null } = {}) => ({
+  data: {
+    cf_txn_id: String(txn), cf_subscription_id: subId, subscription_id: `form_132641846_${LP_FORM}`,
+    payment_type: 'AUTH', payment_status: status,
+    authorization_details: {
+      authorization_time: time, authorization_status: status === 'SUCCESS' ? 'ACTIVE' : 'FAILED', payment_group: 'upi',
+      payment_method: { upi: { channel: 'link', upi_id: status === 'SUCCESS' ? 'buyer@oksbi' : null } },
+    },
+    failure_details: { failure_reason: reason },
+  },
+  event_time: time,
+  type: status === 'SUCCESS' ? 'SUBSCRIPTION_PAYMENT_SUCCESS' : 'SUBSCRIPTION_PAYMENT_FAILED',
+});
+
+test('lp_name comes from the form id', () => {
+  hook(form('am-yearly-basic-plan-ga', 'CFPay_am-yearly-basic-plan-ga_aa_1'));
+  hook(form());
+  assert.deepEqual(payments().map((r) => r.lp_name), ['ga', 'home']);
+});
+
+test('lp_name from order_tags is not overwritten', () => {
+  const tagged = structuredClone(FORM);
+  tagged.data.order.order_tags = { lp_name: 'custom' };
+  hook(tagged);
+  assert.equal(payments()[0].lp_name, 'custom');
+});
+
+test('auth events before the order (usual order): row gets payment details and failed attempts', () => {
+  hook(subAuth('FAILED', { txn: 11, time: '2026-11-05T16:50:00+05:30', reason: 'first fail' }));
+  hook(subAuth('FAILED', { txn: 12, time: '2026-11-05T16:55:00+05:30', reason: 'No active account' }));
+  hook(subAuth('FAILED', { txn: 13, subId: 'someone-else' }));
+  hook(subAuth('SUCCESS', { txn: 99 }));
+  hook(); // form order, transaction_id 99
+  const [p] = payments();
+  assert.equal(p.payment_method, 'upi');
+  assert.equal(p.payment_channel, 'link');
+  assert.equal(p.upi_id, 'buyer@oksbi');
+  assert.equal(p.paid_at, '2026-11-05T17:06:51+05:30');
+  assert.equal(p.failed_attempts, 2);
+  assert.equal(p.last_failure, 'No active account');
+  assert.equal(p.cf_subscription_id, '401640257');
+});
+
+test('auth success after the order: existing row is enriched', () => {
+  hook();
+  assert.equal(payments()[0].upi_id, '');
+  assert.equal(hook(subAuth('SUCCESS', { txn: 99 })).stored, 'raw_only');
+  assert.equal(payments()[0].upi_id, 'buyer@oksbi');
+  assert.equal(payments()[0].failed_attempts, 0);
+});
+
+test('auth success for an unknown transaction does not create rows', () => {
+  hook(subAuth('SUCCESS', { txn: 12345 }));
+  assert.equal(sheets.Payments, undefined);
+});
+
+test('backfill extends an old header and fills old rows; running twice changes nothing', () => {
+  hook(subAuth('SUCCESS', { txn: 99 }));
+  hook();
+  const pay = sheets.Payments;
+  // Simulate a row + header written by the previous version (no new columns, no lp_name).
+  const oldWidth = pay.rows[0].indexOf('payment_channel');
+  pay.rows[0] = pay.rows[0].slice(0, oldWidth);
+  pay.rows[1] = pay.rows[1].slice(0, oldWidth).map((v, i) => (['payment_method', 'lp_name'].includes(pay.rows[0][i]) ? '' : v));
+  assert.equal(ctx.backfill(), 1);
+  const [p] = payments();
+  assert.equal(p.lp_name, 'home');
+  assert.equal(p.upi_id, 'buyer@oksbi');
+  assert.equal(p.payment_method, 'upi');
+  assert.equal(ctx.backfill(), 0);
+});
+
+test('a mismatched existing header is refused instead of misplacing data', () => {
+  hook();
+  sheets.Payments.rows[0][3] = 'something_else';
+  const r = hook(form(LP_FORM, `CFPay_${LP_FORM}_zz_2`));
+  assert.equal(r.ok, false);
+  assert.match(r.error, /Header mismatch/);
+});
+
+// --- attribution from the thank-you page (Phase 2) ---
+
+const attribution = (data, secret = 'shh') =>
+  post({ secret, kind: 'attribution', received_at: 'now', data: { order_id: ORDER, ...data } });
+const AD = {
+  thank_you_page: '/thank-you', landing_lp: 'home', landing_url: 'https://super.aifiesta.ai/?utm_source=fb',
+  referrer: '', landed_at: '2026-11-06T10:00:00.000Z', utm_source: 'fb', utm_medium: 'Facebook_Mobile_Feed',
+  utm_campaign: 'Diwali', utm_content: 'adset 1', ad_id: '120212345678901234', adset_content: 'ad name', fbclid: 'IwAR1',
+};
+
+test('attribution needs the shared secret', () => {
+  assert.equal(attribution(AD, 'bad').ok, false);
+  assert.deepEqual(Object.keys(sheets), []);
+});
+
+test('attribution before the webhook: kept in Attribution, copied when the order arrives', () => {
+  assert.deepEqual(attribution(AD), { ok: true, stored: 'attribution' });
+  hook();
+  const [p] = payments();
+  assert.equal(p.utm_source, 'fb');
+  assert.equal(p.utm_campaign, 'Diwali');
+  assert.equal(p.adset_content, 'ad name');
+  assert.equal(p.landing_lp, 'home');
+  assert.equal(p.fbclid, 'IwAR1');
+  assert.equal(p.attribution, 'ad');
+  assert.equal(p.ad_id, "'120212345678901234"); // stays text: 18 digits would be rounded as a number
+});
+
+test('attribution after the webhook fills the existing row', () => {
+  hook();
+  attribution(AD);
+  assert.equal(payments()[0].utm_campaign, 'Diwali');
+});
+
+test('first attribution per order wins', () => {
+  attribution(AD);
+  assert.equal(attribution({ ...AD, utm_campaign: 'other' }).stored, 'duplicate');
+  hook();
+  assert.equal(payments()[0].utm_campaign, 'Diwali');
+  assert.equal(sheets.Attribution.rows.length, 2);
+});
+
+test('attribution labels: organic (landing seen, no ad params) and unknown (nothing stored)', () => {
+  attribution({ thank_you_page: '/thank-you', landing_lp: 'home' });
+  hook();
+  assert.equal(payments()[0].attribution, 'organic');
+  const other = `CFPay_${LP_FORM}_cd34_2`;
+  post({ secret: 'shh', kind: 'attribution', data: { order_id: other, thank_you_page: '/thank-you' } });
+  hook(form(LP_FORM, other));
+  assert.equal(payments()[1].attribution, 'unknown');
+});
+
+test('attribution for an order id that is not ours is ignored', () => {
+  const r = post({ secret: 'shh', kind: 'attribution', data: { order_id: 'CFPay_anniversary-yearly-basic_e3_1', utm_source: 'x' } });
+  assert.equal(r.stored, 'ignored');
+  assert.equal(sheets.Attribution, undefined);
+});
+
+test('attribution text that looks like a formula stays text', () => {
+  attribution({ ...AD, utm_campaign: '=IMPORTXML("x")' });
+  hook();
+  assert.equal(payments()[0].utm_campaign, '\'=IMPORTXML("x")');
 });

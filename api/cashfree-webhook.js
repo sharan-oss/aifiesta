@@ -12,9 +12,7 @@
 // the secret token in the URL is the only gate.
 
 import { timingSafeEqual } from 'node:crypto';
-
-// Apps Script cold start + waiting for its lock can take several seconds.
-const APPS_SCRIPT_TIMEOUT_MS = 15000;
+import { forwardToAppsScript, readRawBody } from '../lib/apps-script.js';
 
 function tokenMatches(given, expected) {
   if (!given || !expected) return false;
@@ -23,22 +21,14 @@ function tokenMatches(given, expected) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-async function readRawBody(req) {
-  const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
-  const raw = Buffer.concat(chunks).toString('utf8');
-  if (raw) return raw;
-  return req.body ? (typeof req.body === 'string' ? req.body : JSON.stringify(req.body)) : '';
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false });
   }
 
-  const { CASHFREE_WEBHOOK_TOKEN, APPS_SCRIPT_URL, APPS_SCRIPT_SECRET } = process.env;
-  if (!CASHFREE_WEBHOOK_TOKEN || !APPS_SCRIPT_URL || !APPS_SCRIPT_SECRET) {
+  const { CASHFREE_WEBHOOK_TOKEN } = process.env;
+  if (!CASHFREE_WEBHOOK_TOKEN) {
     console.error('cashfree-webhook: missing env vars');
     return res.status(500).json({ ok: false });
   }
@@ -52,19 +42,7 @@ export default async function handler(req, res) {
   if (!raw) return res.status(400).json({ ok: false });
 
   try {
-    const upstream = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        secret: APPS_SCRIPT_SECRET,
-        raw,
-        received_at: new Date().toISOString(),
-      }),
-      redirect: 'follow',
-      signal: AbortSignal.timeout(APPS_SCRIPT_TIMEOUT_MS),
-    });
-    const result = await upstream.json();
-    if (!result.ok) throw new Error(`apps script: ${result.error || 'not ok'}`);
+    await forwardToAppsScript({ raw });
     return res.status(200).json({ ok: true });
   } catch (err) {
     // 500 -> Cashfree retries. The raw body is in the log in case all retries fail.
