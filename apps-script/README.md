@@ -38,15 +38,19 @@ Apps Script editor and redeploy.
 
 | Tab | Contents |
 |---|---|
-| `Payments_Raw` | every delivery exactly as received (audit, includes duplicates and non-landing-page events) |
+| `Payments_Raw` | every delivery for our landing-page forms exactly as received (audit, includes duplicates and subscription events) |
 | `Payments` | one row per `order_id` + `status` (`SUCCESS` is stored as `PAID`), parsed, with the tag columns |
 
 The form webhook and the PG success webhook report the same payment, so they merge into one row; the
 later one only fills cells the earlier one left blank (e.g. the tags).
 
-PG webhooks are account-wide, so they include app checkout payments too. Those are kept in
-`Payments_Raw` only; `Payments` gets an order only if it has our tags (`lead_id`/`lp_name`) or a
-payment-form order id (`CFPay_…`).
+Cashfree sends every form and payment on the client's account. Only our landing-page forms are kept
+(`LP_FORMS` in `Code.gs`: `am-ads-yearly-basic-plan`, `am-yearly-basic-plan-ga`, `am-yearly-basic-plan-meta`);
+everything else gets a 200 and is not stored anywhere. Their subscription events (autopay auth
+success/failed) go to `Payments_Raw` only, because they carry no customer details. Adding a landing page
+means adding its form id to `LP_FORMS` and redeploying.
+
+Rows written before this filter existed: run `removeOtherForms()` once from the Apps Script editor.
 
 ## Landing-page params (order_tags)
 
@@ -66,7 +70,9 @@ If Cashfree changes this behaviour, the tag columns go blank; `lead_id` + our Le
 - If every retry fails, the raw body is in the Vercel function logs (search `cashfree-webhook failed`).
 - Cashfree's docs conflict on whether form webhooks fire for failed payments, not just paid ones.
   The PG failed / user-dropped events cover that either way.
-- Whether the form webhook itself includes `order_tags` is unknown; the PG events do (per their docs).
+- The form webhook does **not** include `order_tags` (checked on 265 real deliveries), and these forms are
+  subscription checkouts, so no PG events arrive for them. UTMs need another route back (thank-you page or a
+  prefilled form field).
 - Someone who opens the Cashfree form and leaves without pressing Pay creates no order, so no event.
 
 ## Tests

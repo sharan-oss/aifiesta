@@ -12,10 +12,17 @@
  *   Payments_Raw   every delivery, untouched, for audit
  *   Payments       one row per (order_id, status), parsed
  *
- * Handles the Payment Forms webhook and the PG payment webhooks. Form orders
- * carry our landing-page params as order_tags: the Cashfree form turns extra
- * URL params (max 10) into order_tags (undocumented, seen in their JS).
+ * Cashfree sends every form on the account; only our landing-page forms
+ * (LP_FORMS) are kept, everything else is acknowledged and dropped.
+ * Their subscription events (autopay auth success/failed) go to Payments_Raw
+ * only: they carry no customer details.
+ *
+ * One-time cleanup of rows from other forms: run removeOtherForms() from the
+ * Apps Script editor.
  */
+
+// Cashfree form ids of our landing pages.
+var LP_FORMS = ['am-ads-yearly-basic-plan', 'am-yearly-basic-plan-ga', 'am-yearly-basic-plan-meta'];
 
 var RAW_TAB = 'Payments_Raw';
 var PAYMENTS_TAB = 'Payments';
@@ -50,6 +57,7 @@ function doPost(e) {
     }
 
     var payload = JSON.parse(body.raw);
+    if (!isOurs_(payload)) return json_({ ok: true, stored: 'ignored' });
     var p = parse_(payload);
     var key = p ? p.order_id + '|' + p.status : '';
     var receivedAt = body.received_at || new Date().toISOString();
@@ -116,10 +124,6 @@ function parse_(payload) {
     var pay = d.payment || {};
     var cust = d.customer_details || {};
     var tags = order.order_tags || null;
-    // PG webhooks are account-wide (app checkout too). Keep only landing-page
-    // orders: tagged by our links, or created by a payment form (CFPay_ ids).
-    var fromLp = (tags && (tags.lead_id || tags.lp_name)) || /^CFPay_/.test(order.order_id);
-    if (!fromLp) return null;
     var err = pay.error_details || {};
     return {
       order_id: order.order_id, status: status_(pay.payment_status), payment_id: pay.cf_payment_id || '',
@@ -131,6 +135,74 @@ function parse_(payload) {
     };
   }
   return null;
+}
+
+// Is this event about one of our landing-page forms?
+function isOurs_(payload) {
+  var d = payload.data || {};
+  var type = payload.type || '';
+  if (type === FORM_EVENT) {
+    return LP_FORMS.indexOf((d.form || {}).form_id) !== -1;
+  }
+  if (type.indexOf('SUBSCRIPTION_') === 0) {
+    // subscription_id looks like form_<n>_<form id>
+    var m = /^form_\d+_(.+)$/.exec(d.subscription_id || '');
+    return !!m && LP_FORMS.indexOf(m[1]) !== -1;
+  }
+  if (PG_EVENTS.indexOf(type) !== -1) {
+    var order = d.order || {};
+    var tags = order.order_tags || {};
+    if (tags.lead_id || tags.lp_name) return true;
+    // Form order ids look like CFPay_<form id>_<hex>_<n>
+    return LP_FORMS.some(function (f) { return String(order.order_id || '').indexOf('CFPay_' + f + '_') === 0; });
+  }
+  return false;
+}
+
+// Run once by hand (Apps Script editor > removeOtherForms > Run): drops rows
+// written before LP_FORMS filtering, from both tabs.
+function removeOtherForms() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var raw = ss.getSheetByName(RAW_TAB);
+    if (raw) {
+      var rawCol = RAW_HEADERS.indexOf('raw_body');
+      keepRows_(raw, function (r) {
+        try { return isOurs_(JSON.parse(r[rawCol])); } catch (e) { return false; }
+      });
+    }
+    var pay = ss.getSheetByName(PAYMENTS_TAB);
+    if (pay) {
+      var formCol = PAYMENT_HEADERS.indexOf('form_id');
+      var orderCol = PAYMENT_HEADERS.indexOf('order_id');
+      keepRows_(pay, function (r) {
+        return LP_FORMS.indexOf(r[formCol]) !== -1 ||
+          LP_FORMS.some(function (f) { return String(r[orderCol]).indexOf('CFPay_' + f + '_') === 0; });
+      });
+    }
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Rewrites a tab with the header plus the rows `keep` accepts. Values are
+// re-escaped: getValues drops the apostrophes that kept phones and
+// formula-looking text as plain text.
+function keepRows_(sh, keep) {
+  var values = sh.getDataRange().getValues();
+  var header = values[0];
+  var phoneCol = header.indexOf('phone');
+  var kept = values.slice(1).filter(keep).map(function (r) {
+    return r.map(function (v, i) {
+      if (i === phoneCol && v !== '') return phoneCell_(String(v));
+      return safe_(v);
+    });
+  });
+  sh.getRange(2, 1, Math.max(values.length - 1, 1), header.length).clearContent();
+  if (kept.length) sh.getRange(2, 1, kept.length, header.length).setValues(kept);
+  return kept.length;
 }
 
 // Form webhook says PAID, PG says SUCCESS: same thing, one row.

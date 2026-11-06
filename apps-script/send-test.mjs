@@ -9,7 +9,7 @@
 //
 // Sends: form PAID (no tags), the same again (duplicate), PG SUCCESS with tags
 // (merges into the same row), and a PG USER_DROPPED for a second order.
-// Test rows are named "TEST - delete me" with order ids starting TEST_.
+// Test rows are named "TEST - delete me" with order ids containing _TEST_ (form am-ads-yearly-basic-plan, so the filter keeps them).
 
 const url = process.argv[2];
 if (!url) {
@@ -32,7 +32,7 @@ const now = new Date().toISOString();
 
 const form = (orderId) => ({
   data: {
-    form: { form_id: 'test-form', cf_form_id: 1, form_url: 'https://payments.cashfree.com/forms/test-form', form_currency: 'INR' },
+    form: { form_id: 'am-ads-yearly-basic-plan', cf_form_id: 1, form_url: 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan', form_currency: 'INR' },
     order: {
       order_amount: 1, order_id: orderId, order_status: 'PAID', transaction_id: stamp,
       customer_details: { ...customer, customer_fields: [] }, amount_details: [],
@@ -49,8 +49,8 @@ const pg = (orderId, type, status) => ({
   event_time: now, type,
 });
 
-const A = `TEST_${stamp}_a`;
-const B = `TEST_${stamp}_b`;
+const A = `CFPay_am-ads-yearly-basic-plan_TEST_${stamp}_a`;
+const B = `CFPay_am-ads-yearly-basic-plan_TEST_${stamp}_b`;
 const steps = [
   ['form PAID', form(A), 'payment'],
   ['same again', form(A), 'duplicate'],
