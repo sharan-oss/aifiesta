@@ -45,7 +45,9 @@ The form webhook and the PG success webhook report the same payment, so they mer
 later one only fills cells the earlier one left blank (e.g. the tags).
 
 Cashfree sends every form and payment on the client's account. Only our landing-page forms are kept
-(`LP_FORMS` in `Code.gs`: `am-ads-yearly-basic-plan`, `am-yearly-basic-plan-ga`, `am-yearly-basic-plan-meta`);
+(`LP_NAMES` in `Code.gs`, mirrored by `LP_FORM_IDS` in `lib/apps-script.js`: the current `*-offer` forms plus the
+previous `am-ads-yearly-basic-plan`, `am-yearly-basic-plan-ga`, `am-yearly-basic-plan-meta`). Order ids embed only
+the first 25 characters of the form id (`am-ads-yearly-basic-plan-offer` -> `CFPay_am-ads-yearly-basic-plan-_…`);
 everything else gets a 200 and is not stored anywhere. Their subscription events (autopay auth
 success/failed) go to `Payments_Raw` only, because they carry no customer details. Adding a landing page
 means adding its form id to `LP_FORMS` and redeploying.

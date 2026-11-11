@@ -64,3 +64,13 @@ test('500 when Apps Script fails or is unreachable', async () => {
   globalThis.fetch = async () => { throw new Error('network'); };
   assert.equal((await call()).status, 500);
 });
+
+test('new offer forms: their truncated order ids are accepted', async () => {
+  for (const order_id of [
+    'CFPay_am-ads-yearly-basic-plan-_01ea_1794384828921',
+    'CFPay_am-yearly-basic-plan-ga-o_7416_1794384834388',
+    'CFPay_am-yearly-basic-plan-meta_f9db_1794384831690',
+  ]) {
+    assert.equal((await call({ body: JSON.stringify({ order_id }) })).status, 200, order_id);
+  }
+});

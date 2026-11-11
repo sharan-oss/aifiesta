@@ -31,13 +31,23 @@
  * date-time). Set File > Settings > Time zone to India to match.
  */
 
-// Cashfree form id -> landing page. Each landing page has its own form.
+// Cashfree form id -> landing page. Each landing page links to its own form.
+// Old forms stay listed: late autopay events and in-flight buyers still use them.
 var LP_NAMES = {
+  'am-ads-yearly-basic-plan-offer': 'home',
+  'am-yearly-basic-plan-ga-offer': 'ga',
+  'am-yearly-basic-plan-meta-offer': 'meta',
   'am-ads-yearly-basic-plan': 'home',
   'am-yearly-basic-plan-ga': 'ga',
   'am-yearly-basic-plan-meta': 'meta',
 };
 var LP_FORMS = Object.keys(LP_NAMES);
+
+// Cashfree order ids embed only the first 25 chars of the form id:
+// am-ads-yearly-basic-plan-offer -> CFPay_am-ads-yearly-basic-plan-_01ea_1794384828921
+function orderPrefix_(formId) {
+  return 'CFPay_' + formId.slice(0, 25) + '_';
+}
 
 var TZ = 'Asia/Kolkata';
 var TIME_COLUMNS = ['received_at', 'event_time', 'paid_at', 'landed_at'];
@@ -200,8 +210,7 @@ function isOurs_(payload) {
     var order = d.order || {};
     var tags = order.order_tags || {};
     if (tags.lead_id || tags.lp_name) return true;
-    // Form order ids look like CFPay_<form id>_<hex>_<n>
-    return LP_FORMS.some(function (f) { return String(order.order_id || '').indexOf('CFPay_' + f + '_') === 0; });
+    return LP_FORMS.some(function (f) { return String(order.order_id || '').indexOf(orderPrefix_(f)) === 0; });
   }
   return false;
 }
@@ -226,7 +235,7 @@ function removeOtherForms() {
       var orderCol = PAYMENT_HEADERS.indexOf('order_id');
       keepRows_(pay, function (r) {
         return LP_FORMS.indexOf(r[formCol]) !== -1 ||
-          LP_FORMS.some(function (f) { return String(r[orderCol]).indexOf('CFPay_' + f + '_') === 0; });
+          LP_FORMS.some(function (f) { return String(r[orderCol]).indexOf(orderPrefix_(f)) === 0; });
       });
     }
   } finally {
@@ -291,7 +300,7 @@ function findRow_(sh, text, column) {
 function lpName_(formId, orderId) {
   if (LP_NAMES[formId]) return LP_NAMES[formId];
   for (var i = 0; i < LP_FORMS.length; i++) {
-    if (String(orderId || '').indexOf('CFPay_' + LP_FORMS[i] + '_') === 0) return LP_NAMES[LP_FORMS[i]];
+    if (String(orderId || '').indexOf(orderPrefix_(LP_FORMS[i])) === 0) return LP_NAMES[LP_FORMS[i]];
   }
   return '';
 }

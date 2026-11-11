@@ -5,10 +5,8 @@
 //
 // Env (Vercel): APPS_SCRIPT_URL, APPS_SCRIPT_SECRET
 
-import { forwardToAppsScript, readRawBody } from '../lib/apps-script.js';
+import { LP_ORDER_ID, forwardToAppsScript, readRawBody } from '../lib/apps-script.js';
 
-// Order ids of our three landing-page forms (same list as LP_NAMES in apps-script/Code.gs).
-const ORDER_ID = /^CFPay_(am-ads-yearly-basic-plan|am-yearly-basic-plan-ga|am-yearly-basic-plan-meta)_[A-Za-z0-9]+_\d+$/;
 const FIELDS = [
   'thank_you_page', 'landing_lp', 'landing_url', 'referrer', 'landed_at',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
@@ -27,7 +25,7 @@ export default async function handler(req, res) {
   if (!raw || raw.length > MAX_BODY) return res.status(400).json({ ok: false });
   let body;
   try { body = JSON.parse(raw); } catch { return res.status(400).json({ ok: false }); }
-  if (!body || typeof body.order_id !== 'string' || !ORDER_ID.test(body.order_id)) {
+  if (!body || typeof body.order_id !== 'string' || !LP_ORDER_ID.test(body.order_id)) {
     return res.status(400).json({ ok: false });
   }
 

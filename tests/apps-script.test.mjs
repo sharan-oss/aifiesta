@@ -428,3 +428,38 @@ test('convertTimesToIst rewrites old ISO cells once and leaves the rest', () => 
   assert.equal(payments()[0].order_id, ORDER); // other columns untouched
   assert.equal(ctx.convertTimesToIst(), 0);
 });
+
+// --- new "-offer" forms (order ids embed only the first 25 chars of the form id) ---
+
+const NEW_FORMS = [
+  ['am-ads-yearly-basic-plan-offer', 'home', 'CFPay_am-ads-yearly-basic-plan-_01ea_1794384828921'],
+  ['am-yearly-basic-plan-ga-offer', 'ga', 'CFPay_am-yearly-basic-plan-ga-o_7416_1794384834388'],
+  ['am-yearly-basic-plan-meta-offer', 'meta', 'CFPay_am-yearly-basic-plan-meta_f9db_1794384831690'],
+];
+
+test('new offer forms are kept, with the right lp_name', () => {
+  for (const [f, , id] of NEW_FORMS) assert.equal(hook(form(f, id)).stored, 'payment', f);
+  assert.deepEqual(payments().map((r) => [r.form_id, r.lp_name]), NEW_FORMS.map(([f, lp]) => [f, lp]));
+});
+
+test('new offer forms: autopay events count as ours', () => {
+  assert.equal(hook(sub('SUBSCRIPTION_PAYMENT_FAILED', 'form_132583620_am-ads-yearly-basic-plan-offer')).stored, 'raw_only');
+});
+
+test('new offer forms: truncated order ids are recognised (PG events, attribution, lp_name)', () => {
+  for (const [, lp, id] of NEW_FORMS) {
+    assert.equal(hook(pg('PAYMENT_SUCCESS_WEBHOOK', 'SUCCESS', { order_id: id, order_tags: null })).stored, 'payment', id);
+    assert.equal(post({ secret: 'shh', kind: 'attribution', data: { order_id: id, utm_source: 'fb' } }).stored, 'attribution', id);
+    assert.equal(ctx.lpName_('', id), lp, id);
+  }
+});
+
+test('old forms still count after the switch', () => {
+  assert.equal(hook(form('am-yearly-basic-plan-ga', 'CFPay_am-yearly-basic-plan-ga_0347_1793879286610')).stored, 'payment');
+  assert.equal(payments()[0].lp_name, 'ga');
+});
+
+test('Code.gs LP_NAMES and lib/apps-script.js LP_FORM_IDS list the same forms', async () => {
+  const { LP_FORM_IDS } = await import('../lib/apps-script.js');
+  assert.deepEqual(Object.keys(ctx.LP_NAMES).sort(), [...LP_FORM_IDS].sort());
+});
