@@ -134,9 +134,10 @@ test('all three landing-page forms are kept', () => {
   assert.equal(payments().length, 3);
 });
 
-test('other forms on the account are acknowledged but not stored anywhere', () => {
+test('other forms on the account are acknowledged, not stored, only logged in Ignored', () => {
   assert.deepEqual(hook(form('anniversary-yearly-basic', 'CFPay_anniversary-yearly-basic_e3_1')), { ok: true, stored: 'ignored' });
-  assert.deepEqual(Object.keys(sheets), []);
+  assert.deepEqual(Object.keys(sheets), ['Ignored']);
+  assert.equal(sheets.Ignored.rows.length, 2);
 });
 
 test('subscription events: ours go to raw only, others are ignored', () => {
@@ -524,4 +525,56 @@ test('profile: first tap creates the order row, second fills the other answer', 
 test('profile: other forms are ignored', () => {
   assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id: 'CFPay_anniversary-yearly-basic_e346_1', persona: 'Student' } }).stored, 'ignored');
   assert.equal(sheets.Profiles, undefined);
+});
+
+// --- forms without a reference id: the order webhook's form_id is empty ---
+// Cashfree's form webhook puts the form's reference_id in data.form.form_id. The new
+// "-offer" forms have none, so form_id arrives empty/null; the form URL and the order id
+// still name the form.
+
+const noRefForm = (slug, orderId, formId = null) => {
+  const f = form(slug, orderId);
+  f.data.form.form_id = formId;
+  f.data.form.form_url = `https://payments.cashfree.com/forms/${slug}`;
+  return f;
+};
+
+test('order webhook with an empty form_id is recognised by its form URL', () => {
+  const id = 'CFPay_am-ads-yearly-basic-plan-_0ded_1794403662243';
+  assert.equal(hook(noRefForm('am-ads-yearly-basic-plan-offer', id)).stored, 'payment');
+  const [p] = payments();
+  assert.equal(p.order_id, id);
+  assert.equal(p.form_id, 'am-ads-yearly-basic-plan-offer');
+  assert.equal(p.lp_name, 'home');
+});
+
+test('order webhook with no form_id and no URL is recognised by its order id', () => {
+  const f = noRefForm('x', 'CFPay_am-yearly-basic-plan-ga-o_ca67_1794395999947');
+  delete f.data.form.form_url;
+  assert.equal(hook(f).stored, 'payment');
+  assert.equal(payments()[0].lp_name, 'ga');
+});
+
+test('a reference id that differs from the URL still counts when the URL is ours', () => {
+  assert.equal(hook(noRefForm('am-yearly-basic-plan-meta-offer', 'CFPay_am-yearly-basic-plan-meta_f9db_1', 'some-ref')).stored, 'payment');
+  assert.equal(payments()[0].form_id, 'am-yearly-basic-plan-meta-offer');
+});
+
+test('other forms without a reference id are still ignored, and logged without personal data', () => {
+  const f = noRefForm('sx-ads-yearly-basic-plan-offer', 'CFPay_sx-ads-yearly-basic-plan-o_aa_1');
+  assert.equal(hook(f).stored, 'ignored');
+  assert.equal(sheets.Payments, undefined);
+  const [h, row] = sheets.Ignored.rows;
+  const r = Object.fromEntries(h.map((k, i) => [k, row[i]]));
+  assert.equal(r.type, 'PAYMENT_FORM_ORDER_WEBHOOK');
+  assert.equal(r.form_slug, 'sx-ads-yearly-basic-plan-offer');
+  assert.equal(r.order_id, 'CFPay_sx-ads-yearly-basic-plan-o_aa_1');
+  assert.ok(!JSON.stringify(row).includes('a@b.co'));
+});
+
+test('addon forms with an empty form_id (how Cashfree sends them) are kept as payments', () => {
+  assert.equal(hook(noRefForm('am-yearly-basic-plan-meta-addon', 'CFPay_am-yearly-basic-plan-meta_51ab_1795530000000')).stored, 'payment');
+  assert.equal(hook(noRefForm('am-yearly-basic-plan-ga-addon', 'CFPay_am-yearly-basic-plan-ga-a_77cd_1795530000001')).stored, 'payment');
+  assert.deepEqual(payments().map((r) => [r.form_id, r.lp_name]), [['am-yearly-basic-plan-meta-addon', 'meta'], ['am-yearly-basic-plan-ga-addon', 'ga']]);
+  assert.equal(sheets.Ignored, undefined);
 });

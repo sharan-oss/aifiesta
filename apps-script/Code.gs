@@ -22,6 +22,11 @@
  * api/attribution.js: appended to the Attribution tab (first record per order
  * wins) and copied into the order's Payments row, whichever arrives first.
  *
+ * The order webhook's data.form.form_id is the form's *reference id*, which a
+ * form may not have (the "-offer" forms don't): forms are recognised by
+ * form_id, else the form URL, else the order id. Ignored order webhooks are
+ * logged (no personal data) in the Ignored tab, so a mismatch can't hide.
+ *
  * Run by hand from the Apps Script editor when needed:
  *   removeOtherForms()  drop rows from forms that aren't ours
  *   backfill()          fill lp_name + payment details on existing rows
@@ -61,6 +66,8 @@ var PAYMENTS_TAB = 'Payments';
 var ATTR_TAB = 'Attribution';
 var LEADS_TAB = 'Leads';
 var PROFILES_TAB = 'Profiles';
+var IGNORED_TAB = 'Ignored';
+var IGNORED_HEADERS = ['received_at', 'type', 'form_id', 'form_slug', 'order_id', 'amount'];
 
 var FORM_EVENT = 'PAYMENT_FORM_ORDER_WEBHOOK';
 var PG_EVENTS = ['PAYMENT_SUCCESS_WEBHOOK', 'PAYMENT_FAILED_WEBHOOK', 'PAYMENT_USER_DROPPED_WEBHOOK'];
@@ -123,7 +130,10 @@ function doPost(e) {
     }
 
     var payload = JSON.parse(body.raw);
-    if (!isOurs_(payload)) return json_({ ok: true, stored: 'ignored' });
+    if (!isOurs_(payload)) {
+      if (payload.type === FORM_EVENT) logIgnored_(payload, body.received_at);
+      return json_({ ok: true, stored: 'ignored' });
+    }
     var p = parse_(payload);
     var key = p ? p.order_id + '|' + p.status : '';
     var receivedAt = body.received_at || new Date().toISOString();
@@ -191,7 +201,7 @@ function parse_(payload) {
       order_id: order.order_id, status: status_(order.order_status), payment_id: order.transaction_id || '',
       amount: order.order_amount, currency: form.form_currency || '',
       name: c.customer_name || '', email: c.customer_email || '', phone: c.customer_phone || '',
-      method: '', error: '', form_id: form.form_id || '',
+      method: '', error: '', form_id: lpFormId_(d) || form.form_id || '',
       tags: order.order_tags || null, customer_fields: c.customer_fields, amount_details: order.amount_details,
     };
   }
@@ -217,9 +227,7 @@ function parse_(payload) {
 function isOurs_(payload) {
   var d = payload.data || {};
   var type = payload.type || '';
-  if (type === FORM_EVENT) {
-    return LP_FORMS.indexOf((d.form || {}).form_id) !== -1;
-  }
+  if (type === FORM_EVENT) return !!lpFormId_(d);
   if (type.indexOf('SUBSCRIPTION_') === 0) {
     // subscription_id looks like form_<n>_<form id>
     var m = /^form_\d+_(.+)$/.exec(d.subscription_id || '');
@@ -232,6 +240,44 @@ function isOurs_(payload) {
     return LP_FORMS.some(function (f) { return String(order.order_id || '').indexOf(orderPrefix_(f)) === 0; });
   }
   return false;
+}
+
+// Which of our landing-page forms an order webhook is for, or ''. form_id is the
+// form's reference id and may be empty, so fall back to the URL, then the order id.
+function lpFormId_(d) {
+  var form = d.form || {};
+  if (LP_NAMES[form.form_id]) return form.form_id;
+  var slug = formSlug_(form.form_url);
+  if (LP_NAMES[slug]) return slug;
+  var orderId = String((d.order || {}).order_id || '');
+  for (var i = 0; i < LP_FORMS.length; i++) {
+    if (orderId.indexOf(orderPrefix_(LP_FORMS[i])) === 0) return LP_FORMS[i];
+  }
+  return '';
+}
+
+// https://payments.cashfree.com/forms/<slug>?... -> <slug>
+function formSlug_(url) {
+  var m = /\/forms\/([^/?#]+)/.exec(String(url || ''));
+  return m ? m[1] : '';
+}
+
+// Order webhooks we drop, minus personal data: if one of ours is ever
+// misrecognised, it shows up here instead of vanishing.
+function logIgnored_(payload, receivedAt) {
+  var d = payload.data || {};
+  var form = d.form || {};
+  var order = d.order || {};
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    sheet_(SpreadsheetApp.getActiveSpreadsheet(), IGNORED_TAB, IGNORED_HEADERS).appendRow([
+      ist_(receivedAt || new Date().toISOString()), payload.type, form.form_id || '',
+      formSlug_(form.form_url), order.order_id || '', order.order_amount === undefined ? '' : order.order_amount,
+    ].map(safe_));
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 // Run once by hand (Apps Script editor > removeOtherForms > Run): drops rows
