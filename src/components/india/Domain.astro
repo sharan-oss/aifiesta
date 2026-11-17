@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+import { domainSteps } from '../../data/content-india';
+---
+<section class="sec dom">
+  <div class="wrap">
+    <img class="art" src="/india/domain.webp" alt="" width="150" height="150" loading="lazy" />
+    <h2 class="h2">Get your own domain, <em>free for a year</em></h2>
+    <p class="lead">Every AI Fiesta annual plan includes a <b class="plum">free custom domain worth ₹1,500</b>. Build your website with AI and go live on a name that’s yours.</p>
+    <h3>How it works:</h3>
+    <ol>
+      {domainSteps.map(([t, ic]) => <li><span><Icon name={ic} color="#a23b6b" /></span><p>{t}</p></li>)}
+    </ol>
+    <div class="cta"><a class="btn" href="#pricing" data-cta="domain">Get AI Fiesta + free domain</a></div>
+  </div>
+</section>
+<section class="sec sec--dark why-i">
+  <div class="wrap">
+    <h2 class="h2">Why I built <em>AI Fiesta</em></h2>
+    <figure>
+      <img src="/india/founder.webp" alt="Dhruv Rathee, founder of AI Fiesta" width="1200" height="1200" loading="lazy" />
+      <blockquote>
+        <Icon name="quote" color="#ffc8a4" size={30} />
+        <p>“I research and create for a living, and good AI tools kept costing more than most people in India can justify, in dollars. AI Fiesta is my answer: <b>every top model in one place</b>, <b>priced in rupees</b>. I use it myself.”</p>
+      </blockquote>
+    </figure>
+    <p class="own">AI Fiesta is built and run by Fiesta Labs Inc, owned by Dhruv Rathee, with a team of Y Combinator alumni.</p>
+  </div>
+</section>
+<style>
+  .dom { background: linear-gradient(116.03deg, #fce5d6 10.28%, var(--sand) 88.3%); display: grid; }
+  .dom .wrap { display: grid; gap: 22px; justify-items: center; max-width: 640px; }
+  .art { width: 150px; height: 150px; object-fit: contain; }
+  h3 { font-size: 21px; font-weight: 700; }
+  ol { display: grid; gap: 14px; width: 100%; list-style: none; padding: 0; }
+  ol li { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 16px; background: var(--cream); border: 1px solid var(--line); }
+  ol span { flex: none; width: 36px; height: 36px; border-radius: 12px; background: var(--lav); display: grid; place-items: center; }
+  .why-i .wrap { display: grid; gap: 24px; max-width: 760px; }
+  figure { margin: 0; border-radius: 24px; overflow: hidden; background: var(--dark-2); border: 1px solid var(--dark-line); }
+  figure img { width: 100%; height: 300px; object-fit: cover; object-position: 50% 22%; background: linear-gradient(116.03deg, var(--dark-2), var(--dark)); }
+  blockquote { margin: 0; padding: 24px; display: grid; gap: 14px; font-size: 18px; color: #fff8ef; }
+  blockquote b { color: var(--peach); }
+  .own { text-align: center; font-size: 14px; color: var(--soft); }
+  @media (min-width: 768px) { figure { display: grid; grid-template-columns: 1fr 1.3fr; } figure img { height: 100%; min-height: 280px; } }
+</style>

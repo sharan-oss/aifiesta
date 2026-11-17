@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+import { CTA_TEXT, features } from '../../data/content-india';
+---
+<section class="sec feat">
+  <div class="wrap">
+    <h2 class="h2">Every top AI. <br />Everything you create. <br /><em>One workspace.</em></h2>
+    <p class="lead">Compare answers instantly, then turn the best one into images, videos, decks and websites, all on one login.</p>
+    <div class="list">
+      {features.map((f) => (
+        <>
+          {f.group && <p class="group">{f.group}</p>}
+          <article class="card">
+            <div class="txt">
+              <h3>{f.n} · {f.title}</h3>
+              <p class="l">{f.lead}</p>
+              <ul>{f.points.map((p) => <li><Icon name="check" color="#a23b6b" size={18} />{p}</li>)}</ul>
+            </div>
+            <img src={f.img} alt={f.title} width="1280" height="720" loading="lazy" />
+          </article>
+        </>
+      ))}
+    </div>
+    <div class="cta"><a class="btn" href="#pricing" data-cta="features">{CTA_TEXT}</a></div>
+  </div>
+</section>
+<style>
+  .feat { background: linear-gradient(116.03deg, var(--lav-2) 10.28%, var(--cream) 88.3%); }
+  .lead { margin-top: 18px; }
+  .list { display: grid; gap: 18px; margin-block: 28px; }
+  .group { padding: 12px; border-radius: 12px; background: var(--lav); border: 1px solid var(--line); text-align: center; font-family: var(--font-head); font-size: 17px; font-weight: 700; color: var(--plum); }
+  .group:not(:first-child) { margin-top: 14px; }
+  .card { display: grid; gap: 16px; padding: 18px; border-radius: 22px; border: 1px solid var(--line); background: linear-gradient(116.03deg, var(--cream) 10.28%, var(--sand) 88.3%); box-shadow: 0 8px 22px rgba(20,33,69,.08); }
+  h3 { font-size: 21px; font-weight: 700; color: var(--ink); }
+  .l { color: var(--muted); margin-block: 10px 14px; }
+  li { display: flex; gap: 10px; color: var(--muted); margin-top: 8px; }
+  li svg { flex: none; margin-top: 2px; }
+  .card img { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; object-fit: cover; aspect-ratio: 16 / 9; }
+  @media (min-width: 900px) {
+    .card { grid-template-columns: 1fr 1fr; align-items: center; gap: 36px; padding: 32px; }
+    .card:nth-of-type(even) .txt { order: 2; }
+    h3 { font-size: 26px; }
+  }
+</style>

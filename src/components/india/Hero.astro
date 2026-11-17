@@ -1,0 +1,84 @@
+---
+import Icon from './Icon.astro';
+import YcBadge from '../YcBadge.astro';
+import { CTA_TEXT, heroPoints, logos } from '../../data/content-india';
+const ticker = 'Built by Y Combinator alumni · Priced for India · Latest models added automatically';
+---
+<div class="top">Available for a limited time only . Free custom domain included</div>
+<section class="hero" style="--bg: url('/india/hero-bg.webp')">
+  <div class="wrap grid">
+    <div class="copy">
+      <YcBadge />
+      <div class="stars" aria-label="5 star rating">
+        <span aria-hidden="true">★★★★★</span>
+        <p>Trusted worldwide by 1M+ users</p>
+      </div>
+      <h1>Premium ChatGPT, Claude, Gemini and <em>100+ AI Models.</em> <em>One Subscription.</em></h1>
+      <p class="sub">Access 100+ leading AI models, including premium and advanced versions, all in one subscription. Built and priced for India.</p>
+      <div class="cta d">
+        <a class="btn" href="#pricing" data-cta="hero">{CTA_TEXT} →</a>
+      </div>
+    </div>
+    <div class="media">
+      <div class="video">
+        <img src="/india/p-compare.webp" alt="Compare mode: several AI models answering one prompt" width="1280" height="720" fetchpriority="high" />
+        <span class="play" aria-hidden="true"><Icon name="play" color="#fff8ef" size={24} /></span>
+      </div>
+      <ul class="points">
+        {heroPoints.map(([b, t, ic]) => (
+          <li><img class="ic" src={ic} alt="" width="56" height="56" loading="lazy" /><p><b>{b}</b>{t}</p></li>
+        ))}
+      </ul>
+      <div class="cta m"><a class="btn" href="#pricing" data-cta="hero">{CTA_TEXT} →</a></div>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true"><div class="track">{[0, 1, 2, 3, 4, 5].map(() => <span><svg viewBox="0 0 12 16" width="11" height="14" aria-hidden="true"><path d="M7 0L0 9h5l-1 7 8-10H7z" fill="#ffaa18" /></svg>{ticker}</span>)}</div></div>
+</section>
+<section class="logos">
+  <div class="wrap row">
+    {logos.map(([n, src]) => <span class={src.includes('/india/') ? 'chip wide' : 'chip'}><img src={src} alt={n} loading="lazy" /></span>)}
+  </div>
+</section>
+<style>
+  .top { padding: 12px; background: var(--grad-cta); color: #fff8ef; text-align: center; font-size: 12px; font-weight: 600; }
+  .hero { position: relative; overflow: hidden; background: linear-gradient(116.03deg, #fce5d6 10.28%, #eee6f5 88.3%); padding-block: 30px 0;
+    background-image: var(--bg), linear-gradient(116.03deg, #fce5d6 10.28%, #eee6f5 88.3%); background-size: cover, auto; background-position: center top; }
+  .grid { display: grid; gap: 22px; padding-bottom: 36px; }
+  .copy { display: grid; justify-items: center; text-align: center; gap: 14px; }
+  .stars { display: grid; justify-items: center; gap: 2px; }
+  .stars span { color: #ffaa18; letter-spacing: 3px; font-size: 16px; }
+  .stars p { font-size: 12px; }
+  h1 { font-size: clamp(32px, 8.6vw, 56px); line-height: 1.1; font-weight: 700; color: var(--ink); letter-spacing: -.015em; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, #d4147f, #e9198f); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 :global(em .w) { -webkit-text-fill-color: transparent; }
+  .sub { color: var(--muted); max-width: 34em; }
+  .video { position: relative; border: 1px solid var(--line); border-radius: 20px; background: var(--cream); overflow: hidden; aspect-ratio: 16 / 9; }
+  .video img { width: 100%; height: 100%; object-fit: cover; }
+  .play { position: absolute; inset: 0; margin: auto; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(116.03deg, #a23b6b 10.28%, #785699 88.3%); }
+  .points { display: grid; gap: 14px; margin-top: 22px; }
+  .points li { display: flex; align-items: center; gap: 12px; }
+  .points p { font-size: 15px; color: var(--ink); }
+  .points b { color: var(--plum); }
+  .ic { flex: none; width: 56px; height: 56px; object-fit: contain; }
+  .media .cta { margin-top: 22px; }
+  .d { display: none; }
+  .ticker { background: #000; overflow: hidden; }
+  .track { display: flex; width: max-content; padding: 10px 0; animation: slide 45s linear infinite; }
+  .track span { display: inline-flex; align-items: center; gap: 8px; padding-right: 40px; font-size: 12px; font-weight: 500; color: #faf2ec; white-space: nowrap; }
+  @keyframes slide { to { transform: translateX(-33.3333%); } }
+  .logos { background: linear-gradient(116.03deg, #eee6f5 10.28%, #faf2ec 88.3%); padding-block: 24px; }
+  .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 20px; }
+  .chip { width: 44px; height: 44px; border-radius: 12px; background: #fff; display: grid; place-items: center; }
+  .chip img { width: 30px; height: 30px; object-fit: contain; }
+  .chip.wide { width: 100px; height: 44px; } .chip.wide img { width: 100%; height: 100%; object-fit: contain; }
+  @media (prefers-reduced-motion: reduce) { .track { animation: none; } }
+  @media (min-width: 900px) {
+    .hero { padding-top: 56px; }
+    .grid { grid-template-columns: 1fr 1fr; align-items: center; gap: 56px; padding-bottom: 64px; }
+    .copy { justify-items: start; text-align: left; }
+    .copy .stars { justify-items: start; }
+    .d { display: grid; margin: 8px 0 0; max-width: 380px; margin-inline: 0; }
+    .media .cta.m { display: none; }
+    .logos .row { gap: 28px; }
+  }
+</style>

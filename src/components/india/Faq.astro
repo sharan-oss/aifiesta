@@ -1,0 +1,49 @@
+---
+import Icon from './Icon.astro';
+import { CTA_TEXT, faqs } from '../../data/content-india';
+import { modelGroups } from '../../data/models-list';
+---
+<section class="sec faq">
+  <div class="wrap">
+    <h2 class="h2">Got questions about <br />AI Fiesta?</h2>
+    <p class="lead">Find answers to commonly asked questions.</p>
+    <div class="list">
+      {faqs.map(({ q, a, models }, i) => (
+        <details open={i === 0}>
+          <summary><span>{q}</span><i class="p"><Icon name="plus" color="#a23b6b" size={24} /></i><i class="m"><Icon name="minus" color="#a23b6b" size={24} /></i></summary>
+          <p>{a}</p>
+          {models && modelGroups.map((g) => <p class="models"><b>{g.title}:</b> {g.models.join(', ')}</p>)}
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<section class="sec sec--dark final">
+  <div class="wrap">
+    <h2 class="h2">Stop juggling <em>multiple subscriptions.</em></h2>
+    <p class="big">100+ premium AI models. One login. ₹667 a month.</p>
+    <div class="cta"><a class="btn" href="#pricing" data-cta="final">{CTA_TEXT}</a></div>
+  </div>
+</section>
+<footer class="legal">
+  <div class="wrap">
+    <p>This website is owned and operated by Fiesta Labs Inc, a company registered in the United States in the State of Delaware, under registration/file number 10287861. Fiesta Labs Inc is owned by Dhruv Rathee. Unless expressly stated otherwise, we are not affiliated with, endorsed by, or acting on behalf of any government agency, public authority, or unrelated third-party organization referenced on this website. Contact: <a href="mailto:admin@aifiesta.ai">admin@aifiesta.ai</a></p>
+  </div>
+</footer>
+<style>
+  .faq { background: linear-gradient(116.03deg, var(--cream) 10.28%, var(--lav-2) 88.3%); }
+  .lead { margin-top: 14px; }
+  .list { display: grid; gap: 12px; max-width: 760px; margin: 28px auto 0; }
+  details { padding: 16px; border-radius: 16px; background: var(--cream); border: 1px solid var(--line); }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 700; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary i { display: flex; flex: none; }
+  details:not([open]) .m, details[open] .p { display: none; }
+  details p { margin-top: 12px; color: var(--muted); }
+  .models { font-size: 14px; }
+  .final .wrap { display: grid; gap: 22px; justify-items: center; text-align: center; }
+  .big { font-family: var(--font-head); font-size: clamp(18px, 3.4vw, 24px); font-weight: 700; color: var(--soft); }
+  .legal { background: linear-gradient(116.03deg, var(--sand), var(--cream)); padding-block: 32px calc(32px + env(safe-area-inset-bottom)); }
+  .legal p { font-size: 12px; color: var(--muted); }
+  .legal a { text-decoration: underline; }
+</style>

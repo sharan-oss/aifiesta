@@ -1,0 +1,71 @@
+---
+import Icon from './Icon.astro';
+import { CTA_TEXT, compareRows, compareFeatures } from '../../data/content-india';
+---
+<section class="sec cmp">
+  <div class="wrap">
+    <h2 class="h2">Stop paying for AI in dollars, <em>one app at a time.</em></h2>
+    <p class="lead">Five top tools cost ₹10,948 a month when bought separately. One AI Fiesta subscription gives you all of them and 100+ more for ₹667 a month [Billed yearly ₹7,999/-]</p>
+    <div class="table" role="table" aria-label="AI Fiesta compared with paying separately">
+      <div class="r head" role="row">
+        <div></div>
+        <div class="old"><b>✕</b>The old way: paying separately</div>
+        <div class="new"><b>✓</b>The AI Fiesta way</div>
+      </div>
+      {compareRows.map(([n, ic, p]) => (
+        <div class="r" role="row">
+          <div class="c name"><img src={ic} alt="" width="18" height="18" loading="lazy" />{n}</div>
+          <div class="c mid">{p}</div>
+          <div class="c inc"><b>Included</b></div>
+        </div>
+      ))}
+      {compareFeatures.map(([n, o, w]) => (
+        <div class="r" role="row">
+          <div class="c name">{n}</div>
+          <div class="c mid">{o === 'Not included' || o === 'No' ? <><Icon name="x" color="#db3446" size={14} /><span>{o}</span></> : o}</div>
+          <div class="c inc"><b>{w}</b></div>
+        </div>
+      ))}
+      <div class="r total" role="row">
+        <div class="c name">Total per month</div>
+        <div class="c mid"><b class="bad">₹10,948</b></div>
+        <div class="c inc"><b class="ok">₹667<small>(billed ₹7,999/year)</small></b></div>
+      </div>
+      <div class="r total" role="row">
+        <div class="c name">Total per year</div>
+        <div class="c mid"><b class="bad big">₹1,31,376</b></div>
+        <div class="c inc"><b class="ok big">₹7,999</b></div>
+      </div>
+    </div>
+    <div class="save">
+      <img src="/india/vault.webp" alt="" width="200" height="200" loading="lazy" />
+      <p>You save over <b>₹1,23,377</b> every year, with more models, more features and a smarter workflow than paying separately.</p>
+      <div class="cta"><a class="btn" href="#pricing" data-cta="compare">{CTA_TEXT}</a></div>
+    </div>
+  </div>
+</section>
+<style>
+  .cmp { background: linear-gradient(116.03deg, var(--cream) 10.28%, var(--lav-2) 88.3%); }
+  .lead { margin-top: 18px; }
+  .table { max-width: 760px; margin: 28px auto 0; border: 1px solid var(--line); border-radius: 18px; background: var(--cream); overflow: hidden; }
+  .r { display: grid; grid-template-columns: 1.15fr 1fr 1.05fr; border-top: 1px solid var(--line); }
+  .r:first-child { border-top: 0; }
+  .r:nth-child(even):not(.head) .name, .r:nth-child(even):not(.head) .mid { background: var(--sand); }
+  .head > div { padding: 14px 10px; font-size: 13px; font-weight: 700; text-align: center; display: grid; align-content: center; gap: 2px; }
+  .head .old { background: #fae1e2; color: #a64b5f; } .head .old b { color: #ff0038; }
+  .head .new { background: var(--dark); color: #fff8ef; } .head .new b { color: var(--ok); }
+  .c { padding: 16px 10px; font-size: 13px; display: flex; align-items: center; gap: 6px; min-height: 64px; }
+  .name { font-weight: 700; gap: 8px; }
+  .name img { width: 18px; height: 18px; flex: none; }
+  .mid { color: var(--muted); }
+  .inc { background: var(--lav); justify-content: center; text-align: center; }
+  .inc b { color: var(--ink); }
+  .total .mid { justify-content: center; } .total .bad { color: var(--bad); } .total .ok { color: var(--ok); }
+  .total small { display: block; font-size: 10px; }
+  .big { font-size: 20px; }
+  .save { max-width: 760px; margin: 24px auto 0; display: grid; gap: 20px; justify-items: center; padding: 24px 20px; border-radius: 20px; background: linear-gradient(116.03deg, var(--dark-2) 10.28%, var(--dark) 88.3%); text-align: center; }
+  .save img { width: min(240px, 60%); height: auto; }
+  .save p { font-family: var(--font-head); font-size: clamp(19px, 3.4vw, 26px); font-weight: 700; color: var(--peach); }
+  .save b { color: var(--sand); }
+  @media (min-width: 768px) { .c { padding: 20px 20px; font-size: 15px; } .head > div { font-size: 15px; padding: 18px; } .big { font-size: 26px; } }
+</style>

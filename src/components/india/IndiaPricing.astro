@@ -1,0 +1,51 @@
+---
+import Icon from './Icon.astro';
+import { CHECKOUT_HREF, india, monthly } from '../../data/content-india';
+---
+<section class="sec sec--dark ind">
+  <div class="wrap">
+    <img class="hero-art" src="/india/rupee-phone.webp" alt="" width="260" height="260" loading="lazy" />
+    <h2 class="h2">INDIA KA AI.<br /><em>PRICED FOR INDIANS.</em></h2>
+    <ul class="pts">
+      {india.map(([t, ic]) => <li><Icon name={ic} color="#ffc8a4" size={22} /><p>{t}</p></li>)}
+    </ul>
+  </div>
+</section>
+<section class="sec price" id="pricing">
+  <div class="wrap">
+    <h2 class="h2">Everything you get, <br /><em>every month</em></h2>
+    <div class="card">
+      <p class="name">AI Fiesta Basic</p>
+      <p class="amt">₹7,999/year</p>
+      <p class="save">(₹14,999, save ₹7,000)</p>
+      <p class="per">· just ₹667/month, billed yearly</p>
+      <div class="head"><span>Every month you get</span><span>Amount</span></div>
+      <ul>
+        {monthly.map(([l, v, ic]) => <li><Icon name={ic} color="#ffc8a4" size={18} /><span>{l}</span><b>{v}</b></li>)}
+      </ul>
+      <p class="roll"><Icon name="refresh" color="#ffc8a4" />All unused tokens roll over to next month. They never expire.</p>
+      <a class="btn" href={CHECKOUT_HREF} data-cta="pricing">Get AI Fiesta »</a>
+    </div>
+  </div>
+</section>
+<style>
+  .hero-art { width: min(260px, 70%); height: auto; margin: 0 auto 12px; }
+  .pts { display: grid; gap: 12px; margin: 28px auto 0; max-width: 520px; }
+  .pts li { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: var(--dark-2); border: 1px solid var(--dark-line); }
+  .pts svg { flex: none; }
+  @media (min-width: 768px) { .pts { grid-template-columns: repeat(3, 1fr); max-width: none; } .pts li { flex-direction: column; text-align: center; padding: 28px 20px; } }
+  .price { background: linear-gradient(116.03deg, var(--sand) 10.28%, #f7e4ec 88.3%); }
+  .card { max-width: 480px; margin: 28px auto 0; display: grid; gap: 14px; padding: 24px 20px; border-radius: 24px; border: 1px solid var(--dark-line); background: linear-gradient(116.03deg, var(--dark) 10.28%, var(--dark-2) 88.3%); box-shadow: 0 8px 22px rgba(51,32,63,.16); color: #fff8ef; }
+  .name { text-align: center; font-family: var(--font-head); font-size: 21px; font-weight: 700; }
+  .amt { text-align: center; font-family: var(--font-head); font-size: clamp(36px, 9vw, 46px); font-weight: 700; line-height: 1.1; }
+  .save { justify-self: center; padding: 10px 16px; border-radius: 12px; background: var(--lav-2); color: var(--dark); font-weight: 700; font-size: 14px; }
+  .per { text-align: center; color: var(--soft); }
+  .head { display: flex; justify-content: space-between; padding: 12px 0; border-block: 1px solid var(--dark-line); font-size: 12px; font-weight: 700; }
+  .head span:last-child { color: var(--soft); }
+  li { display: flex; align-items: center; gap: 10px; padding-block: 12px; border-bottom: 1px solid var(--dark-line); color: var(--soft); }
+  li span { flex: 1; }
+  li b { font-family: var(--font-head); font-size: 21px; color: #fff8ef; }
+  .pts li { border-bottom: 1px solid var(--dark-line); padding-block: 16px; color: #fff8ef; }
+  .roll { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; background: var(--dark-2); color: var(--peach); font-size: 12px; }
+  .roll svg { flex: none; }
+</style>

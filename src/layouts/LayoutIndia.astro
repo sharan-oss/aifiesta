@@ -1,0 +1,81 @@
+---
+// Layout for the "India ka AI" LP (src/pages/india-lp). Same tracking as the other LPs, its own styles.
+import '../styles/lp-india.css';
+import GoogleTag from '../components/GoogleTag.astro';
+import MetaPixel from '../components/MetaPixel.astro';
+import Clarity from '../components/Clarity.astro';
+import CtaEvents from '../components/CtaEvents.astro';
+import CheckoutParams from '../components/CheckoutParams.astro';
+import Attribution from '../components/Attribution.astro';
+interface Props { title: string; description?: string }
+const { title, description = 'Premium ChatGPT, Claude, Gemini and 100+ AI models. One subscription, built and priced for India.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <GoogleTag />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script is:inline>document.documentElement.classList.add("js")</script>
+    <title>{title}</title>
+    <MetaPixel />
+    <Clarity />
+    <CtaEvents />
+    <CheckoutParams />
+    <Attribution />
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      // Scroll reveal: tag content blocks, fade them up once as they enter the viewport.
+      (function () {
+        if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.remove('js'); return; }
+        var sel = '.sec .lead, .cmp .table .r, .save, .ind .hero-art, .pts li, .price .card, .feat .group, .feat .card, .mod .slider, .mod .more, .dom .art, .dom h3, .dom ol li, .dom .cta, .why-i figure, .why-i .own, .rw, .whyc .list li, .faq details, .final .wrap > *, .legal p';
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var el = e.target; io.unobserve(el); el.classList.add('in');
+            setTimeout(function () { el.classList.remove('rv', 'in'); }, 1100);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+        // Headings: split into words so they rise in one by one; highlighted text gets an underline sweep.
+        function split(el) {
+          var n = 0;
+          el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+          (function walk(node) {
+            Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+              if (c.nodeType === 3) {
+                var f = document.createDocumentFragment();
+                c.textContent.split(/(\s+)/).forEach(function (p) {
+                  if (!p) return;
+                  if (/^\s+$/.test(p)) { f.appendChild(document.createTextNode(p)); return; }
+                  var w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
+                  w.style.setProperty('--i', n++); w.textContent = p; f.appendChild(w);
+                });
+                node.replaceChild(f, c);
+              } else if (c.nodeType === 1 && c.tagName !== 'BR') walk(c);
+            });
+          })(el);
+        }
+        var hio = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); hio.unobserve(e.target); } });
+        }, { threshold: 0.35 });
+        document.querySelectorAll('.h2, .hero h1').forEach(function (h) { split(h); h.classList.add('hd'); hio.observe(h); });
+        document.querySelectorAll('.sec .h2 em, .lead .plum').forEach(function (m) { m.classList.add('mk'); hio.observe(m); });
+        document.querySelectorAll(sel).forEach(function (el) {
+          var i = Array.prototype.indexOf.call(el.parentNode.children, el);
+          el.style.setProperty('--d', Math.min(i, 5) * 0.07 + 's');
+          el.classList.add('rv'); io.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

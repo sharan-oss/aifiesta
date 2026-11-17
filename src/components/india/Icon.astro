@@ -1,0 +1,24 @@
+---
+// Small stroke icons used across the India LP (Figma 1.7px stroke style).
+interface Props { name: string; color?: string; size?: number }
+const { name, color = 'currentColor', size = 20 } = Astro.props;
+const paths: Record<string, string> = {
+  check: 'M4 10.5l4 4 8-9',
+  compare: 'M3 5h7v10H3zM12 5h5v10h-5z',
+  workspace: 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z',
+  rupee: 'M4.17 3.33H15.83M4.17 6.67H15.83M7.5 3.33C8.6 3.33 9.66 3.77 10.45 4.55C11.03 5.14 11.42 5.87 11.58 6.67M11.58 6.67C11.64 6.94 11.67 7.22 11.67 7.5C11.67 8.61 11.23 9.66 10.45 10.45C9.66 11.23 8.61 11.67 7.5 11.67H5.84L13.33 17.5',
+  team: 'M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM4 17v-1.5A4.5 4.5 0 0 1 8.5 11h3a4.5 4.5 0 0 1 4.5 4.5V17',
+  globe: 'M10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM3 10h14M10 3c2 2 3 4.5 3 7s-1 5-3 7c-2-2-3-4.5-3-7s1-5 3-7z',
+  spark: 'M10 2l1.8 5.2L17 9l-5.2 1.8L10 16l-1.8-5.2L3 9l5.2-1.8z',
+  image: 'M4 5h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM7 9a1.5 1.5 0 1 0 0-.01M3 14l4-4 3 3 3-3 4 4',
+  play: 'M7 4.5l9 5.5-9 5.5z',
+  grid: 'M3 3h5v5H3zM12 3h5v5h-5zM3 12h5v5H3zM12 12h5v5h-5z',
+  book: 'M4 3h5a1 1 0 0 1 1 1v13a1 1 0 0 0-1-1H4zM16 3h-5a1 1 0 0 0-1 1v13a1 1 0 0 1 1-1h5z',
+  refresh: 'M16 6a7 7 0 0 0-12 1M4 3v4h4M4 14a7 7 0 0 0 12-1M16 17v-4h-4',
+  quote: 'M4 13V9c0-3 1.5-5 5-5v2c-2 .5-2.5 1.5-2.5 3H9v4zM12 13V9c0-3 1.5-5 5-5v2c-2 .5-2.5 1.5-2.5 3H17v4z',
+  plus: 'M10 4v12M4 10h12',
+  minus: 'M4 10h12',
+  x: 'M5 5l10 10M15 5L5 15',
+};
+---
+<svg width={size} height={size} viewBox="0 0 20 20" fill="none" stroke={color} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={paths[name]} /></svg>

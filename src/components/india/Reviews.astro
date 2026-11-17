@@ -1,0 +1,115 @@
+---
+import Icon from './Icon.astro';
+import { audience, reviews, why } from '../../data/content-india';
+// Gradient-stroke icons for the audience cards (24px grid), same order as `audience`.
+const aud = [
+  'M4 8h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8M3 13h18M10.5 13v2h3v-2',
+  'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5',
+  'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z',
+  'M22 10L12 5 2 10l10 5 10-5zM6 12v5c3 2 9 2 12 0v-5M22 10v6',
+];
+---
+<section class="sec aud">
+  <div class="wrap">
+    <h2 class="h2">Built for <em>Indians</em> who can’t afford to <em>fall behind</em> &amp; get affected by price disparity in dollar pricing:</h2>
+  </div>
+  <div class="rw">
+    <ul class="rail">
+      {audience.map(([t, d], i) => (
+        <li class="a">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke={`url(#ag${i})`} stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <defs><linearGradient id={`ag${i}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0145a" /><stop offset="1" stop-color="#7b2ff7" /></linearGradient></defs>
+              <path d={aud[i]} />
+            </svg>
+          </span>
+          <h3>{t}</h3><p>{d}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="dots"></div>
+  </div>
+</section>
+<section class="sec rev">
+  <div class="wrap">
+    <h2 class="h2">Real reviews from <br /><em>Google Play</em> users</h2>
+  </div>
+  <div class="rw">
+    <ul class="rail dark">
+      {reviews.map(([name, text]) => (
+        <li class="r">
+          <Icon name="quote" color="#ffc8a4" size={28} />
+          <p>“{text}”</p>
+          <small>{name}, Google Play review:</small>
+        </li>
+      ))}
+    </ul>
+    <div class="dots"></div>
+  </div>
+</section>
+<section class="sec sec--dark whyc">
+  <div class="wrap">
+    <h2 class="h2">Why people choose <br /><em>AI Fiesta</em></h2>
+    <ul class="list">
+      {why.map(([t, d]) => (
+        <li><span class="tk"><Icon name="check" color="#fff8ef" size={18} /></span><p><b>{t}</b><br />{d}</p></li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .aud { background: linear-gradient(116.03deg, var(--lav-2) 10.28%, var(--sand) 88.3%); }
+  .rev { background: linear-gradient(116.03deg, var(--sand) 10.28%, #f7e4ec 88.3%); }
+  .rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 28px var(--pad) 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail > li { flex: 0 0 min(308px, 82vw); scroll-snap-align: center; }
+  .rail.dark > li { flex-basis: min(318px, 84vw); }
+  .a { display: grid; align-content: start; justify-items: center; gap: 10px; padding: 24px 20px; border-radius: 20px; background: #fff; text-align: center; min-height: 240px; }
+  .ico { position: relative; width: 86px; height: 86px; display: grid; place-items: center; }
+  .ico::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(3,0,37,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(3,0,37,.14) 1px, transparent 1px); background-size: 14px 14px; background-position: center; -webkit-mask-image: radial-gradient(circle, #000 25%, transparent 70%); mask-image: radial-gradient(circle, #000 25%, transparent 70%); }
+  .ico svg { position: relative; }
+  .dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; min-height: 9px; }
+  .dots:empty { display: none; }
+  :global(.rw .dt) { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%; background: #dccddc; cursor: pointer; transition: all .2s; }
+  :global(.rw .dt.on) { width: 9px; height: 9px; background: #a23b6b; }
+  .a h3 { font-size: 18px; color: #030025; }
+  .a p { color: var(--muted); }
+  .r { position: relative; display: grid; align-content: start; gap: 14px; padding: 22px; border-radius: 24px; border: 1px solid var(--dark-line); background: linear-gradient(116.03deg, var(--dark) 10.28%, var(--dark-2) 88.3%); color: #fff8ef; min-height: 378px; grid-template-rows: auto 1fr auto; }
+  .r p { font-size: 18px; font-weight: 500; line-height: 1.45; }
+  .r > :global(svg) { margin-bottom: 6px; }
+  .r small { align-self: end; padding-top: 14px; border-top: 1px solid var(--dark-line); color: var(--peach); font-size: 13px; }
+  .whyc .list { display: grid; gap: 14px; margin-top: 28px; max-width: 760px; margin-inline: auto; }
+  .whyc li { display: flex; gap: 12px; padding: 20px 18px; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(116.03deg, var(--cream), var(--sand)); }
+  .tk { flex: none; width: 24px; height: 24px; border-radius: 12px; background: var(--plum); display: grid; place-items: center; }
+  .whyc p { font-size: 14px; color: var(--muted); }
+  .whyc b { font-size: 16px; color: var(--ink); }
+  @media (min-width: 1100px) {
+    .rail { justify-content: center; max-width: 1280px; margin-inline: auto; }
+    .rail > li { flex-basis: 300px; }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('.rw').forEach((rw) => {
+    const rail = rw.querySelector<HTMLElement>('.rail')!;
+    const holder = rw.querySelector<HTMLElement>('.dots')!;
+    const items = [...rail.children] as HTMLElement[];
+    const dots = items.map((li) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'dt'; b.setAttribute('aria-label', 'Go to slide ' + (dots_len() + 1));
+      b.addEventListener('click', () => rail.scrollTo({ left: li.offsetLeft - (rail.clientWidth - li.offsetWidth) / 2, behavior: 'smooth' }));
+      holder.appendChild(b);
+      return b;
+    });
+    function dots_len() { return holder.children.length; }
+    const update = () => {
+      const mid = rail.scrollLeft + rail.clientWidth / 2;
+      let best = 0, d = Infinity;
+      items.forEach((li, i) => { const x = Math.abs(li.offsetLeft + li.offsetWidth / 2 - mid); if (x < d) { d = x; best = i; } });
+      dots.forEach((b, i) => b.classList.toggle('on', i === best));
+      holder.style.display = rail.scrollWidth <= rail.clientWidth + 2 ? 'none' : '';
+    };
+    rail.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>
