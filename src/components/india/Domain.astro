@@ -18,10 +18,14 @@ import { domainSteps } from '../../data/content-india';
   <div class="wrap">
     <h2 class="h2">Why I built <em>AI Fiesta</em></h2>
     <figure>
-      <img src="/india/founder.webp" alt="Dhruv Rathee, founder of AI Fiesta" width="1200" height="1200" loading="lazy" />
+      <div class="photo">
+        <img src="/india/founder.webp" alt="Dhruv Rathee, founder of AI Fiesta" width="350" height="600" loading="lazy" />
+        <figcaption><b>Dhruv Rathee</b><span>Founder, AI Fiesta</span></figcaption>
+      </div>
       <blockquote>
-        <Icon name="quote" color="#ffc8a4" size={30} />
-        <p>“I research and create for a living, and good AI tools kept costing more than most people in India can justify, in dollars. AI Fiesta is my answer: <b>every top model in one place</b>, <b>priced in rupees</b>. I use it myself.”</p>
+        <svg class="qm" viewBox="0 0 48 36" aria-hidden="true"><defs><linearGradient id="qmg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc8a4" /><stop offset="1" stop-color="#ff8fb8" /></linearGradient></defs><path fill="url(#qmg)" d="M0 36V20C0 8 6 1.5 18 0v7C12 8.5 10 12 10 16h8v20H0zm27 0V20C27 8 33 1.5 45 0v7c-6 1.5-8 5-8 9h8v20H27z" /></svg>
+        <p>I research and create for a living, and good AI tools kept costing more than most people in India can justify, in dollars. AI Fiesta is my answer: <b>every top model in one place</b>, <b>priced in rupees</b>. I use it myself.</p>
+        <ul class="tags"><li>100+ AI models</li><li>Priced in rupees</li><li>Built by YC alumni</li></ul>
       </blockquote>
     </figure>
     <p class="own">AI Fiesta is built and run by Fiesta Labs Inc, owned by Dhruv Rathee, with a team of Y Combinator alumni.</p>
@@ -35,11 +39,29 @@ import { domainSteps } from '../../data/content-india';
   ol { display: grid; gap: 14px; width: 100%; list-style: none; padding: 0; }
   ol li { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 16px; background: var(--cream); border: 1px solid var(--line); }
   ol span { flex: none; width: 36px; height: 36px; border-radius: 12px; background: var(--lav); display: grid; place-items: center; }
-  .why-i .wrap { display: grid; gap: 24px; max-width: 760px; }
-  figure { margin: 0; border-radius: 24px; overflow: hidden; background: var(--dark-2); border: 1px solid var(--dark-line); }
-  figure img { width: 100%; height: 300px; object-fit: cover; object-position: 50% 22%; background: linear-gradient(116.03deg, var(--dark-2), var(--dark)); }
-  blockquote { margin: 0; padding: 24px; display: grid; gap: 14px; font-size: 18px; color: #fff8ef; }
-  blockquote b { color: var(--peach); }
+  .why-i { position: relative; overflow: hidden; }
+  .why-i::before, .why-i::after { content: ''; position: absolute; width: 480px; height: 480px; border-radius: 50%; filter: blur(90px); opacity: .35; pointer-events: none; }
+  .why-i::before { top: -160px; left: -140px; background: #a23b6b; }
+  .why-i::after { bottom: -200px; right: -140px; background: #7b2ff7; opacity: .25; }
+  .why-i .wrap { position: relative; z-index: 1; display: grid; gap: 28px; max-width: 1000px; }
+  figure { margin: 0; display: grid; gap: 22px; padding: 14px; border-radius: 28px; background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.14); box-shadow: 0 30px 70px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12); backdrop-filter: blur(14px); }
+  .photo { position: relative; overflow: hidden; border-radius: 20px; aspect-ratio: 4 / 4.2; max-height: 400px; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+  .photo::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(to top, rgba(33,28,47,.92), transparent); }
+  figcaption { position: absolute; left: 18px; bottom: 16px; z-index: 1; display: grid; }
+  figcaption b { font-family: var(--font-head); font-size: 18px; color: #fff8ef; }
+  figcaption span { font-size: 13px; color: var(--peach); }
+  blockquote { margin: 0; padding: 6px 10px 14px; display: grid; align-content: center; gap: 18px; }
+  .qm { width: 38px; height: auto; }
+  blockquote p { font-family: var(--font-head); font-size: clamp(20px, 2.4vw, 28px); line-height: 1.38; font-weight: 500; color: #fff8ef; letter-spacing: -.005em; }
+  blockquote p b { font-weight: 700; color: var(--peach); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tags li { padding: 7px 13px; border-radius: 99px; font-size: 13px; font-weight: 600; color: #fff8ef; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); }
   .own { text-align: center; font-size: 14px; color: var(--soft); }
-  @media (min-width: 768px) { figure { display: grid; grid-template-columns: 1fr 1.3fr; } figure img { height: 100%; min-height: 280px; } }
+  @media (min-width: 768px) {
+    figure { grid-template-columns: 340px 1fr; gap: 44px; padding: 20px; align-items: stretch; }
+    .photo { aspect-ratio: auto; max-height: none; min-height: 420px; }
+    blockquote { padding: 18px 28px 18px 0; gap: 24px; }
+    .own { font-size: 15px; }
+  }
 </style>

@@ -117,3 +117,24 @@ export const why = [
   ['Built by Y Combinator alumni.', 'A team in it for the long term.'],
   ['Always current.', 'When a new model launches, it appears in your dashboard.'],
 ];
+
+// Everything in the plan (yearly totals), as listed on the pricing card.
+export const included = [
+  ['100+ models', 'with Compare Mode and Consensus'],
+  ['Images:', 'Up to 3,600 images, with edit and templates'],
+  ['Videos:', 'Up to 360 videos at 480p, or 120 at HD quality'],
+  ['Slides:', '3,600+ slides with AI outlining and editing'],
+  ['Websites:', 'Up to 60 websites with free hosting and analytics'],
+  ['Deep research:', 'Up to 240 interactive deep research reports'],
+  ['Tokens:', 'Up to 36 million words of AI chat each year'],
+];
+
+// Pricing card: usual monthly allowance vs the current 4x offer (label, usual, offer, icon).
+export const planRows = [
+  ['Images', '300', '1200', 'image'],
+  ['Videos', '30', '120', 'play'],
+  ['Slides', '300', '1200', 'grid'],
+  ['Websites', '5', '20', 'globe'],
+  ['Deep research', '20', '80', 'book'],
+  ['Tokens', '3M', '12M', 'spark'],
+];
