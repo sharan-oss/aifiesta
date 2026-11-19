@@ -16,9 +16,10 @@ const icons: Record<string, string> = {
 ---
 <div class:list={['offer4x', theme]}>
   <p class="banner">
-    <span class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
+    <span class="shine" aria-hidden="true"></span>
+    <span class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12v9M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><g class="lid"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v4M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></g></svg>{[0, 1, 2, 3, 4, 5].map((i) => <i class="spark" style={`--a:${i * 60 - 30}deg`} aria-hidden="true" />)}</span>
     <span class="head">
-      <span>Get <b>{offer.multiple}</b> of everything</span>
+      <span>Get <b data-count>{offer.multiple}</b> of everything</span>
       {domain && <span class="plus">+ Free custom domain <span class="nw">for a year</span> <small>(worth ₹1,500)</small></span>}
     </span>
   </p>
@@ -27,7 +28,7 @@ const icons: Record<string, string> = {
       <tr><th scope="col">In your plan</th><th scope="col">Every month</th><th scope="col" class="now">Current Offer*<small>1st month</small></th></tr>
     </thead>
     <tbody>
-      {offer.rows.map(([label, usual, now, ic, info]) => (
+      {offer.rows.map(([label, usual, now, ic, info], i) => (
         <tr>
           <th scope="row">
             <span class="lbl">
@@ -42,7 +43,7 @@ const icons: Record<string, string> = {
             </span>
           </th>
           <td>{usual}</td>
-          <td><b>{now}</b></td>
+          <td><b style={`--i:${i}`}>{now}</b></td>
         </tr>
       ))}
     </tbody>
@@ -79,6 +80,39 @@ const icons: Record<string, string> = {
   .info button svg { width: 15px; height: 15px; }
   .tip { position: absolute; bottom: calc(100% + 8px); left: -6px; z-index: 5; width: max-content; max-width: 196px; padding: 8px 12px; border: 1px solid #9fd9bb; border-radius: 8px; background: #fff; color: #52525b; font-size: 12px; line-height: 1.45; font-weight: 400; text-align: left; box-shadow: 0 10px 24px -8px rgba(15,23,20,.12); }
   .info:hover .tip { display: block; }
+  /* Reveal: plays once when the banner scrolls into view (JS adds .armed, then .go).
+     Without JS or with reduced motion nothing is hidden or moved. */
+  .banner { position: relative; }
+  .shine { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+  .shine::after { content: ''; position: absolute; inset: -20% auto -20% 0; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); transform: translateX(-150%) skewX(-18deg); }
+  .dark .shine::after { background: linear-gradient(100deg, transparent, rgba(255,255,255,.18), transparent); }
+  .gift { position: relative; }
+  .gift::after { content: ''; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--accent); opacity: 0; pointer-events: none; }
+  .gift svg { overflow: visible; }
+  .lid { transform-box: fill-box; transform-origin: 0% 100%; }
+  .spark { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: var(--accent); opacity: 0; }
+  .spark:nth-of-type(even) { background: #f5b301; width: 5px; height: 5px; }
+  .banner b { display: inline-block; }
+  .armed:not(.go) .plus, .armed:not(.go) td b { opacity: 0; }
+  .go .gift { animation: wiggle .6s cubic-bezier(.36,.07,.19,.97) both; }
+  .go .lid { animation: lid .7s cubic-bezier(.16,1,.3,1) .15s both; }
+  .go .spark { animation: spark .8s cubic-bezier(.16,1,.3,1) .3s; }
+  .go .gift::after { animation: ring 2.4s cubic-bezier(.16,1,.3,1) 1s infinite; }
+  .go .banner b.punch { animation: punch .45s cubic-bezier(.16,1,.3,1); }
+  .go .plus { animation: rise .5s cubic-bezier(.16,1,.3,1) .55s both; }
+  .go .shine::after { animation: shine 4.5s cubic-bezier(.25,1,.5,1) .7s infinite; }
+  .go td b { animation: pop .45s cubic-bezier(.16,1,.3,1) calc(.8s + var(--i) * 70ms) both; }
+  @keyframes wiggle { 15% { transform: rotate(-12deg) scale(1.08); } 35% { transform: rotate(10deg) scale(1.08); } 55% { transform: rotate(-6deg); } 75% { transform: rotate(3deg); } }
+  @keyframes lid { 40% { transform: translateY(-5px) rotate(-14deg); } }
+  @keyframes spark { from { opacity: 1; transform: rotate(var(--a)) translateX(10px) scale(1); } to { opacity: 0; transform: rotate(var(--a)) translateX(40px) scale(.3); } }
+  @keyframes ring { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(1.45); } }
+  @keyframes punch { 40% { transform: scale(1.25) rotate(-4deg); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes shine { 0% { transform: translateX(-150%) skewX(-18deg); } 30%, 100% { transform: translateX(300%) skewX(-18deg); } }
+  @keyframes pop { from { opacity: 0; transform: scale(.6); } }
+  @media (prefers-reduced-motion: reduce) {
+    .go *, .go *::after { animation: none !important; }
+  }
   .fine { text-align: center; font-size: 12px; color: var(--soft); }
   .fine a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 </style>
@@ -93,4 +127,26 @@ const icons: Record<string, string> = {
     (b.nextElementSibling as HTMLElement).hidden = !open;
   }));
   document.addEventListener('click', (e) => { if (!(e.target as Element).closest('[data-info]')) closeAll(); });
+
+  // "4x" banner reveal: counts 1x -> 4x, pops the gift, then the offer column fills in.
+  // Plays once per table when its banner is in view; skipped for reduced motion.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const box = (e.target as HTMLElement).closest<HTMLElement>('.offer4x')!;
+      box.classList.add('go');
+      const b = box.querySelector<HTMLElement>('[data-count]');
+      const m = b?.textContent?.match(/^(\d+)(.*)$/);
+      if (!b || !m) return;
+      const [, end, unit] = m;
+      let n = 1;
+      b.textContent = n + unit;
+      const t = setInterval(() => {
+        b.textContent = ++n + unit;
+        if (n >= +end) { clearInterval(t); b.classList.add('punch'); }
+      }, 140);
+    }), { threshold: 0.9 });
+    document.querySelectorAll<HTMLElement>('.offer4x').forEach((el) => { el.classList.add('armed'); io.observe(el.querySelector('.banner')!); });
+  }
 </script>
