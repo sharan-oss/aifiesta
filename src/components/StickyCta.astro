@@ -1,12 +1,12 @@
 ---
-import { plan, CTA, PRICING_HREF } from '../data/content';
+import { plan, PRICING_HREF } from '../data/content';
 ---
 <aside class="sticky" id="sticky-cta" aria-label="Pricing offer">
   <div class="price">
     <p class="amt"><b>{plan.price}</b><span>{plan.per}</span> <s>{plan.was}</s></p>
     <p class="offer">{plan.offer}</p>
   </div>
-  <a class="btn btn--pill" href={PRICING_HREF} data-cta="sticky">{CTA}</a>
+  <a class="btn btn--pill" href={PRICING_HREF} data-cta="sticky"><span>Get It for only</span> <b>₹667/month</b></a>
 </aside>
 <style>
   /* Keep the end of the page clear of the bar. */
@@ -26,7 +26,8 @@ import { plan, CTA, PRICING_HREF } from '../data/content';
   .amt span { font-size: 13px; font-weight: 600; }
   .amt s { margin-left: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
   .offer { font-size: 12px; font-weight: 500; color: var(--muted); }
-  .btn { flex: none; height: 48px; padding-inline: 22px; font-size: 14px; }
+  .btn { flex: none; height: 52px; padding-inline: 20px; font-size: 13px; line-height: 1.2; flex-direction: column; justify-content: center; gap: 1px; text-align: center; }
+  .btn b { font-size: 16px; font-weight: 700; }
 
   @media (min-width: 768px) {
     :global(body) { padding-bottom: 112px; }
@@ -34,7 +35,8 @@ import { plan, CTA, PRICING_HREF } from '../data/content';
     .amt b { font-size: 28px; }
     .amt span, .amt s { font-size: 14px; }
     .offer { font-size: 13px; }
-    .btn { height: 52px; padding-inline: 32px; font-size: 15px; }
+    .btn { height: 52px; padding-inline: 32px; font-size: 15px; flex-direction: row; gap: .3em; }
+    .btn b { font-size: inherit; }
   }
   @media (prefers-reduced-motion: reduce) { .sticky { transition: none; } }
 </style>
