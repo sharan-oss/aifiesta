@@ -1,9 +1,10 @@
 ---
 // "Get 4x of everything" table for the yearly plan card. The slot (rollover note) sits
-// between the table and the bonus-token footnote.
+// between the table and the bonus-token footnote. `domain` adds the free-domain bonus line
+// (pages without their own domain section).
 import { offer } from '../data/content';
-interface Props { theme?: 'light' | 'dark' }
-const { theme = 'light' } = Astro.props;
+interface Props { theme?: 'light' | 'dark'; domain?: boolean }
+const { theme = 'light', domain = false } = Astro.props;
 const icons: Record<string, string> = {
   tokens: '<circle cx="7" cy="14" r="4.4"/><circle cx="14" cy="7" r="4.4"/>',
   image: '<rect x="2.6" y="2.6" width="15.8" height="15.8" rx="2"/><path d="M2.6 14.9l5.3-5.3 3.5 3.5 3.5-4.4 3.5 4.4"/>',
@@ -16,7 +17,10 @@ const icons: Record<string, string> = {
 <div class:list={['offer4x', theme]}>
   <p class="banner">
     <span class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>
-    <span>Get <b>{offer.multiple}</b> of everything</span>
+    <span class="head">
+      <span>Get <b>{offer.multiple}</b> of everything</span>
+      {domain && <span class="plus">+ Free custom domain <span class="nw">for a year</span> <small>(worth ₹1,500)</small></span>}
+    </span>
   </p>
   <table>
     <thead>
@@ -51,6 +55,10 @@ const icons: Record<string, string> = {
   .dark { --accent: #80dca9; --chip: rgba(128,220,169,.14); --rule: #35304c; --soft: #cbd0de; }
   .banner { display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; border-radius: 16px; background: var(--chip); font-size: 19px; font-weight: 700; }
   .banner b { color: var(--accent); font-size: 1.25em; }
+  .head { display: grid; gap: 2px; }
+  .plus { font-size: 15px; font-weight: 600; color: var(--accent); }
+  .plus small { font-size: 13px; font-weight: 500; color: var(--soft); white-space: nowrap; }
+  .plus .nw { white-space: nowrap; }
   .gift { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: #fff; color: #3f9b6a; box-shadow: 0 0 0 4px rgba(63,155,106,.15); }
   .gift svg { width: 24px; height: 24px; }
   table { width: 100%; border-collapse: collapse; font-size: 15px; }

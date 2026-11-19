@@ -8,7 +8,6 @@ import ModelStrip from '../components/ModelStrip.astro';
 import Benefits from '../components/Benefits.astro';
 import Features from '../components/Features.astro';
 import Pricing from '../components/Pricing.astro';
-import DomainBonus from '../components/DomainBonus.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Faq from '../components/Faq.astro';
 import Footer from '../components/Footer.astro';
@@ -20,10 +19,9 @@ import { CTA_HREF_GA } from '../data/content';
   <main>
     <Hero />
     <ModelStrip />
-    <DomainBonus />
+    <Pricing checkoutHref={CTA_HREF_GA} />
     <Benefits />
     <Features />
-    <Pricing checkoutHref={CTA_HREF_GA} />
     <Testimonials />
     <Faq />
   </main>
