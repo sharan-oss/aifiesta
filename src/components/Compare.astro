@@ -1,0 +1,68 @@
+---
+// "Paying separately vs one subscription" comparison, the v1 counterpart of v2/Compare.astro.
+// Same data (content-v2), so prices and models stay in one place.
+import { compare, badPoints, goodPoints } from '../data/content-v2';
+import { CTA, PRICING_HREF } from '../data/content';
+const ok = '<circle cx="9" cy="9" r="8" fill="#00BA00"/><path d="M5 9l2.6 2.6L13 6.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+const no = '<circle cx="9" cy="9" r="7" fill="none" stroke="#dc2626" stroke-width="1.6"/><path d="M4 14L14 4" stroke="#dc2626" stroke-width="1.6"/>';
+---
+<section class="wrap cmp">
+  <h2 class="section-title"><span class="accent">One subscription</span> to replace them all</h2>
+  <div class="cols">
+    <div class="box bad">
+      <p class="badge">✕ Paying separately</p>
+      <p class="blurb">Individual subscriptions for each AI service</p>
+      <ul class="prices">{compare.map(([n, p]) => <li><span>{n}</span><em>{p}</em></li>)}</ul>
+      <hr />
+      <ul class="pts">{badPoints.map((p) => <li><svg viewBox="0 0 18 18" aria-hidden="true" set:html={no} /><span>{p}</span></li>)}</ul>
+      <div class="total"><p>Total monthly cost = ₹10,948/month</p><p class="red">That's ₹1,31,376 every year</p></div>
+    </div>
+    <div class="box good">
+      <p class="badge">✓ One subscription. All AIs.</p>
+      <p class="blurb">All premium AI models in one workspace</p>
+      <ul class="prices">{compare.map(([n]) => <li><span>{n}</span><svg viewBox="0 0 18 18" aria-hidden="true" set:html={ok} /></li>)}</ul>
+      <hr />
+      <ul class="pts">{goodPoints.map((p) => <li><svg viewBox="0 0 18 18" aria-hidden="true" set:html={ok} /><span>{p}</span></li>)}</ul>
+      <div class="total"><p>AI Fiesta annual plan = ₹667/month</p><p class="blue">Billed as ₹7,999/year | <s>₹11,988</s> Save 33%</p></div>
+    </div>
+  </div>
+  <div class="save">
+    <p>You save over</p>
+    <p class="amt">₹1,23,377 every year</p>
+    <p>For access to more models, more features, and a smarter workflow than paying separately</p>
+  </div>
+  <a class="btn btn--block cta" href={PRICING_HREF} data-cta="compare">{CTA}</a>
+</section>
+<style>
+  .cmp { padding-block: var(--section-y); display: grid; gap: 28px; }
+  .cols { display: grid; gap: 20px; }
+  .box { border-radius: 20px; padding: 18px 16px; display: grid; gap: 16px; align-content: start; }
+  .bad { background: #fff7fa; border: 1px solid rgba(220,38,38,.1); }
+  .good { background: #fff; border: 1px solid rgba(39,133,255,.14); }
+  .badge { border-radius: 10px; padding: 8px; text-align: center; font-size: 18px; font-weight: 700; }
+  .bad .badge { background: rgba(220,38,38,.08); color: var(--danger); }
+  .good .badge { background: rgba(39,133,255,.08); color: var(--blue); }
+  .blurb { font-size: 14px; color: var(--muted); }
+  .prices { display: grid; gap: 10px; }
+  .prices li { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 15px; font-weight: 500; color: var(--ink); }
+  .prices em { color: var(--danger); font-style: normal; font-weight: 500; white-space: nowrap; }
+  .prices svg, .pts svg { width: 18px; height: 18px; flex: none; }
+  hr { border: 0; height: 1px; background: var(--line); width: 100%; margin: 0; }
+  .pts { display: grid; gap: 10px; }
+  .pts li { display: flex; gap: 10px; font-size: 14px; color: var(--muted); }
+  .total { border-radius: 12px; padding: 12px; text-align: center; font-size: 14px; display: grid; gap: 4px; }
+  .bad .total { background: rgba(220,38,38,.03); border: 1px solid rgba(220,38,38,.08); }
+  .good .total { background: rgba(39,133,255,.04); border: 1px solid rgba(39,133,255,.1); }
+  .total p { font-weight: 600; color: var(--ink); }
+  .total .red { color: var(--danger); }
+  .total .blue { color: var(--blue); }
+  .total s { color: #b1999a; font-weight: 500; }
+  .save { text-align: center; display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+  .amt { font-size: 24px; font-weight: 700; color: var(--brand); }
+  @media (min-width: 800px) {
+    .cols { grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .box { padding: 24px; }
+    .badge { font-size: 20px; }
+    .cta { max-width: 420px; justify-self: center; }
+  }
+</style>
