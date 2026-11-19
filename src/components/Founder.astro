@@ -1,0 +1,38 @@
+---
+// "Why I built AI Fiesta": founder note above the testimonials. Copy is the brief's draft,
+// for Dhruv to edit in his own words. Photo shared with the India LP.
+---
+<section class="wrap founder">
+  <h2 class="section-title">Why I built <span class="accent">AI Fiesta</span></h2>
+  <figure class="card">
+    <div class="photo">
+      <img src="/india/founder.webp" alt="Dhruv Rathee using AI Fiesta on his laptop" width="350" height="600" loading="lazy" />
+      <figcaption><b>Dhruv Rathee</b><span>Founder, AI Fiesta</span></figcaption>
+    </div>
+    <blockquote>
+      <svg class="qm" viewBox="0 0 48 36" aria-hidden="true"><path d="M0 36V20C0 8 6 1.5 18 0v7C12 8.5 10 12 10 16h8v20H0zm27 0V20C27 8 33 1.5 45 0v7c-6 1.5-8 5-8 9h8v20H27z" /></svg>
+      <p>I research and create for a living, and good AI tools kept costing more than most people in India can justify, in dollars. AI Fiesta is my answer: <b>every top model in one place</b>, <b>priced in rupees</b>. I use it myself.</p>
+    </blockquote>
+  </figure>
+  <p class="own">AI Fiesta is built and run by Fiesta Labs Inc, owned by Dhruv Rathee, with a team of Y Combinator alumni.</p>
+</section>
+<style>
+  .founder { padding-block: var(--section-y); display: grid; gap: 24px; max-width: 980px; }
+  .card { margin: 0; display: grid; gap: 20px; padding: 14px; border-radius: 24px; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
+  .photo { position: relative; overflow: hidden; border-radius: 18px; aspect-ratio: 4 / 4.2; max-height: 380px; background: var(--brand-tint); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+  .photo::after { content: ''; position: absolute; inset: 55% 0 0; background: linear-gradient(to top, rgba(36,32,61,.85), transparent); }
+  figcaption { position: absolute; left: 16px; bottom: 14px; z-index: 1; display: grid; text-align: left; }
+  figcaption b { font-size: 17px; color: #fff; }
+  figcaption span { font-size: 13px; color: #e6e1ff; }
+  blockquote { margin: 0; padding: 4px 8px 12px; display: grid; gap: 16px; align-content: center; }
+  .qm { width: 36px; height: auto; fill: var(--brand); opacity: .9; }
+  blockquote p { font-size: clamp(18px, 2.3vw, 24px); line-height: 1.45; font-weight: 500; color: var(--ink); }
+  blockquote b { font-weight: 700; color: var(--brand); }
+  .own { text-align: center; font-size: 14px; color: var(--muted); }
+  @media (min-width: 768px) {
+    .card { grid-template-columns: 320px 1fr; gap: 40px; padding: 18px; align-items: stretch; }
+    .photo { aspect-ratio: auto; max-height: none; min-height: 400px; }
+    blockquote { padding: 16px 24px 16px 0; gap: 22px; }
+  }
+</style>
