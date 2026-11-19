@@ -24,9 +24,8 @@ export const models = [
 
 export const benefits = [
   'Priced for India. Pay in rupees, no international card needed.',
-  'One login, every top AI. ChatGPT, Claude, Gemini and 100+ more, side by side.',
-  'Create anything. Images, videos, presentations and websites, all from one prompt box.',
   'Backed by Dhruv Rathee, an entrepreneur and digital content creator.',
+  'Made by an all-Indian team.',
 ];
 
 export const features = [
