@@ -10,6 +10,21 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
 ---
 <section class="price" id="pricing">
   <div class="wrap grid">
+    <div class="plan">
+      <div class="head">
+        <p class="name">{plan.name}</p>
+        <span class="save">{plan.save}</span>
+      </div>
+      <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
+      <p class="sub">{plan.monthly}</p>
+      <hr />
+      <OfferTable domain>
+        <p class="note">{plan.note}</p>
+      </OfferTable>
+      <a class="btn btn--pill btn--block" href={checkoutHref}>{CTA}</a>
+      <p class="cancel">Cancel anytime</p>
+    </div>
+
     <div class="pay" data-calc data-plan={PLAN_VALUE}>
       <div class="phead">
         <span class="chip">⚠ WHAT YOU PAY TODAY</span>
@@ -34,21 +49,6 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
         <p class="tv" aria-live="polite"><b data-total>{inr(total)}</b> <span>/year</span></p>
       </div>
       <p class="saving" data-saving>With AI Fiesta Basic you save {inr(total - PLAN_VALUE)} a year</p>
-    </div>
-
-    <div class="plan">
-      <div class="head">
-        <p class="name">{plan.name}</p>
-        <span class="save">{plan.save}</span>
-      </div>
-      <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
-      <p class="sub">{plan.monthly}</p>
-      <hr />
-      <OfferTable domain>
-        <p class="note">{plan.note}</p>
-      </OfferTable>
-      <a class="btn btn--pill btn--block" href={checkoutHref}>{CTA}</a>
-      <p class="cancel">Cancel anytime</p>
     </div>
   </div>
 </section>
@@ -105,8 +105,8 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
   .tv b { font-size: 26px; color: var(--danger); font-weight: 700; }
   .tv span { font-size: 13px; font-weight: 600; }
   .saving { text-align: center; font-size: 13px; font-weight: 600; color: var(--brand); }
-  /* "What you pay today" comes first: left on desktop, on top on mobile. */
-  @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+  /* Desktop: calculator left, plan right. Mobile keeps the plan first (source order). */
+  @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } .pay { order: -1; } }
 </style>
 <script>
   // Recalculate the "what you pay today" total as tools are toggled.
