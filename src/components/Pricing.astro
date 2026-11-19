@@ -105,7 +105,8 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
   .tv b { font-size: 26px; color: var(--danger); font-weight: 700; }
   .tv span { font-size: 13px; font-weight: 600; }
   .saving { text-align: center; font-size: 13px; font-weight: 600; color: var(--brand); }
-  @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+  /* Desktop: calculator left, plan right. Mobile keeps the plan first (source order). */
+  @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } .pay { order: -1; } }
 </style>
 <script>
   // Recalculate the "what you pay today" total as tools are toggled.
