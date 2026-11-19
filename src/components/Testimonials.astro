@@ -11,7 +11,9 @@ import { testimonials } from '../data/content';
           <p class="txt">{t.text}</p>
         </div>
         <div class="who">
-          <img src={`/images/${t.img}`} alt="" width="48" height="48" loading="lazy" />
+          {t.img
+            ? <img src={`/images/${t.img}`} alt="" width="48" height="48" loading="lazy" />
+            : <span class="ini" aria-hidden="true">{t.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}</span>}
           <div><p class="nm">{t.name}</p><p class="rl">{t.role}</p></div>
         </div>
       </li>
@@ -26,7 +28,8 @@ import { testimonials } from '../data/content';
   .stars { color: #be7917; font-size: 23px; font-weight: 500; margin-bottom: 16px; }
   .txt { font-size: 18px; font-weight: 500; color: var(--muted); }
   .who { display: flex; align-items: center; gap: 14px; }
-  .who img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+  .who img, .ini { flex: none; width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+  .ini { display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), #8b5cf6); color: #fff; font-size: 16px; font-weight: 700; }
   .nm { font-size: 18px; font-weight: 600; color: var(--brand); }
   .rl { font-size: 14px; font-weight: 500; color: var(--muted); }
 </style>

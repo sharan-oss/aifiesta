@@ -86,11 +86,15 @@ export const payTools = [
   { name: 'MiniMax', icon: '/logos/calc-minimax.svg', yearly: 21960 },
 ];
 
-export const testimonials = [
-  { name: 'Saurabh Goswami', role: 'Graphic Designer', img: 'avatar-saurabh.png', text: 'I frequently use AI Fiesta for presentations, statistical analysis, image generation, editing, and day-to-day queries. The automatic prompt enhancement is especially useful.' },
-  { name: 'Samir', role: 'Performance Marketer', img: 'avatar-samir.png', text: 'You get ChatGPT, Gemini, Perplexity, and many more AI tools in one place. Getting answers from different AIs at the same time is very helpful for comparing.' },
-  { name: 'inner_ prem', role: 'Web Developer', img: 'avatar-prem.png', text: 'Having multiple AI models in one place saves a lot of time and makes it easy to compare responses. The Prompt Enhancer and Prompt Book are my favorite features.' },
-  { name: 'Simi', role: 'Copywriter', img: 'avatar-simi.png', text: 'I have been using this app especially for my exams. It explains complex topics in very simple words and helps with everything from academics to everyday decisions.' },
+// `img` is optional; without it the card shows the person's initials.
+export const testimonials: { name: string; role: string; img?: string; text: string }[] = [
+  { name: 'Maya Mehta', role: 'Freelancer', img: 'avatar-maya.webp', text: 'Instead of paying for multiple separate subscriptions, getting them combined in one workspace saves a lot of money and effort. Side-by-side output comparison and prompt enhancement tools work well for daily research and content tasks.' },
+  { name: 'Aditya Kulkarni', role: 'Content Writer', img: 'avatar-aditya.webp', text: 'I’m a researcher and content writer. I use AI tools for researching and refining my scripts. Paying for all those AI tools every year wasn’t really feasible for me. This feels like a game changer.' },
+  { name: 'Shreyanka Patil', role: 'Engineering Student', img: 'avatar-shreyanka.webp', text: 'This app helped me immensely with my board and entrance exams. I didn’t have to keep switching between different AI tools, because I found everything in one place.' },
+  { name: 'Vikram Shah', role: 'Business Owner', img: 'avatar-vikram.webp', text: 'I use it every day to draft professional messages for clients, create Excel spreadsheets, manage business accounts and prepare balance sheets. It has become an essential part of my workflow.' },
+  { name: 'Deepakshi Verma', role: 'Uses AI Fiesta for presentations and analysis', text: 'I use AI Fiesta for my presentations, statistical analysis, image generation and day-to-day queries. I don’t need to write the full prompt. I just write in plain language and it automatically converts it into a well-structured prompt.' },
+  { name: 'Rajiv Sen', role: 'AI Fiesta user for 2 months', img: 'avatar-rajiv.webp', text: 'I got responses from all the tools I’d been using individually on the same screen, and I could pick the best response, at a much cheaper price. I’ve been using it for two months and I’m extremely satisfied.' },
+  { name: 'Imran Sheikh', role: 'AI Fiesta user', img: 'avatar-imran.webp', text: 'I can work with different models at the same time and compare them. I also compared the free models, and the quality gap is big. The responses are super fast. I think it’s worth buying.' },
 ];
 
 // Answers after the first are taken from subscriptionplans.aifiesta.ai/single-subscription-plan-t2.
