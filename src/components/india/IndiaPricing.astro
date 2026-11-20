@@ -2,15 +2,6 @@
 import Icon from './Icon.astro';
 import { CHECKOUT_HREF, india, planRows } from '../../data/content-india';
 ---
-<section class="sec sec--dark ind">
-  <div class="wrap">
-    <img class="hero-art" src="/india/rupee-phone.webp" alt="" width="260" height="260" loading="lazy" />
-    <h2 class="h2">INDIA KA AI.<br /><em>PRICED FOR INDIANS.</em></h2>
-    <ul class="pts">
-      {india.map(([t, ic]) => <li><Icon name={ic} color="#ffc8a4" size={22} /><p>{t}</p></li>)}
-    </ul>
-  </div>
-</section>
 <section class="sec price" id="pricing">
   <div class="wrap">
     <h2 class="h2">Everything you get, <br /><em>every month</em></h2>
@@ -40,6 +31,15 @@ import { CHECKOUT_HREF, india, planRows } from '../../data/content-india';
       <p class="roll"><Icon name="refresh" color="#ffc8a4" />All unused tokens roll over to next month. They never expire.</p>
       <a class="btn" href={CHECKOUT_HREF} data-cta="pricing">Get AI Fiesta »</a>
     </div>
+  </div>
+</section>
+<section class="sec sec--dark ind">
+  <div class="wrap">
+    <img class="hero-art" src="/india/rupee-phone.webp" alt="" width="260" height="260" loading="lazy" />
+    <h2 class="h2">INDIA KA AI.<br /><em>PRICED FOR INDIANS.</em></h2>
+    <ul class="pts">
+      {india.map(([t, ic]) => <li><Icon name={ic} color="#ffc8a4" size={22} /><p>{t}</p></li>)}
+    </ul>
   </div>
 </section>
 <style>
