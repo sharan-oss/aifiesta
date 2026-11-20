@@ -16,7 +16,10 @@ import { CTA_TEXT, features } from '../../data/content-india';
               <p class="l">{f.lead}</p>
               <ul>{f.points.map((p) => <li><Icon name="check" color="#a23b6b" size={18} />{p}</li>)}</ul>
             </div>
-            <img src={f.img} alt={f.title} width="1280" height="720" loading="lazy" />
+            <div class="media">
+              <img src={f.img} alt={f.title} width="1280" height="720" loading="lazy" />
+              {f.video && <video data-src={`/videos/${f.video}`} muted loop playsinline preload="none" aria-hidden="true"></video>}
+            </div>
           </article>
         </>
       ))}
@@ -35,10 +38,17 @@ import { CTA_TEXT, features } from '../../data/content-india';
   .l { color: var(--muted); margin-block: 10px 14px; }
   li { display: flex; gap: 10px; color: var(--muted); margin-top: 8px; }
   li svg { flex: none; margin-top: 2px; }
-  .card img { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; object-fit: cover; aspect-ratio: 16 / 9; }
+  /* Product video plays over the screenshot once the card is in view (scripts/feature-videos). */
+  .media { position: relative; border-radius: 14px; border: 1px solid var(--line); background: #fff; overflow: hidden; aspect-ratio: 16 / 9; }
+  .media img, .media video { width: 100%; height: 100%; object-fit: cover; }
+  .media video { position: absolute; inset: 0; opacity: 0; transition: opacity .4s ease; }
+  .media video.on { opacity: 1; }
   @media (min-width: 900px) {
     .card { grid-template-columns: 1fr 1fr; align-items: center; gap: 36px; padding: 32px; }
     .card:nth-of-type(even) .txt { order: 2; }
     h3 { font-size: 26px; }
   }
 </style>
+<script>
+  import '../../scripts/feature-videos';
+</script>

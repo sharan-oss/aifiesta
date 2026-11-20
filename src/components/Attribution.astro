@@ -9,7 +9,7 @@
     var KEY = 'af_attr', DAYS = 30;
     var PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
       'ad_id', 'adset_content', 'device', 'gclid', 'gbraid', 'wbraid', 'fbclid'];
-    var LP = { '/': 'home', '/basic-plan-ga': 'ga', '/basic-plan-v2-fb': 'meta' };
+    var LP = { '/': 'home', '/basic-plan-ga': 'ga', '/basic-plan-v2-fb': 'meta', '/basic-plan-v3-fb': 'meta-v3' };
     var path = location.pathname.replace(/\/+$/, '') || '/';
     var q = new URLSearchParams(location.search);
     function load() {

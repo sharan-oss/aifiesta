@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/india-lp", "destination": "/basic-plan-v3-fb", "permanent": false },
+    { "source": "/india-lp/", "destination": "/basic-plan-v3-fb", "permanent": false }
+  ]
+}
