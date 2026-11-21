@@ -12,7 +12,6 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
   <div class="wrap">
     <div class="ptitle">
       <h2 class="section-title">Everything you get for <span class="accent">{plan.price}/year</span></h2>
-      <p class="anchor">{picked.map((t) => t.name).join(' + ')} separately: <s>{inr(total)}/year</s></p>
     </div>
     <div class="grid">
     <div class="plan">
