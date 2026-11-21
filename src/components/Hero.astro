@@ -43,6 +43,7 @@ const eq = [
       </ul>
     </div>
     <a class="btn btn--block hero__cta" href={checkout} data-cta="hero">{CTA}</a>
+    <p class="hero__rate"><span class="stars" aria-hidden="true">★★★★★</span> Trusted worldwide by 1M+ users</p>
     <p class="hero__note">Billed once a year · Cancel anytime</p>
   </div>
 </section>
@@ -83,7 +84,9 @@ const eq = [
   @keyframes ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
 
   .hero__cta { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
-  .hero__note { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .hero__rate { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 2px; font-size: 13px; font-weight: 500; color: var(--muted); }
+  .stars { color: var(--gold); font-size: 16px; letter-spacing: 1px; }
+  .hero__note { margin-top: -6px; font-size: 12px; font-weight: 500; color: var(--muted); }
 
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
   .hero__media img { width: 100%; height: auto; }
