@@ -2,64 +2,86 @@
 import { models } from '../data/content';
 import ModelItem from './ModelItem.astro';
 
-// Logo ticker: two rows of every model, moving in opposite directions, each ending in a
-// "+90 more" chip. Each set is repeated so one set is wider than any screen; the track holds
-// two copies and slides by half, which makes the loop seamless.
-const rowB = [...models.slice(5), ...models.slice(0, 5)];
-const rows = [
-  { items: models, dur: '46s', dir: 'normal' },
-  { items: rowB, dir: 'reverse', dur: '52s' },
+// "Many in, one out": three rows of AI models flow in from both sides and vanish into the
+// AI Fiesta mark in the middle. The copy reads top to bottom: 100+ AI models -> one subscription.
+// Each half-row holds two copies of its set and slides by half, so the loop is seamless.
+const more = { name: '+90 more', icon: '' };
+const sets = [
+  [models[0], models[3], models[6], more, models[8]],
+  [models[1], models[4], models[7], models[9], models[2]],
+  [models[5], models[2], more, models[0], models[6]],
+  [models[3], models[7], models[1], models[9], models[4]],
+  [models[6], models[8], models[4], models[0], more],
+  [models[9], models[5], models[3], more, models[1]],
 ];
+const rows = [0, 1, 2].map((i) => ({ left: sets[i * 2], right: sets[i * 2 + 1], dur: `${26 + i * 5}s` }));
 ---
 <section class="strip" aria-labelledby="strip-title">
-  <img class="strip__logo" src="/images/logo-clear.webp" alt="AI Fiesta" width="150" height="36" loading="lazy" />
-  <h2 class="strip__title" id="strip-title">100+ AI models, one subscription</h2>
+  <p class="eyebrow">100+ AI models</p>
   <ul class="sr-only">{models.map((m) => <li>{m.name}</li>)}<li>and 90 more</li></ul>
 
-  <div class="ticker" aria-hidden="true">
+  <div class="merge" aria-hidden="true">
     {rows.map((r) => (
       <div class="row">
-        <div class="track" style={`animation-duration:${r.dur};animation-direction:${r.dir}`}>
-          {[0, 1].map(() => (
-            <ul class="set">
+        {(['left', 'right'] as const).map((side) => (
+          <div class:list={['half', side]}>
+            <div class="track" style={`animation-duration:${r.dur}`}>
               {[0, 1].map(() => (
-                <>
-                  {r.items.map((m) => <li class="chip"><ModelItem name={m.name} icon={m.icon} /></li>)}
-                  <li class="chip chip--more">+90 more</li>
-                </>
+                <ul class="set">
+                  {r[side].map((m) => m.icon
+                    ? <li class="chip"><ModelItem name={m.name} icon={m.icon} /></li>
+                    : <li class="chip chip--more">{m.name}</li>)}
+                </ul>
               ))}
-            </ul>
-          ))}
-        </div>
+            </div>
+          </div>
+        ))}
       </div>
     ))}
+    <div class="hub"><img src="/images/logo-mark.webp" alt="" width="56" height="56" loading="lazy" /></div>
   </div>
+
+  <h2 class="strip__title" id="strip-title">One <span class="accent">AI Fiesta</span> subscription</h2>
+  <p class="strip__sub">One login. One bill. New models added at no extra cost.</p>
 </section>
 <style>
-  .strip { background: #fff; padding-block: 28px; overflow: hidden; }
-  .strip__logo { width: 150px; height: auto; margin: 0 auto 10px; }
-  .strip__title { text-align: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin: 0 16px 20px; }
+  .strip { background: #fff; padding-block: 36px 40px; overflow: hidden; text-align: center; }
+  .eyebrow { display: inline-block; padding: 6px 14px; border-radius: 99px; background: var(--brand-soft); color: var(--brand); font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  .ticker { display: grid; gap: 12px; }
-  .row { overflow: hidden; padding-block: 4px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-  .track { display: flex; width: max-content; animation: scroll linear infinite; will-change: transform; }
-  .ticker:hover .track { animation-play-state: paused; }
-  .set { display: flex; gap: 12px; padding-right: 12px; }
-  .chip { display: flex; align-items: center; height: 48px; padding: 0 18px 0 12px; border-radius: 99px; background: #fff; border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(20,16,50,.04), 0 4px 14px -6px rgba(20,16,50,.08); color: var(--ink); }
-  .chip--more { padding-inline: 18px; border-color: transparent; background: linear-gradient(135deg, var(--brand), #8b5cf6); color: #fff; font-size: 14px; font-weight: 700; white-space: nowrap; }
-  @keyframes scroll { to { transform: translateX(-50%); } }
+  .merge { position: relative; display: grid; gap: 10px; margin-block: 20px 22px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; }
+  .half { overflow: hidden; padding-block: 3px; }
+  /* Chips fade in at the screen edge and fade out as they reach the centre. */
+  .left { -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 58%, transparent 94%); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 58%, transparent 94%); }
+  .right { -webkit-mask-image: linear-gradient(270deg, transparent, #000 22%, #000 58%, transparent 94%); mask-image: linear-gradient(270deg, transparent, #000 22%, #000 58%, transparent 94%); }
+  .track { display: flex; width: max-content; animation: inward linear infinite; will-change: transform; }
+  .left .track { animation-direction: reverse; }
+  .set { display: flex; gap: 10px; padding-right: 10px; }
+  .chip { display: flex; align-items: center; height: 42px; padding: 0 14px 0 9px; border-radius: 99px; background: #fff; border: 1px solid var(--line); color: var(--ink); }
+  .chip--more { padding-inline: 14px; border-color: transparent; background: var(--brand-soft); color: var(--brand); font-size: 13px; font-weight: 700; white-space: nowrap; }
+  @keyframes inward { to { transform: translateX(-50%); } }
+
+  /* The hub: everything flows into the AI Fiesta mark. */
+  .hub { position: absolute; top: 50%; left: 50%; translate: -50% -50%; display: grid; place-items: center; width: 104px; height: 104px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px var(--line), 0 0 0 14px rgba(81,70,217,.06), 0 18px 40px -14px rgba(81,70,217,.5); }
+  .hub img { width: 58px; height: 58px; }
+  .hub::before, .hub::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--brand); opacity: 0; animation: pull 2.8s cubic-bezier(.3,0,.2,1) infinite; }
+  .hub::after { animation-delay: 1.4s; }
+  /* Rings shrink into the hub, echoing the inward flow. */
+  @keyframes pull { from { transform: scale(1.75); opacity: 0; } 30% { opacity: .35; } to { transform: scale(1); opacity: 0; } }
+
+  .strip__title { font-size: clamp(26px, 6.4vw, 40px); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin-inline: 16px; }
+  .strip__sub { margin: 8px 16px 0; font-size: 15px; font-weight: 500; color: var(--muted); text-wrap: balance; }
 
   @media (min-width: 640px) {
-    .strip { padding-block: 36px; }
-    .strip__title { margin-bottom: 24px; }
-    .ticker { gap: 16px; }
-    .set { gap: 16px; padding-right: 16px; }
-    .chip { height: 56px; padding: 0 22px 0 14px; }
-    .row { -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); }
+    .strip { padding-block: 48px 52px; }
+    .merge { gap: 14px; margin-block: 26px 28px; max-width: 1080px; margin-inline: auto; }
+    .set { gap: 14px; padding-right: 14px; }
+    .chip { height: 48px; padding: 0 18px 0 11px; }
+    .hub { width: 128px; height: 128px; }
+    .hub img { width: 72px; height: 72px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .track { animation: none; }
-    .row { overflow-x: auto; }
+    .track, .hub::before, .hub::after { animation: none; }
   }
 </style>
