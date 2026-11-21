@@ -94,26 +94,33 @@ const eq = [
   }
   /* Short phones: a narrower photo keeps the offer card and button on the first screen. */
   @media (max-width: 899px) and (max-height: 780px) { .hero__media img { width: 72%; } }
+  /* Desktop: the message is centred on top (equation, one-line headline, subtitle); below it,
+     photo and offer sit side by side at the same height, so nothing floats on its own. */
   @media (min-width: 900px) {
-    .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
-    .lead { margin-inline: 0; font-size: 18px; }
-    h1 { justify-items: start; margin-block: 0 14px; }
-    .ai { width: 60px; }
-    .ai--more { font-size: 17px; }
-    .eq { gap: 10px; }
-    .one { font-size: clamp(40px, 3.6vw, 50px); }
-    .hero__copy { grid-column: 1; grid-row: 1; align-self: end; }
-    .hero__act { grid-column: 1; grid-row: 2; align-self: start; max-width: 440px; }
-    .hero__note { text-align: center; }
-    .hero__media { grid-column: 2; grid-row: 1 / span 2; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
-    .deal { padding: 26px 18px 18px; border-radius: 20px; }
-    .deal__price { gap: 4px 10px; }
-    .deal__price b { font-size: 40px; }
-    .deal__price span, .deal__price s { font-size: 15px; }
-    .deal__price em { font-size: 12px; }
-    .deal__list { gap: 12px; margin-top: 16px; padding-top: 16px; }
-    .deal__list li { font-size: 15px; gap: 12px; }
-    .deal__list svg { width: 20px; height: 20px; }
+    .hero { max-width: 1000px; grid-template-columns: 1fr 1fr; column-gap: 28px; row-gap: 30px; padding-block: 52px var(--section-y); }
+    .hero__copy { grid-column: 1 / -1; }
+    h1 { margin-block: 0 14px; }
+    .eq { gap: 12px; }
+    .eq i { font-size: 22px; }
+    .ai { width: 64px; }
+    .ai--more { font-size: 19px; }
+    .equals { font-size: 30px; margin-block: 12px 6px; }
+    .one { font-size: clamp(46px, 4.4vw, 58px); line-height: 1.15; }
+    .lead { font-size: 18px; max-width: 620px; text-wrap: balance; }
+
+    .hero__media { grid-column: 1; grid-row: 2; position: relative; min-height: 320px; }
+    .hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 6%; }
+    .hero__act { grid-column: 2; grid-row: 2; align-content: center; text-align: center; gap: 14px; }
+
+    .deal { padding: 30px 22px 20px; border-radius: 20px; }
+    .deal__price { gap: 4px 12px; }
+    .deal__price b { font-size: 44px; }
+    .deal__price span, .deal__price s { font-size: 16px; }
+    .deal__price em { font-size: 13px; }
+    .deal__list { gap: 14px; margin-top: 18px; padding-top: 18px; }
+    .deal__list li { font-size: 17px; gap: 12px; }
+    .deal__list svg { width: 22px; height: 22px; }
+    .hero__cta { height: 60px; font-size: 17px; }
   }
   @media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
 </style>
