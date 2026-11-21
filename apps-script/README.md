@@ -95,6 +95,22 @@ append exactly these 10, which become the tag columns:
 Anything else (e.g. `adset_content`, `device`) stays in our own Leads log, joined by `lead_id`.
 If Cashfree changes this behaviour, the tag columns go blank; `lead_id` + our Leads log is the backup.
 
+## Meta Conversions API (every paid order)
+
+`api/cashfree-webhook.js` also sends each paid form order, from **every** form on the account (our
+landing pages, other teams' pages, monthly and yearly), to Meta as a `Purchase` via `lib/meta-capi.js`.
+It runs in parallel with the Sheet write and never affects the reply to Cashfree.
+
+- Only `PAYMENT_FORM_ORDER_WEBHOOK` with `order_status` `PAID`; autopay renewals (`SUBSCRIPTION_*`) are skipped.
+- `event_id` = Cashfree order id, the same id our thank-you pages give the browser Purchase, so Meta merges
+  the two for our orders (and merges Cashfree retries).
+- Value = the order amount (₹999 or ₹7,999); `content_name` = the form slug; `plan` = monthly or yearly.
+  To optimise ₹7,999 campaigns, make a custom conversion on Purchase with value ≥ 7999.
+- Email, phone, first and last name and pincode are normalised and SHA-256 hashed; nothing is stored.
+- Env (Vercel): `META_CAPI_TOKEN` (required), `META_TEST_EVENT_CODE` (optional: events go to Events Manager >
+  Test events instead of live), `META_DATASET_ID` (default: our pixel 1636798967975428), `META_API_VERSION`.
+- Logs: `meta-capi sent <order_id>` or `meta-capi failed <order_id> <reason>` in the Vercel function logs.
+
 ## Known limits
 
 - No Cashfree API keys, so `x-webhook-signature` is not verified. The secret token in the URL is the only gate; treat
