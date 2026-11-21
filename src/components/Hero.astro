@@ -21,7 +21,7 @@ const eq = [
       <span class="equals">=<span class="sr-only"> equals </span></span>
       <span class="one">One <span class="brand"><img src="/images/logo-mark.webp" alt="" width="34" height="34" />AI Fiesta</span> subscription</span>
     </h1>
-    <p class="lead">Chat, create images, videos, websites and PPTs, all for less than ChatGPT alone.</p>
+    <p class="lead">Chat, create images, videos, websites and PPTs. ₹7,999/year, less than 4 months of ChatGPT.</p>
   </div>
 
   <div class="hero__media"><img src="/images/hero-dhruv.webp" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
@@ -91,6 +91,8 @@ const eq = [
   @media (max-width: 899px) {
     .hero__media img { max-height: 170px; object-fit: contain; object-position: center bottom; }
   }
+  /* Short phones: a smaller photo keeps the offer card and button on the first screen. */
+  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { max-height: 128px; } }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
     .lead { margin-inline: 0; font-size: 18px; }
