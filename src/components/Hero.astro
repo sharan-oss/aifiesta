@@ -87,12 +87,13 @@ const eq = [
 
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
   .hero__media img { width: 100%; height: auto; }
-  /* Phones: the photo fills the width and is cropped at the chest, so Dhruv reads large. */
+  /* Phones: one framing on every screen (head to mid-chest, the top ~3/4 of the photo). Size is
+     set by width, never by slicing the height, so it can't end up as just a head. */
   @media (max-width: 899px) {
-    .hero__media img { height: 224px; object-fit: cover; object-position: center 8%; }
+    .hero__media img { display: block; margin-inline: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center top; }
   }
-  /* Short phones: a shorter photo keeps the offer card and button on the first screen. */
-  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { height: 156px; } }
+  /* Short phones: a narrower photo keeps the offer card and button on the first screen. */
+  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { width: 72%; } }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
     .lead { margin-inline: 0; font-size: 18px; }
