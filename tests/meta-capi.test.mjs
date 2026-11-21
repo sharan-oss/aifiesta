@@ -79,6 +79,13 @@ test('live mode: an empty META_TEST_EVENT_CODE sends without a test code', async
   assert.equal(body.test_event_code, undefined);
 });
 
+test('a token pasted with spaces, a line break or quotes still works', async () => {
+  let url;
+  globalThis.fetch = async (u) => { url = u; return { ok: true, status: 200, json: async () => ({ events_received: 1 }) }; };
+  await sendPurchase(paid(), { META_CAPI_TOKEN: ' "EAAtkn"\n', META_TEST_EVENT_CODE: '' });
+  assert.match(url, /access_token=EAAtkn$/);
+});
+
 test('posts to the dataset with the test code when set', async () => {
   const calls = [];
   globalThis.fetch = async (url, init) => { calls.push({ url, body: JSON.parse(init.body) }); return { ok: true, status: 200, json: async () => ({ events_received: 1 }) }; };
