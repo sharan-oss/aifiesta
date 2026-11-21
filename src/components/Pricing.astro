@@ -9,20 +9,27 @@ const picked = payTools.filter((t) => t.on);
 const total = picked.reduce((sum, t) => sum + t.yearly, 0);
 ---
 <section class="price" id="pricing">
-  <div class="wrap grid">
+  <div class="wrap">
+    <div class="ptitle">
+      <h2 class="section-title">Everything you get for <span class="accent">{plan.price}/year</span></h2>
+      <p class="anchor">{picked.map((t) => t.name).join(' + ')} separately: <s>{inr(total)}/year</s></p>
+    </div>
+    <div class="grid">
     <div class="plan">
       <div class="head">
-        <p class="name">{plan.name}</p>
+        <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span> <s>{plan.was}</s></p>
         <span class="save">{plan.save}</span>
       </div>
-      <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
       <p class="sub">{plan.monthly}</p>
-      <hr />
-      <OfferTable domain>
-        <p class="note">{plan.note}</p>
+      <OfferTable domain layout="grid">
+        <a class="btn btn--block buy" href={checkoutHref} data-cta="pricing">{CTA}</a>
+        <p class="cancel">Billed once a year · Cancel anytime</p>
+        <ol class="how" aria-label="How payment works">
+          <li><b>1</b>Enter your details</li>
+          <li><b>2</b>Approve AutoPay in your UPI app</li>
+          <li><b>3</b>Get your login by email</li>
+        </ol>
       </OfferTable>
-      <a class="btn btn--pill btn--block" href={checkoutHref}>{CTA}</a>
-      <p class="cancel">Cancel anytime</p>
     </div>
 
     <div class="pay" data-calc data-plan={PLAN_VALUE}>
@@ -50,22 +57,34 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
       </div>
       <p class="saving" data-saving>With AI Fiesta Basic you save {inr(total - PLAN_VALUE)} a year</p>
     </div>
+    </div>
   </div>
 </section>
 <style>
   .price { background: var(--brand-tint); padding-block: var(--section-y); }
-  .grid { display: grid; gap: 24px; max-width: 900px; align-items: start; }
-  .plan, .pay { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: grid; gap: 16px; }
+  .ptitle { display: grid; gap: 8px; text-align: center; margin-bottom: 22px; }
+  .ptitle h2 { font-size: clamp(26px, 6.4vw, 40px); text-wrap: balance; }
+  .anchor { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .anchor s { color: var(--danger); font-weight: 600; }
+  .grid { display: grid; gap: 24px; max-width: 900px; margin-inline: auto; align-items: start; }
+  .plan, .pay { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: grid; gap: 16px; min-width: 0; }
   .plan { box-shadow: 0 8px 20px rgba(36,32,61,.07); }
-  .head { display: flex; justify-content: space-between; align-items: center; }
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; }
   .name { font-size: 17px; font-weight: 600; }
-  .save { background: var(--brand-soft); color: var(--muted); font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 99px; }
-  .amt b { font-size: 46px; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
+  .save { background: #e6f4ea; color: #2f7d54; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px; white-space: nowrap; }
+  .amt { white-space: nowrap; }
+  .amt b { font-size: 40px; font-weight: 700; color: var(--brand); letter-spacing: -0.02em; }
   .amt span { font-size: 15px; font-weight: 500; }
+  .amt s { margin-left: 6px; font-size: 16px; font-weight: 500; color: #b1999a; }
   .sub { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: -12px; }
   hr { border: 0; height: 1px; background: var(--line); width: 100%; margin: 0; }
   .note { background: var(--brand-soft); border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 500; color: var(--muted); text-align: center; }
-  .cancel { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; }
+  .buy { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
+  .cancel { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; margin-top: -4px; }
+  /* Sets expectations for the AutoPay approval step, where most payments are abandoned. */
+  .how { margin: 4px 0 0; padding: 14px 0 0; list-style: none; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+  .how li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  .how li b { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); font-size: 12px; font-weight: 700; }
 
   .pay { border-radius: 26px; padding: 16px; box-shadow: 0 30px 60px -40px rgba(11,18,32,.35); }
   .phead { display: flex; justify-content: space-between; align-items: center; }

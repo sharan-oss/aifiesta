@@ -2,7 +2,6 @@
 // Google Ads landing page: starts as a copy of the home page so it can be tuned for GA traffic.
 // noindex keeps this duplicate of the home page out of search results.
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import ModelStrip from '../components/ModelStrip.astro';
 import Benefits from '../components/Benefits.astro';
@@ -17,7 +16,6 @@ import StickyCta from '../components/StickyCta.astro';
 import { CTA_HREF_GA } from '../data/content';
 ---
 <Layout title="AI Fiesta - One subscription for 100+ AI models" noindex metaPixel={false}>
-  <Header />
   <main>
     <Hero />
     <ModelStrip />

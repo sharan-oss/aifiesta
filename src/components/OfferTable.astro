@@ -1,10 +1,12 @@
 ---
 // "Get 4x of everything" table for the yearly plan card. The slot (rollover note) sits
 // between the table and the bonus-token footnote. `domain` adds the free-domain bonus line
-// (pages without their own domain section).
+// (pages without their own domain section). `layout="grid"` swaps the table for six compact
+// cells (1st-month amount, then the monthly amount), which halves the card's height.
 import { offer } from '../data/content';
-interface Props { theme?: 'light' | 'dark'; domain?: boolean }
-const { theme = 'light', domain = false } = Astro.props;
+interface Props { theme?: 'light' | 'dark'; domain?: boolean; layout?: 'table' | 'grid' }
+const { theme = 'light', domain = false, layout = 'table' } = Astro.props;
+const fmt = (v: string) => (/^\d{4,}$/.test(v) ? Number(v).toLocaleString('en-IN') : v);
 const icons: Record<string, string> = {
   tokens: '<circle cx="7" cy="14" r="4.4"/><circle cx="14" cy="7" r="4.4"/>',
   image: '<rect x="2.6" y="2.6" width="15.8" height="15.8" rx="2"/><path d="M2.6 14.9l5.3-5.3 3.5 3.5 3.5-4.4 3.5 4.4"/>',
@@ -23,6 +25,20 @@ const icons: Record<string, string> = {
       {domain && <span class="plus">+ Free custom domain <span class="nw">for a year</span> <small>(worth ₹1,500)</small></span>}
     </span>
   </p>
+  {layout === 'grid' ? (
+    <div class="cells">
+      <p class="cap">In your 1st month<span>*</span></p>
+      <ul>
+        {offer.rows.map(([label, usual, now, ic], i) => (
+          <li>
+            <b class="val" style={`--i:${i}`}>{fmt(now)}</b>
+            <span class="lbl">{label}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="after">Every month after: {offer.rows.map(([label, usual]) => `${fmt(usual)} ${label.toLowerCase()}`).join(', ')}.</p>
+    </div>
+  ) : (
   <table>
     <thead>
       <tr><th scope="col">In your plan</th><th scope="col">Every month</th><th scope="col" class="now">Current Offer*<small>1st month</small></th></tr>
@@ -43,13 +59,14 @@ const icons: Record<string, string> = {
             </span>
           </th>
           <td>{usual}</td>
-          <td><b style={`--i:${i}`}>{now}</b></td>
+          <td><b class="val" style={`--i:${i}`}>{now}</b></td>
         </tr>
       ))}
     </tbody>
   </table>
+  )}
   <slot />
-  <p class="fine">{offer.footnote} · <a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>
+  <p class="fine">{offer.footnote} · {layout === 'grid' && 'Video counts vary by model and settings · '}<a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>
 </div>
 <style>
   .offer4x { --accent: #3f9b6a; --chip: #e6f4ea; --rule: var(--line); --soft: var(--muted); display: grid; gap: 12px; }
@@ -74,6 +91,16 @@ const icons: Record<string, string> = {
   .light td b { color: var(--ink); }
   .dark td b { color: #fff; }
   .lbl { display: flex; align-items: center; gap: 8px; }
+  /* Grid layout */
+  .cap { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .cells ul { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .cells li { display: grid; gap: 2px; justify-items: center; text-align: center; min-width: 0; padding: 14px 2px; border-bottom: 1px solid var(--rule); }
+  .cells li:nth-child(n+4) { border-bottom: 0; }
+  .cells .lbl { display: block; font-size: 13px; font-weight: 500; color: var(--soft); }
+  .cells .val { display: inline-block; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .light .cells .val { color: var(--ink); }
+  .dark .cells .val { color: #fff; }
+  .after { font-size: 12px; color: var(--soft); text-align: center; text-wrap: balance; }
   .lbl > svg { width: 20px; height: 20px; flex: none; }
   .info { position: relative; display: inline-flex; }
   .info button { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 0; background: none; color: var(--soft); cursor: pointer; }
@@ -93,7 +120,7 @@ const icons: Record<string, string> = {
   .spark { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: var(--accent); opacity: 0; }
   .spark:nth-of-type(even) { background: #f5b301; width: 5px; height: 5px; }
   .banner b { display: inline-block; }
-  .armed:not(.go) .plus, .armed:not(.go) td b { opacity: 0; }
+  .armed:not(.go) .plus, .armed:not(.go) .val { opacity: 0; }
   .go .gift { animation: wiggle .6s cubic-bezier(.36,.07,.19,.97) both; }
   .go .lid { animation: lid .7s cubic-bezier(.16,1,.3,1) .15s both; }
   .go .spark { animation: spark .8s cubic-bezier(.16,1,.3,1) .3s; }
@@ -101,7 +128,7 @@ const icons: Record<string, string> = {
   .go .banner b.punch { animation: punch .45s cubic-bezier(.16,1,.3,1); }
   .go .plus { animation: rise .5s cubic-bezier(.16,1,.3,1) .55s both; }
   .go .shine::after { animation: shine 4.5s cubic-bezier(.25,1,.5,1) .7s infinite; }
-  .go td b { animation: pop .45s cubic-bezier(.16,1,.3,1) calc(.8s + var(--i) * 70ms) both; }
+  .go .val { animation: pop .45s cubic-bezier(.16,1,.3,1) calc(.8s + var(--i) * 70ms) both; }
   @keyframes wiggle { 15% { transform: rotate(-12deg) scale(1.08); } 35% { transform: rotate(10deg) scale(1.08); } 55% { transform: rotate(-6deg); } 75% { transform: rotate(3deg); } }
   @keyframes lid { 40% { transform: translateY(-5px) rotate(-14deg); } }
   @keyframes spark { from { opacity: 1; transform: rotate(var(--a)) translateX(10px) scale(1); } to { opacity: 0; transform: rotate(var(--a)) translateX(40px) scale(.3); } }

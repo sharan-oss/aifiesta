@@ -2,7 +2,7 @@
 import { plan, checkoutHrefFor } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
-<aside class="sticky" id="sticky-cta" aria-label="Pricing offer">
+<aside class="sticky away" id="sticky-cta" aria-label="Pricing offer" inert>
   <div class="price">
     <p class="amt"><b>{plan.price}</b><span>{plan.per}</span> <s>{plan.was}</s></p>
     <p class="offer"><i class="dot" aria-hidden="true"></i>{plan.offer}</p>

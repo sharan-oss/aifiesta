@@ -1,59 +1,79 @@
 ---
-import { CTA, checkoutHrefFor } from '../data/content';
-import YcBadge from './YcBadge.astro';
+// Hero built around the offer. One path for the eye: hook -> what it is -> the deal -> the button.
+// The lead and the 4x line mirror the best-performing ads (cheaper than ChatGPT alone, "4X bonus usage").
+import { CTA, checkoutHrefFor, offer, plan } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
 <section class="hero wrap">
   <div class="hero__copy">
-    <YcBadge />
-    <div class="hero__rate">
-      <span class="stars" aria-hidden="true">★★★★★</span>
-      <p>Trusted worldwide by 1M+ users</p>
+    <h1>Get <span class="hl">100+ AI models</span> in one subscription</h1>
+    <p class="lead">ChatGPT, Claude, Gemini, Perplexity and more, for less than ChatGPT alone.</p>
+  </div>
+
+  <!-- data-sticky-hide: the sticky bar stays away while this block is on screen. -->
+  <div class="hero__act" data-sticky-hide>
+    <div class="deal">
+      <p class="deal__tag"><i class="dot" aria-hidden="true"></i>Limited-time offer</p>
+      <p class="deal__price"><b>{plan.price}</b><span>/year</span> <s>{plan.was}</s> <em>Save 33%</em></p>
+      <ul class="deal__list">
+        <li class="x4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+          <p><b>{offer.multiple}</b> everything in your 1st month</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+          <p>Free custom domain for a year</p>
+        </li>
+      </ul>
     </div>
-    <h1>One Subscription for <span class="hl">100+</span> AI Models 🚀</h1>
-    <p class="lead">One stop solution to all your AI needs: chat, compare answers, generate images and videos, build websites and create presentations — all from one dashboard.</p>
+    <a class="btn btn--block hero__cta" href={checkout} data-cta="hero">{CTA}</a>
+    <p class="hero__note">Billed once a year · Cancel anytime</p>
   </div>
+
   <div class="hero__media"><img src="/images/hero-dhruv.webp" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
-  <div class="hero__act">
-    <a class="btn btn--block hero__cta" href={checkout} data-cta="hero">
-      {CTA}
-      <img class="dots" src="/logos/cta-dots.webp" alt="" width="108" height="30" />
-    </a>
-    <p class="hero__offer"><s>₹11,988</s> save 33% - <em>Hurry Up! Limited Time Offer</em></p>
-  </div>
 </section>
 <style>
-  .hero { display: grid; gap: 24px; padding-block: 24px var(--section-y); text-align: center; }
-  .hero__copy :global(.yc) { margin-bottom: 14px; }
-  .hero__rate { display: grid; gap: 5px; }
-  .stars { color: var(--gold); font-size: 17px; }
-  .hero__rate p { font-size: 12px; font-weight: 500; color: var(--muted); }
-  h1 { font-size: clamp(35px, 8vw, 60px); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin-block: 16px; }
-  .hl { color: var(--blue); text-decoration: underline; text-decoration-color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 6px; }
-  .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 520px; margin-inline: auto; }
-  .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
+  .hero { display: grid; gap: 22px; padding-block: 28px var(--section-y); text-align: center; }
+  h1 { font-size: clamp(33px, 9vw, 58px); line-height: 1.08; font-weight: 700; letter-spacing: -0.025em; margin-block: 8px 12px; text-wrap: balance; }
+  .hl { color: var(--brand); white-space: nowrap; }
+  .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 440px; margin-inline: auto; text-wrap: balance; }
+
+  /* The deal: the only card above the fold. Price, then two plain bonus lines. */
+  .hero__act { display: grid; gap: 12px; }
+  .deal { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--brand); border-radius: 20px; padding: 26px 18px 18px; box-shadow: 0 20px 40px -28px rgba(81,70,217,.6); }
+  .deal__tag { position: absolute; top: -12px; left: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 9px; border-radius: 99px; background: #d9381e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .dot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: currentColor; animation: ping 1.6s cubic-bezier(0,0,.2,1) infinite; }
+  .deal__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+  .deal__price b { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .deal__price span { font-size: 15px; font-weight: 600; margin-left: -8px; }
+  .deal__price s { font-size: 15px; font-weight: 500; color: #b1999a; }
+  .deal__price em { font-style: normal; font-size: 12px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 3px 9px; border-radius: 99px; }
+  .deal__list { display: grid; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .deal__list li { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 600; }
+  .deal__list svg { flex: none; width: 20px; height: 20px; color: var(--brand); }
+  /* 4x is the lead bonus: the one green accent on the screen. */
+  .x4 svg { color: #3f9b6a; }
+  .x4 b { color: #2f7d54; font-size: 1.3em; font-weight: 700; letter-spacing: -0.02em; }
+  @keyframes ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
+
+  .hero__cta { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
+  .hero__note { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+  .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
   .hero__media img { width: 100%; height: auto; }
-  .dots { height: 30px; width: auto; flex: none; }
-  @media (max-width: 479px) { .dots { display: none; } }
-  .hero__act { display: grid; gap: 10px; }
-  .hero__offer { text-align: center; font-size: 14px; font-weight: 500; color: var(--muted); }
-  .hero__offer s { color: #b1999a; }
-  .hero__offer em { color: var(--danger); font-style: normal; }
-  /* Phones: tighter stack so the CTA stays above the sticky bar. */
   @media (max-width: 899px) {
-    .hero { gap: 16px; padding-top: 12px; }
-    .hero__act { gap: 8px; }
-    .hero__copy :global(.yc) { margin-bottom: 10px; }
-    .hero__rate { display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .stars { font-size: 15px; }
-    h1 { margin-block: 10px; }
-    .hero__media img { max-height: 260px; object-fit: contain; object-position: center bottom; }
+    .hero__media img { max-height: 200px; object-fit: contain; object-position: center bottom; }
   }
   @media (min-width: 900px) {
-    .hero { grid-template-columns: 1fr 1fr; align-items: center; text-align: left; padding-block: 72px var(--section-y); gap: 56px; }
-    .lead { margin-inline: 0; }
-    .hero__copy { grid-column: 1; grid-row: 1; }
-    .hero__media { grid-column: 2; grid-row: 1 / span 2; }
-    .hero__act { grid-column: 1; grid-row: 2; max-width: 360px; align-self: start; }
+    .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
+    .lead { margin-inline: 0; font-size: 18px; }
+    h1 { margin-block: 0 14px; font-size: clamp(40px, 3.6vw, 50px); }
+    .hero__copy { grid-column: 1; grid-row: 1; align-self: end; }
+    .hero__act { grid-column: 1; grid-row: 2; align-self: start; max-width: 440px; }
+    .hero__note { text-align: center; }
+    .hero__media { grid-column: 2; grid-row: 1 / span 2; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
+    .deal__price b { font-size: 42px; }
   }
+  @media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
 </style>
