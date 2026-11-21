@@ -47,41 +47,39 @@ const eq = [
   </div>
 </section>
 <style>
-  .hero { display: grid; gap: 22px; padding-block: 28px var(--section-y); text-align: center; }
+  .hero { display: grid; gap: 18px; padding-block: 22px var(--section-y); text-align: center; }
   /* The headline is an equation: logo row, "=", then the one subscription. */
   h1 { display: grid; justify-items: center; margin-block: 4px 12px; font-weight: 700; letter-spacing: -0.025em; }
   .eq { display: flex; align-items: center; gap: clamp(4px, 1.6vw, 8px); }
   .eq i { font-style: normal; font-size: 18px; font-weight: 700; color: var(--muted); }
-  .ai { flex: none; display: grid; place-items: center; width: clamp(44px, 12.4vw, 52px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px var(--line), 0 8px 16px -10px rgba(36,32,61,.45); }
+  .ai { flex: none; display: grid; place-items: center; width: clamp(42px, 11.8vw, 48px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px var(--line), 0 8px 16px -10px rgba(36,32,61,.45); }
   .ai img { width: 56%; height: 56%; }
   .ai--more { background: var(--brand); color: #fff; box-shadow: 0 8px 16px -8px rgba(81,70,217,.8); font-size: 15px; letter-spacing: 0; }
-  .equals { font-size: 28px; line-height: 1; color: var(--muted); margin-block: 8px 4px; }
-  .one { font-size: clamp(31px, 8.6vw, 40px); line-height: 1.22; text-wrap: balance; }
+  .equals { font-size: 24px; line-height: 1; color: var(--muted); margin-block: 6px 2px; }
+  .one { font-size: clamp(30px, 8.4vw, 38px); line-height: 1.2; text-wrap: balance; }
   .brand { display: inline-flex; align-items: center; gap: .18em; white-space: nowrap; color: var(--brand); vertical-align: -0.12em; padding: .02em .28em .02em .12em; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1.5px var(--line); }
   .brand img { width: .95em; height: .95em; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   /* Full width; 'pretty' only stops a one-word last line (balance made the block look narrow). */
   .lead { font-size: 15px; font-weight: 500; color: var(--muted); max-width: 520px; margin-inline: auto; text-wrap: pretty; }
 
-  /* The deal: the only card above the fold. Price, then two plain bonus lines. */
+  /* The deal: compact, so the photo above it and the button below it carry the weight. */
   .hero__act { display: grid; gap: 12px; }
-  .deal { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--brand); border-radius: 20px; padding: 26px 18px 18px; box-shadow: 0 20px 40px -28px rgba(81,70,217,.6); }
+  .deal { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--brand); border-radius: 16px; padding: 20px 14px 12px; box-shadow: 0 16px 32px -26px rgba(81,70,217,.6); }
   .deal__tag { position: absolute; top: -12px; left: 50%; translate: -50% 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 9px; border-radius: 99px; background: #d9381e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
   .dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .dot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: currentColor; animation: ping 1.6s cubic-bezier(0,0,.2,1) infinite; }
-  .deal__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
-  .deal__price b { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
-  .deal__price span { font-size: 15px; font-weight: 600; margin-left: -8px; }
-  .deal__price s { font-size: 15px; font-weight: 500; color: #b1999a; }
-  .deal__price em { font-style: normal; font-size: 12px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 3px 9px; border-radius: 99px; }
-  /* Narrow phones: keep price, old price and saving on one line. */
-  @media (max-width: 380px) { .deal__price { gap: 4px 7px; } .deal__price b { font-size: 31px; } .deal__price s { font-size: 14px; } }
-  .deal__list { display: grid; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .deal__list li { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 600; }
-  .deal__list svg { flex: none; width: 20px; height: 20px; color: var(--brand); }
+  .deal__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 9px; }
+  .deal__price b { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .deal__price span { font-size: 14px; font-weight: 600; margin-left: -7px; }
+  .deal__price s { font-size: 14px; font-weight: 500; color: #b1999a; }
+  .deal__price em { font-style: normal; font-size: 11px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 3px 8px; border-radius: 99px; }
+  .deal__list { display: grid; gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .deal__list li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+  .deal__list svg { flex: none; width: 18px; height: 18px; color: var(--brand); }
   /* 4x is the lead bonus: the one green accent on the screen. */
   .x4 svg { color: #3f9b6a; }
-  .x4 b { color: #2f7d54; font-size: 1.3em; font-weight: 700; letter-spacing: -0.02em; }
+  .x4 b { color: #2f7d54; font-size: 1.25em; font-weight: 700; letter-spacing: -0.02em; }
   @keyframes ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
 
   .hero__cta { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
@@ -89,11 +87,12 @@ const eq = [
 
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
   .hero__media img { width: 100%; height: auto; }
+  /* Phones: the photo fills the width and is cropped at the chest, so Dhruv reads large. */
   @media (max-width: 899px) {
-    .hero__media img { max-height: 170px; object-fit: contain; object-position: center bottom; }
+    .hero__media img { height: 224px; object-fit: cover; object-position: center 8%; }
   }
-  /* Short phones: a smaller photo keeps the offer card and button on the first screen. */
-  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { max-height: 128px; } }
+  /* Short phones: a shorter photo keeps the offer card and button on the first screen. */
+  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { height: 156px; } }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
     .lead { margin-inline: 0; font-size: 18px; }
@@ -106,7 +105,14 @@ const eq = [
     .hero__act { grid-column: 1; grid-row: 2; align-self: start; max-width: 440px; }
     .hero__note { text-align: center; }
     .hero__media { grid-column: 2; grid-row: 1 / span 2; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
-    .deal__price b { font-size: 42px; }
+    .deal { padding: 26px 18px 18px; border-radius: 20px; }
+    .deal__price { gap: 4px 10px; }
+    .deal__price b { font-size: 40px; }
+    .deal__price span, .deal__price s { font-size: 15px; }
+    .deal__price em { font-size: 12px; }
+    .deal__list { gap: 12px; margin-top: 16px; padding-top: 16px; }
+    .deal__list li { font-size: 15px; gap: 12px; }
+    .deal__list svg { width: 20px; height: 20px; }
   }
   @media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
 </style>
