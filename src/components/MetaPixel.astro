@@ -20,7 +20,8 @@ const pixelId = META_PIXEL_ID;
       document.addEventListener('click', function (e) {
         var a = e.target.closest && e.target.closest('a[href]');
         if (!a || a.href.indexOf(ctaHref) !== 0) return;
-        fbq('track', 'AddToCart', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan' });
+        var cta = a.getAttribute('data-cta') || 'other';
+        fbq('track', 'AddToCart', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan', cta: cta });
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
         e.preventDefault();
         setTimeout(function () { location.href = a.href; }, 150);

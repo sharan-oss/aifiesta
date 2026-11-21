@@ -1,14 +1,13 @@
 ---
-// CTAs that scroll to pricing carry data-cta="<where>". Each click sends a ViewPricing
-// custom event to Meta and a Clarity event, so we can see which buttons pull people in.
-// AddToCart stays on the pricing card's checkout link (see MetaPixel).
+// CTAs carry data-cta="<where>". Each click sends a Clarity event, so we can see which buttons
+// pull people in. Meta gets the button name on its AddToCart instead (see MetaPixel), so there
+// is no separate Meta event for the click.
 ---
 <script is:inline>
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[data-cta]');
     if (!a) return;
     var where = a.getAttribute('data-cta');
-    if (window.fbq) fbq('trackCustom', 'ViewPricing', { cta: where });
     if (window.clarity) clarity('event', 'ViewPricing_' + where);
   });
 </script>
