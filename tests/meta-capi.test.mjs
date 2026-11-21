@@ -72,6 +72,13 @@ test('sends nothing without a token', async () => {
   assert.equal(called, false);
 });
 
+test('live mode: an empty META_TEST_EVENT_CODE sends without a test code', async () => {
+  let body;
+  globalThis.fetch = async (url, init) => { body = JSON.parse(init.body); return { ok: true, status: 200, json: async () => ({ events_received: 1 }) }; };
+  await sendPurchase(paid(), { META_CAPI_TOKEN: 'tkn', META_TEST_EVENT_CODE: '' });
+  assert.equal(body.test_event_code, undefined);
+});
+
 test('posts to the dataset with the test code when set', async () => {
   const calls = [];
   globalThis.fetch = async (url, init) => { calls.push({ url, body: JSON.parse(init.body) }); return { ok: true, status: 200, json: async () => ({ events_received: 1 }) }; };
@@ -90,7 +97,7 @@ test('falls back to a server event if Meta wants a browser user agent', async ()
     if (ev.action_source === 'website') return { ok: false, status: 400, json: async () => ({ error: { message: 'client_user_agent is required for website events' } }) };
     return { ok: true, status: 200, json: async () => ({ events_received: 1 }) };
   };
-  const r = await sendPurchase(paid(), { META_CAPI_TOKEN: 'tkn' });
+  const r = await sendPurchase(paid(), { META_CAPI_TOKEN: 'tkn', META_TEST_EVENT_CODE: '' });
   assert.equal(r.sent, true);
   assert.deepEqual(sent, ['website', 'system_generated']);
 });
