@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { CTA_TEXT, compareRows, compareFeatures } from '../../data/content-india';
+import { CTA_TEXT, compareRows, compareFeatures, CHECKOUT_HREF } from '../../data/content-india';
 ---
 <section class="sec cmp">
   <div class="wrap">
@@ -40,7 +40,7 @@ import { CTA_TEXT, compareRows, compareFeatures } from '../../data/content-india
     <div class="save">
       <img src="/india/vault.webp" alt="" width="200" height="200" loading="lazy" />
       <p>You save over <b>₹1,23,377</b> every year, with more models, more features and a smarter workflow than paying separately.</p>
-      <div class="cta"><a class="btn" href="#pricing" data-cta="compare">{CTA_TEXT}</a></div>
+      <div class="cta"><a class="btn" href={CHECKOUT_HREF} data-cta="compare">{CTA_TEXT}</a></div>
     </div>
   </div>
 </section>

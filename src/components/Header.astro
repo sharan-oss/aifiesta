@@ -1,17 +1,21 @@
 ---
-import { CTA, PRICING_HREF } from '../data/content';
+import { CTA, checkoutHrefFor } from '../data/content';
 interface Props { cta?: boolean }
 const { cta = true } = Astro.props;
+const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
 <header class="hdr">
   <div class="wrap hdr__in">
     <a href="/" aria-label="AI Fiesta"><img src="/images/logo.webp" alt="AI Fiesta" width="147" height="32" /></a>
-    {cta && <a class="btn btn--pill hdr__cta" href={PRICING_HREF} data-cta="header">{CTA}</a>}
+    {cta && <a class="btn btn--pill hdr__cta" href={checkout} data-cta="header"><span class="full">{CTA}</span><span class="short">Get it · ₹7,999/yr</span></a>}
   </div>
 </header>
 <style>
   .hdr { border-bottom: 1px solid rgba(11,18,32,.08); background: var(--bg); }
   .hdr__in { display: flex; align-items: center; justify-content: space-between; padding-block: 14px; }
   .hdr img { height: 32px; width: auto; }
-  .hdr__cta { height: 44px; padding-inline: 20px; box-shadow: 0 10px 24px -12px rgba(11,18,32,.55); }
+  .hdr__cta { height: 44px; padding-inline: 20px; box-shadow: 0 10px 24px -12px rgba(11,18,32,.55); white-space: nowrap; }
+  /* Phones: short label so the header stays one line. */
+  .hdr__cta .full { display: none; }
+  @media (min-width: 640px) { .hdr__cta .full { display: inline; } .hdr__cta .short { display: none; } }
 </style>

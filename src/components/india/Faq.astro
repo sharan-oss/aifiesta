@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { CTA_TEXT } from '../../data/content-india';
+import { CTA_TEXT, CHECKOUT_HREF } from '../../data/content-india';
 import { faqs } from '../../data/content';
 import { modelGroups } from '../../data/models-list';
 ---
@@ -23,7 +23,7 @@ import { modelGroups } from '../../data/models-list';
   <div class="wrap">
     <h2 class="h2">Stop juggling <em>multiple subscriptions.</em></h2>
     <p class="big">100+ premium AI models. One login. ₹667 a month.</p>
-    <div class="cta"><a class="btn" href="#pricing" data-cta="final">{CTA_TEXT}</a></div>
+    <div class="cta"><a class="btn" href={CHECKOUT_HREF} data-cta="final">{CTA_TEXT}</a></div>
   </div>
 </section>
 <footer class="legal">

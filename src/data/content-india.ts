@@ -10,7 +10,7 @@ export const reviews = [
   ['Ashish Pandey', 'No more switching tabs or buying separate subscriptions—it saves both time and money. The UI is clean, fast, and feels very professional.'],
 ];
 
-export const CTA_TEXT = 'Get AI Fiesta – ₹7,999/year';
+export const CTA_TEXT = 'Get AI Fiesta for ₹7,999/year';
 
 export const heroPoints = [
   ['Compare AI answers instantly', ': one prompt, several models, side by side', '/india/ic-compare.webp'],

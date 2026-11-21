@@ -1,6 +1,6 @@
 ---
 import YcBadge from '../YcBadge.astro';
-import { CTA_TEXT, heroPoints, logos } from '../../data/content-india';
+import { CTA_TEXT, heroPoints, logos, CHECKOUT_HREF } from '../../data/content-india';
 const ticker = 'Built by Y Combinator alumni · Priced for India · Latest models added automatically';
 ---
 <div class="top">Available for a limited time only. Free custom domain included</div>
@@ -15,7 +15,7 @@ const ticker = 'Built by Y Combinator alumni · Priced for India · Latest model
       <h1>Premium ChatGPT, Claude, Gemini and <em>100+ AI Models.</em> <em>One Subscription.</em></h1>
       <p class="sub">Access 100+ leading AI models, including premium and advanced versions, all in one subscription. Built and priced for India.</p>
       <div class="cta d">
-        <a class="btn" href="#pricing" data-cta="hero">{CTA_TEXT} →</a>
+        <a class="btn" href={CHECKOUT_HREF} data-cta="hero">{CTA_TEXT} →</a>
       </div>
     </div>
     <div class="media">
@@ -27,7 +27,7 @@ const ticker = 'Built by Y Combinator alumni · Priced for India · Latest model
           <li><img class="ic" src={ic} alt="" width="56" height="56" loading="lazy" /><p><b>{b}</b>{t}</p></li>
         ))}
       </ul>
-      <div class="cta m"><a class="btn" href="#pricing" data-cta="hero">{CTA_TEXT} →</a></div>
+      <div class="cta m"><a class="btn" href={CHECKOUT_HREF} data-cta="hero">{CTA_TEXT} →</a></div>
     </div>
   </div>
   <div class="ticker" aria-hidden="true"><div class="track">{[0, 1, 2, 3, 4, 5].map(() => <span><svg viewBox="0 0 12 16" width="11" height="14" aria-hidden="true"><path d="M7 0L0 9h5l-1 7 8-10H7z" fill="#ffaa18" /></svg>{ticker}</span>)}</div></div>

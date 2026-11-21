@@ -1,8 +1,9 @@
 ---
-import { faqs, CTA, PRICING_HREF } from '../data/content';
+import { faqs, CTA, checkoutHrefFor } from '../data/content';
 import { modelGroups } from '../data/models-list';
+const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
-<section class="cta wrap"><a class="btn btn--block" href={PRICING_HREF} data-cta="faq">{CTA}</a></section>
+<section class="cta wrap"><a class="btn btn--block" href={checkout} data-cta="faq">{CTA}</a></section>
 <section class="faq">
   <div class="wrap in">
     <h2 class="section-title">Questions?<br />We have answers.</h2>

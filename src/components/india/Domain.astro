@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { domainSteps } from '../../data/content-india';
+import { domainSteps, CHECKOUT_HREF, CTA_TEXT } from '../../data/content-india';
 ---
 <section class="sec dom">
   <div class="wrap">
@@ -11,7 +11,7 @@ import { domainSteps } from '../../data/content-india';
     <ol>
       {domainSteps.map(([t, ic]) => <li><span><Icon name={ic} color="#a23b6b" /></span><p>{t}</p></li>)}
     </ol>
-    <div class="cta"><a class="btn" href="#pricing" data-cta="domain">Get AI Fiesta + free domain</a></div>
+    <div class="cta"><a class="btn" href={CHECKOUT_HREF} data-cta="domain">{CTA_TEXT}</a></div>
   </div>
 </section>
 <section class="sec sec--dark why-i">

@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { CTA_TEXT, features } from '../../data/content-india';
+import { CTA_TEXT, features, CHECKOUT_HREF } from '../../data/content-india';
 ---
 <section class="sec feat">
   <div class="wrap">
@@ -24,7 +24,7 @@ import { CTA_TEXT, features } from '../../data/content-india';
         </>
       ))}
     </div>
-    <div class="cta"><a class="btn" href="#pricing" data-cta="features">{CTA_TEXT}</a></div>
+    <div class="cta"><a class="btn" href={CHECKOUT_HREF} data-cta="features">{CTA_TEXT}</a></div>
   </div>
 </section>
 <style>

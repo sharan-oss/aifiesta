@@ -2,9 +2,10 @@
 // "Paying separately vs one subscription" comparison, the v1 counterpart of v2/Compare.astro.
 // Same data (content-v2), so prices and models stay in one place.
 import { compare, badPoints, goodPoints } from '../data/content-v2';
-import { CTA, PRICING_HREF } from '../data/content';
+import { CTA, checkoutHrefFor } from '../data/content';
 const ok = '<circle cx="9" cy="9" r="8" fill="#00BA00"/><path d="M5 9l2.6 2.6L13 6.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
 const no = '<circle cx="9" cy="9" r="7" fill="none" stroke="#dc2626" stroke-width="1.6"/><path d="M4 14L14 4" stroke="#dc2626" stroke-width="1.6"/>';
+const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
 <section class="wrap cmp">
   <h2 class="section-title"><span class="accent">One subscription</span> to replace them all</h2>
@@ -31,7 +32,7 @@ const no = '<circle cx="9" cy="9" r="7" fill="none" stroke="#dc2626" stroke-widt
     <p class="amt">₹1,23,377 every year</p>
     <p>For access to more models, more features, and a smarter workflow than paying separately</p>
   </div>
-  <a class="btn btn--block cta" href={PRICING_HREF} data-cta="compare">{CTA}</a>
+  <a class="btn btn--block cta" href={checkout} data-cta="compare">{CTA}</a>
 </section>
 <style>
   .cmp { padding-block: var(--section-y); display: grid; gap: 28px; }

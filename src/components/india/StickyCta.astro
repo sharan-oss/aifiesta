@@ -1,13 +1,14 @@
 ---
 // Sticky CTA for the India LP: same behaviour and copy as the Home bar (components/StickyCta.astro),
 // in the India palette. Hidden while #pricing is on screen (scripts/sticky-cta).
+import { CHECKOUT_HREF } from '../../data/content-india';
 ---
 <aside class="sticky" id="sticky-cta" aria-label="Pricing offer">
   <div class="price">
     <p class="amt"><b>₹7,999</b><span>/yr</span> <s>₹11,988</s></p>
     <p class="offer"><i class="dot" aria-hidden="true"></i>Limited time offer</p>
   </div>
-  <a class="btn go" href="#pricing" data-cta="sticky"><span>Get It for only</span> <b>₹667/month</b></a>
+  <a class="btn go" href={CHECKOUT_HREF} data-cta="sticky"><span>Get AI Fiesta</span> <b>for ₹7,999/year</b></a>
 </aside>
 <style>
   /* Keep the end of the page clear of the bar. */
@@ -36,8 +37,8 @@
   @keyframes shine { 0% { transform: translateX(-120%) skewX(-18deg); } 35%, 100% { transform: translateX(260%) skewX(-18deg); } }
 
   /* The global .btn is full-width; here it sizes to its label, stacked on phones. */
-  .go { flex: none; width: auto; height: 52px; padding: 0 20px; border-radius: 99px; font-size: 13px; line-height: 1.2; flex-direction: column; gap: 1px; }
-  .go b { font-size: 16px; font-weight: 700; }
+  .go { flex: none; width: auto; height: 52px; padding: 0 16px; border-radius: 99px; font-size: 13px; line-height: 1.2; flex-direction: column; gap: 1px; }
+  .go b { font-size: 14px; font-weight: 700; white-space: nowrap; }
 
   @media (min-width: 768px) {
     :global(body) { padding-bottom: 112px; }

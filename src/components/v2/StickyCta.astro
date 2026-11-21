@@ -1,5 +1,5 @@
 ---
-import { CTA_HREF } from '../../data/content-v2';
+import { CTA_HREF, CTA_TEXT } from '../../data/content-v2';
 ---
 <aside class="sticky" id="sticky-cta" aria-label="Pricing offer">
   <div class="inner">
@@ -7,7 +7,7 @@ import { CTA_HREF } from '../../data/content-v2';
       <p class="amt"><b class="grad">₹7,999/</b> <s>₹11,988</s></p>
       <p class="lim">Limited Time Offer</p>
     </div>
-    <a class="btn" href={CTA_HREF} data-cta="sticky">Get AI Fiesta</a>
+    <a class="btn" href={CTA_HREF} data-cta="sticky"><span>Get AI Fiesta</span> <b>for ₹7,999/year</b></a>
   </div>
 </aside>
 <style>
@@ -17,11 +17,13 @@ import { CTA_HREF } from '../../data/content-v2';
   .amt { font-family: var(--font-head); font-size: 24px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
   .amt s { font-size: 14px; font-weight: 600; color: #b1999a; margin-left: 4px; }
   .lim { color: var(--red); font-size: 14px; margin-top: 2px; }
-  .btn { width: auto; flex: none; padding: 14px 28px; font-family: var(--font-head); font-size: 16px; }
+  .btn { width: auto; flex: none; padding: 8px 18px; font-family: var(--font-head); font-size: 13px; line-height: 1.2; flex-direction: column; gap: 1px; text-align: center; }
+  .btn b { font-size: 14px; white-space: nowrap; }
   @media (min-width: 768px) {
     .sticky { left: 50%; right: auto; width: min(720px, 100%); translate: -50% 0; }
     .amt { font-size: 28px; }
-    .btn { padding: 16px 40px; font-size: 18px; }
+    .btn { padding: 16px 40px; font-size: 18px; flex-direction: row; gap: .3em; }
+    .btn b { font-size: inherit; }
   }
   @media (prefers-reduced-motion: reduce) { .sticky { transition: none; } }
 </style>

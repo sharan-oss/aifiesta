@@ -1,8 +1,8 @@
 ---
 interface Props { variant?: 'v1' | 'v2' }
+import { CTA, checkoutHrefFor } from '../data/content';
 const { variant = 'v1' } = Astro.props;
-// Scrolls to the pricing card; only that card goes to payment.
-const href = '#pricing';
+const href = checkoutHrefFor(Astro.url.pathname);
 const steps = [
   'Get the annual plan for ₹7,999.',
   'Build your first website in Website Builder.',
@@ -20,7 +20,7 @@ const steps = [
       <ol>
         {steps.map((s, i) => <li><span>{i + 1}</span>{s}</li>)}
       </ol>
-      <a class="cta" href={href} data-cta="domain-bonus">Get AI Fiesta + free domain</a>
+      <a class="cta" href={href} data-cta="domain-bonus">{CTA}</a>
     </div>
   </div>
 </section>

@@ -1,5 +1,6 @@
 ---
-import { features, CTA, PRICING_HREF } from '../data/content';
+import { features, CTA, checkoutHrefFor } from '../data/content';
+const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
 <section class="wrap feat">
   <h2 class="section-title">Create faster without paying for <span class="accent">5 different AI tools</span></h2>
@@ -18,7 +19,7 @@ import { features, CTA, PRICING_HREF } from '../data/content';
       </article>
     ))}
   </div>
-  <a class="btn btn--block cta" href={PRICING_HREF} data-cta="features">{CTA}</a>
+  <a class="btn btn--block cta" href={checkout} data-cta="features">{CTA}</a>
 </section>
 <style>
   .feat { padding-block: 16px var(--section-y); display: grid; gap: 28px; --stack-top: 16px; }

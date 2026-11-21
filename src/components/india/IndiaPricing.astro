@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { CHECKOUT_HREF, india, planRows } from '../../data/content-india';
+import { CHECKOUT_HREF, CTA_TEXT, india, planRows } from '../../data/content-india';
 ---
 <section class="sec price" id="pricing">
   <div class="wrap">
@@ -29,7 +29,7 @@ import { CHECKOUT_HREF, india, planRows } from '../../data/content-india';
         ))}
       </div>
       <p class="roll"><Icon name="refresh" color="#ffc8a4" />All unused tokens roll over to next month. They never expire.</p>
-      <a class="btn" href={CHECKOUT_HREF} data-cta="pricing">Get AI Fiesta »</a>
+      <a class="btn" href={CHECKOUT_HREF} data-cta="pricing">{CTA_TEXT}</a>
     </div>
   </div>
 </section>

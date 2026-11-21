@@ -1,6 +1,7 @@
 ---
-import { CTA, PRICING_HREF } from '../data/content';
+import { CTA, checkoutHrefFor } from '../data/content';
 import YcBadge from './YcBadge.astro';
+const checkout = checkoutHrefFor(Astro.url.pathname);
 ---
 <section class="hero wrap">
   <div class="hero__copy">
@@ -14,7 +15,7 @@ import YcBadge from './YcBadge.astro';
   </div>
   <div class="hero__media"><img src="/images/hero-dhruv.webp" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
   <div class="hero__act">
-    <a class="btn btn--block hero__cta" href={PRICING_HREF} data-cta="hero">
+    <a class="btn btn--block hero__cta" href={checkout} data-cta="hero">
       {CTA}
       <img class="dots" src="/logos/cta-dots.webp" alt="" width="108" height="30" />
     </a>
@@ -33,6 +34,7 @@ import YcBadge from './YcBadge.astro';
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(36,32,61,.35); }
   .hero__media img { width: 100%; height: auto; }
   .dots { height: 30px; width: auto; flex: none; }
+  @media (max-width: 479px) { .dots { display: none; } }
   .hero__act { display: grid; gap: 10px; }
   .hero__offer { text-align: center; font-size: 14px; font-weight: 500; color: var(--muted); }
   .hero__offer s { color: #b1999a; }

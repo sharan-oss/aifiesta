@@ -1,4 +1,4 @@
-export const CTA = 'Get AIFiesta';
+export const CTA = 'Get AI Fiesta for ₹7,999/year';
 export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan-offer';
 // The Google Ads LP (/basic-plan-ga) checks out on its own Cashfree form.
 export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga-offer';
@@ -6,8 +6,13 @@ export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-
 export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-meta-offer';
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
-// Every CTA except the pricing card scrolls here first, so visitors see the plan before paying.
-export const PRICING_HREF = '#pricing';
+// Every CTA goes straight to the page's Cashfree checkout (one less step than scrolling to pricing).
+const CHECKOUT_BY_PATH: Record<string, string> = {
+  '/basic-plan-ga': CTA_HREF_GA,
+  '/basic-plan-v2-fb': CTA_HREF_META,
+  '/basic-plan-v3-fb': CTA_HREF_META,
+};
+export const checkoutHrefFor = (path: string) => CHECKOUT_BY_PATH[path.replace(/\/+$/, '')] ?? CTA_HREF;
 
 export const META_PIXEL_ID = '1636798967975428';
 export const GOOGLE_ADS_ID = 'AW-18532749665';
