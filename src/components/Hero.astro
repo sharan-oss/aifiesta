@@ -60,7 +60,8 @@ const eq = [
   .brand { display: inline-flex; align-items: center; gap: .18em; white-space: nowrap; color: var(--brand); vertical-align: -0.12em; padding: .02em .28em .02em .12em; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1.5px var(--line); }
   .brand img { width: .95em; height: .95em; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 440px; margin-inline: auto; text-wrap: balance; }
+  /* Full width; 'pretty' only stops a one-word last line (balance made the block look narrow). */
+  .lead { font-size: 15px; font-weight: 500; color: var(--muted); max-width: 520px; margin-inline: auto; text-wrap: pretty; }
 
   /* The deal: the only card above the fold. Price, then two plain bonus lines. */
   .hero__act { display: grid; gap: 12px; }
