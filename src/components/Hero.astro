@@ -1,13 +1,27 @@
 ---
-// Hero built around the offer. One path for the eye: hook -> what it is -> the deal -> the button.
+// Hero built around the offer. One path for the eye: the equation -> the deal -> the button.
+// Headline is an equation (ChatGPT + Claude + Gemini + Perplexity + 100+ = one AI Fiesta subscription).
 // The lead and the 4x line mirror the best-performing ads (cheaper than ChatGPT alone, "4X bonus usage").
 import { CTA, checkoutHrefFor, offer, plan } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
+const eq = [
+  ['ChatGPT', '/logos/calc-openai.svg'],
+  ['Claude', '/logos/calc-claude.svg'],
+  ['Gemini', '/logos/calc-gemini.svg'],
+  ['Perplexity', '/logos/calc-perplexity.svg'],
+];
 ---
 <section class="hero wrap">
   <div class="hero__copy">
-    <h1>Get <span class="hl">100+ AI models</span> in one subscription</h1>
-    <p class="lead">ChatGPT, Claude, Gemini, Perplexity and more, for less than ChatGPT alone.</p>
+    <h1>
+      <span class="eq">
+        {eq.map(([name, src]) => <><span class="ai"><img src={src} alt={name} width="26" height="26" /></span><i aria-hidden="true">+</i></>)}
+        <span class="ai ai--more">100+<span class="sr-only"> more AI models</span></span>
+      </span>
+      <span class="equals">=<span class="sr-only"> equals </span></span>
+      <span class="one">One <span class="brand"><img src="/images/logo-mark.webp" alt="" width="34" height="34" />AI Fiesta</span> subscription</span>
+    </h1>
+    <p class="lead">Every top AI in one app, for less than ChatGPT alone.</p>
   </div>
 
   <div class="hero__media"><img src="/images/hero-dhruv.webp" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
@@ -34,8 +48,18 @@ const checkout = checkoutHrefFor(Astro.url.pathname);
 </section>
 <style>
   .hero { display: grid; gap: 22px; padding-block: 28px var(--section-y); text-align: center; }
-  h1 { font-size: clamp(33px, 9vw, 58px); line-height: 1.08; font-weight: 700; letter-spacing: -0.025em; margin-block: 8px 12px; text-wrap: balance; }
-  .hl { color: var(--brand); white-space: nowrap; }
+  /* The headline is an equation: logo row, "=", then the one subscription. */
+  h1 { display: grid; justify-items: center; margin-block: 4px 12px; font-weight: 700; letter-spacing: -0.025em; }
+  .eq { display: flex; align-items: center; gap: clamp(4px, 1.6vw, 8px); }
+  .eq i { font-style: normal; font-size: 18px; font-weight: 700; color: var(--muted); }
+  .ai { flex: none; display: grid; place-items: center; width: clamp(44px, 12.4vw, 52px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px var(--line), 0 8px 16px -10px rgba(36,32,61,.45); }
+  .ai img { width: 56%; height: 56%; }
+  .ai--more { background: var(--brand); color: #fff; box-shadow: 0 8px 16px -8px rgba(81,70,217,.8); font-size: 15px; letter-spacing: 0; }
+  .equals { font-size: 28px; line-height: 1; color: var(--muted); margin-block: 8px 4px; }
+  .one { font-size: clamp(31px, 8.6vw, 40px); line-height: 1.22; text-wrap: balance; }
+  .brand { display: inline-flex; align-items: center; gap: .18em; white-space: nowrap; color: var(--brand); vertical-align: -0.12em; padding: .02em .28em .02em .12em; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1.5px var(--line); }
+  .brand img { width: .95em; height: .95em; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .lead { font-size: 16px; font-weight: 500; color: var(--muted); max-width: 440px; margin-inline: auto; text-wrap: balance; }
 
   /* The deal: the only card above the fold. Price, then two plain bonus lines. */
@@ -49,6 +73,8 @@ const checkout = checkoutHrefFor(Astro.url.pathname);
   .deal__price span { font-size: 15px; font-weight: 600; margin-left: -8px; }
   .deal__price s { font-size: 15px; font-weight: 500; color: #b1999a; }
   .deal__price em { font-style: normal; font-size: 12px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 3px 9px; border-radius: 99px; }
+  /* Narrow phones: keep price, old price and saving on one line. */
+  @media (max-width: 380px) { .deal__price { gap: 4px 7px; } .deal__price b { font-size: 31px; } .deal__price s { font-size: 14px; } }
   .deal__list { display: grid; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
   .deal__list li { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 600; }
   .deal__list svg { flex: none; width: 20px; height: 20px; color: var(--brand); }
@@ -63,12 +89,16 @@ const checkout = checkoutHrefFor(Astro.url.pathname);
   .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
   .hero__media img { width: 100%; height: auto; }
   @media (max-width: 899px) {
-    .hero__media img { max-height: 210px; object-fit: contain; object-position: center bottom; }
+    .hero__media img { max-height: 170px; object-fit: contain; object-position: center bottom; }
   }
   @media (min-width: 900px) {
     .hero { grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 28px; align-items: center; text-align: left; padding-block: 64px var(--section-y); }
     .lead { margin-inline: 0; font-size: 18px; }
-    h1 { margin-block: 0 14px; font-size: clamp(40px, 3.6vw, 50px); }
+    h1 { justify-items: start; margin-block: 0 14px; }
+    .ai { width: 60px; }
+    .ai--more { font-size: 17px; }
+    .eq { gap: 10px; }
+    .one { font-size: clamp(40px, 3.6vw, 50px); }
     .hero__copy { grid-column: 1; grid-row: 1; align-self: end; }
     .hero__act { grid-column: 1; grid-row: 2; align-self: start; max-width: 440px; }
     .hero__note { text-align: center; }
