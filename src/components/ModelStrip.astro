@@ -12,6 +12,7 @@ const rows = [
 ];
 ---
 <section class="strip" aria-labelledby="strip-title">
+  <img class="strip__logo" src="/images/logo-clear.webp" alt="AI Fiesta" width="150" height="36" loading="lazy" />
   <h2 class="strip__title" id="strip-title">100+ AI models, one subscription</h2>
   <ul class="sr-only">{models.map((m) => <li>{m.name}</li>)}<li>and 90 more</li></ul>
 
@@ -36,6 +37,7 @@ const rows = [
 </section>
 <style>
   .strip { background: #fff; padding-block: 28px; overflow: hidden; }
+  .strip__logo { width: 150px; height: auto; margin: 0 auto 10px; }
   .strip__title { text-align: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin: 0 16px 20px; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
