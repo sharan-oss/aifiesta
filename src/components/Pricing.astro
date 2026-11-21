@@ -1,5 +1,5 @@
 ---
-import { plan, payTools, CTA, CTA_HREF, PLAN_VALUE } from '../data/content';
+import { plan, payTools, offer, CTA, CTA_HREF, PLAN_VALUE } from '../data/content';
 import OfferTable from './OfferTable.astro';
 interface Props { checkoutHref?: string }
 const { checkoutHref = CTA_HREF } = Astro.props;
@@ -23,7 +23,7 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
       <p class="amt"><b>{plan.price}</b> <span>{plan.per}</span></p>
       <p class="sub">{plan.monthly}</p>
       <hr />
-      <OfferTable domain>
+      <OfferTable domain fine={false}>
         <p class="note">{plan.note}</p>
       </OfferTable>
       <a class="btn btn--block buy" href={checkoutHref} data-cta="pricing">{CTA}</a>
@@ -33,6 +33,7 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
         <li><b>2</b>Approve AutoPay in your UPI app</li>
         <li><b>3</b>Get your login by email</li>
       </ol>
+      <p class="fine">{offer.footnote} · <a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>
     </div>
 
     <div class="pay" data-calc data-plan={PLAN_VALUE}>
@@ -82,6 +83,8 @@ const total = picked.reduce((sum, t) => sum + t.yearly, 0);
   .note { background: var(--brand-soft); border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 500; color: var(--muted); text-align: center; }
   .buy { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
   .cancel { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; margin-top: -4px; }
+  .fine { text-align: center; font-size: 12px; color: var(--muted); }
+  .fine a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   /* Sets expectations for the AutoPay approval step, where most payments are abandoned. */
   .how { margin: 4px 0 0; padding: 14px 0 0; list-style: none; border-top: 1px solid var(--line); display: grid; gap: 10px; }
   .how li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--muted); }

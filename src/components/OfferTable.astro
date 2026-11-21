@@ -1,10 +1,11 @@
 ---
 // "Get 4x of everything" table for the yearly plan card. The slot (rollover note) sits
 // between the table and the bonus-token footnote. `domain` adds the free-domain bonus line
-// (pages without their own domain section).
+// (pages without their own domain section). `fine={false}` leaves the footnote to the caller,
+// for cards that place it elsewhere.
 import { offer } from '../data/content';
-interface Props { theme?: 'light' | 'dark'; domain?: boolean }
-const { theme = 'light', domain = false } = Astro.props;
+interface Props { theme?: 'light' | 'dark'; domain?: boolean; fine?: boolean }
+const { theme = 'light', domain = false, fine = true } = Astro.props;
 const icons: Record<string, string> = {
   tokens: '<circle cx="7" cy="14" r="4.4"/><circle cx="14" cy="7" r="4.4"/>',
   image: '<rect x="2.6" y="2.6" width="15.8" height="15.8" rx="2"/><path d="M2.6 14.9l5.3-5.3 3.5 3.5 3.5-4.4 3.5 4.4"/>',
@@ -49,7 +50,7 @@ const icons: Record<string, string> = {
     </tbody>
   </table>
   <slot />
-  <p class="fine">{offer.footnote} · <a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>
+  {fine && <p class="fine">{offer.footnote} · <a href={offer.policyHref} target="_blank" rel="noopener">{offer.policy}</a></p>}
 </div>
 <style>
   .offer4x { --accent: #3f9b6a; --chip: #e6f4ea; --rule: var(--line); --soft: var(--muted); display: grid; gap: 12px; }
