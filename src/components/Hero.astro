@@ -1,127 +1,235 @@
 ---
-// Hero built around the offer. One path for the eye: the equation -> the deal -> the button.
-// Headline is an equation (ChatGPT + Claude + Gemini + Perplexity + 100+ = one AI Fiesta subscription).
-// The lead and the 4x line mirror the best-performing ads (cheaper than ChatGPT alone, "4X bonus usage").
+// Hero, "Arch": energetic but clean. Words and offer on one side; on the other, Dhruv (clean
+// cut-out from his official photos) standing in a tall gradient arch, head breaking out of the
+// top, with the models you get floating around him and one AI Fiesta badge at the base.
 import { CTA, checkoutHrefFor, offer, plan } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
-const eq = [
-  ['ChatGPT', '/logos/calc-openai.svg'],
-  ['Claude', '/logos/calc-claude.svg'],
-  ['Gemini', '/logos/calc-gemini.svg'],
-  ['Perplexity', '/logos/calc-perplexity.svg'],
+const chips = [
+  ['ChatGPT', '/logos/calc-openai.svg', 'c1'],
+  ['Claude', '/logos/calc-claude.svg', 'c2'],
+  ['Gemini', '/logos/calc-gemini.svg', 'c3'],
+  ['Perplexity', '/logos/calc-perplexity.svg', 'c4'],
 ];
 ---
-<section class="hero wrap">
-  <div class="hero__copy">
-    <h1>
-      <span class="eq">
-        {eq.map(([name, src]) => <><span class="ai"><img src={src} alt={name} width="26" height="26" /></span><i aria-hidden="true">+</i></>)}
-        <span class="ai ai--more">100+<span class="sr-only"> more AI models</span></span>
-      </span>
-      <span class="equals"><span aria-hidden="true">=</span><span class="sr-only"> equals </span></span>
-      <span class="one">One <span class="brand"><img src="/images/logo-mark.webp" alt="" width="34" height="34" />AI Fiesta</span> subscription</span>
-    </h1>
-    <p class="lead">Chat, create images, videos, websites and PPTs. ₹7,999/year, less than 4 months of ChatGPT.</p>
-  </div>
-
-  <div class="hero__media"><img src="/images/hero-dhruv.webp" alt="Dhruv Rathee holding a phone surrounded by AI app icons" width="796" height="718" fetchpriority="high" /></div>
-
-  <!-- data-sticky-hide: the sticky bar stays away while this block is on screen. -->
-  <div class="hero__act" data-sticky-hide>
-    <div class="deal">
-      <p class="deal__tag"><i class="dot" aria-hidden="true"></i>Limited-time offer</p>
-      <p class="deal__price"><b>{plan.price}</b><span>/year</span> <s>{plan.was}</s> <em>Save 33%</em></p>
-      <ul class="deal__list">
-        <li class="x4">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
-          <p><b>{offer.multiple}</b> usage in your 1st month</p>
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
-          <p>Free custom domain for a year</p>
-        </li>
-      </ul>
+<!-- data-sticky-hide: the sticky bar stays away while the hero (it has its own button) fills the screen. -->
+<section class="hero" data-sticky-hide>
+  <div class="hero__in">
+    <div class="copy">
+      <h1>Get <span>100+ premium AI&nbsp;models</span> like ChatGPT, Claude and Gemini in&nbsp;one&nbsp;subscription</h1>
+      <p class="lead">Chat, create images, videos, websites and PPTs. {plan.price}/year, less than 4&nbsp;months of ChatGPT.</p>
     </div>
-    <a class="btn btn--block hero__cta" href={checkout} data-cta="hero">{CTA}</a>
-    <p class="hero__rate"><span class="stars" aria-hidden="true">★★★★★</span> Trusted worldwide by 1M+ users</p>
+
+    <div class="visual">
+      <div class="arch" aria-hidden="true"><i class="rings"></i></div>
+      <img class="dhruv" src="/images/dhruv-hero.webp" alt="Dhruv Rathee, founder of AI Fiesta" width="722" height="960" fetchpriority="high" />
+      {chips.map(([name, src, pos]) => (
+        <span class={`chip ${pos}`} aria-hidden="true"><img src={src} alt="" width="20" height="20" />{name}</span>
+      ))}
+      <span class="chip c5" aria-hidden="true"><b>+100</b> more</span>
+      <p class="badge" aria-hidden="true"><img src="/images/logo-mark.webp" alt="" width="30" height="30" /><span><b>AI Fiesta</b><small>One subscription</small></span></p>
+    </div>
+
+    <div class="act">
+      <a class="cta" href={checkout} data-cta="hero">
+        <span>{CTA}</span>
+        <i class="cta__ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg></i>
+      </a>
+      <div class="offer">
+        <p class="offer__tag"><i class="dot" aria-hidden="true"></i>Limited-time offer</p>
+        <p class="offer__price"><b>{plan.price}</b><span>/year</span> <s>{plan.was}</s> <em>Save 33%</em></p>
+        <ul class="offer__list">
+          <li class="x4">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+            <p><b>{offer.multiple}</b> usage in your 1st month</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+            <p>Free custom domain for a year</p>
+          </li>
+        </ul>
+      </div>
+      <p class="rate"><span aria-hidden="true">★★★★★</span> Trusted worldwide by 1M+ users</p>
+    </div>
   </div>
 </section>
 <style>
-  .hero { display: grid; gap: 18px; padding-block: 22px var(--section-y); text-align: center; }
-  /* The headline is an equation: logo row, "=", then the one subscription. */
-  h1 { display: grid; justify-items: center; margin-block: 4px 12px; font-weight: 700; letter-spacing: -0.025em; }
-  .eq { display: flex; align-items: center; gap: clamp(4px, 1.6vw, 8px); }
-  .eq i { font-style: normal; font-size: 18px; font-weight: 700; color: var(--muted); }
-  .ai { flex: none; display: grid; place-items: center; width: clamp(42px, 11.8vw, 48px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px var(--line), 0 8px 16px -10px rgba(36,32,61,.45); }
-  .ai img { width: 56%; height: 56%; }
-  .ai--more { background: var(--brand); color: #fff; box-shadow: 0 8px 16px -8px rgba(81,70,217,.8); font-size: 15px; letter-spacing: 0; }
-  .equals { font-size: 24px; line-height: 1; color: var(--muted); margin-block: 6px 2px; }
-  .one { font-size: clamp(30px, 8.4vw, 38px); line-height: 1.2; text-wrap: balance; }
-  .brand { display: inline-flex; align-items: center; gap: .18em; white-space: nowrap; color: var(--brand); vertical-align: -0.12em; padding: .02em .28em .02em .12em; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1.5px var(--line); }
-  .brand img { width: .95em; height: .95em; }
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  /* Full width; 'pretty' only stops a one-word last line (balance made the block look narrow). */
-  .lead { font-size: 15px; font-weight: 500; color: var(--muted); max-width: 520px; margin-inline: auto; text-wrap: pretty; }
-
-  /* The deal: compact, so the photo above it and the button below it carry the weight. */
-  .hero__act { display: grid; gap: 12px; }
-  .deal { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--brand); border-radius: 16px; padding: 20px 14px 12px; box-shadow: 0 16px 32px -26px rgba(81,70,217,.6); }
-  .deal__tag { position: absolute; top: -12px; left: 50%; translate: -50% 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 9px; border-radius: 99px; background: #d9381e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-  .dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .dot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: currentColor; animation: ping 1.6s cubic-bezier(0,0,.2,1) infinite; }
-  .deal__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 9px; }
-  .deal__price b { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
-  .deal__price span { font-size: 14px; font-weight: 600; margin-left: -7px; }
-  .deal__price s { font-size: 14px; font-weight: 500; color: #b1999a; }
-  .deal__price em { font-style: normal; font-size: 11px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 3px 8px; border-radius: 99px; }
-  .deal__list { display: grid; gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
-  .deal__list li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
-  .deal__list svg { flex: none; width: 18px; height: 18px; color: var(--brand); }
-  /* 4x is the lead bonus: the one green accent on the screen. */
-  .x4 svg { color: #3f9b6a; }
-  .x4 b { color: #2f7d54; font-size: 1.25em; font-weight: 700; letter-spacing: -0.02em; }
-  @keyframes ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
-
-  .hero__cta { height: 56px; font-size: 16px; font-weight: 700; border-radius: 14px; box-shadow: 0 14px 26px -14px rgba(81,70,217,.9); }
-  .hero__rate { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 2px; font-size: 13px; font-weight: 500; color: var(--muted); }
-  .stars { color: var(--gold); font-size: 16px; letter-spacing: 1px; }
-
-  .hero__media { background: var(--brand-tint); border-radius: 24px; overflow: hidden; }
-  .hero__media img { width: 100%; height: auto; }
-  /* Phones: one framing on every screen (head to mid-chest, the top ~3/4 of the photo). Size is
-     set by width, never by slicing the height, so it can't end up as just a head. */
-  @media (max-width: 899px) {
-    .hero__media img { display: block; margin-inline: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center top; }
+  .hero {
+    --v1: #7c4dff; --v2: #3d6bff; --v3: #22b8ff; --warm: #ff9a62;
+    --grad: linear-gradient(100deg, var(--v1), var(--v2) 60%, var(--v3));
+    --ink-hi: #100e24;
+    --head: 'Manrope', 'Inter', system-ui, sans-serif;
+    --ease: cubic-bezier(.32, .72, 0, 1);
+    position: relative; isolation: isolate; overflow: hidden;
+    background:
+      radial-gradient(40% 50% at 78% 40%, rgba(124, 77, 255, .12), transparent 70%),
+      radial-gradient(30% 40% at 90% 80%, rgba(255, 154, 98, .12), transparent 70%),
+      linear-gradient(#f7f6ff, #fff 90%);
   }
-  /* Short phones: a narrower photo keeps the offer card and button on the first screen. */
-  @media (max-width: 899px) and (max-height: 780px) { .hero__media img { width: 72%; } }
-  /* Desktop: the message is centred on top (equation, one-line headline, subtitle); below it,
-     photo and offer sit side by side at the same height, so nothing floats on its own. */
-  @media (min-width: 900px) {
-    .hero { max-width: 1000px; grid-template-columns: 1fr 1fr; column-gap: 28px; row-gap: 30px; padding-block: 52px var(--section-y); }
-    .hero__copy { grid-column: 1 / -1; }
-    h1 { margin-block: 0 14px; }
-    .eq { gap: 12px; }
-    .eq i { font-size: 22px; }
-    .ai { width: 64px; }
-    .ai--more { font-size: 19px; }
-    .equals { font-size: 30px; margin-block: 12px 6px; }
-    .one { font-size: clamp(46px, 4.4vw, 58px); line-height: 1.15; }
-    .lead { font-size: 18px; max-width: 620px; text-wrap: balance; }
-
-    .hero__media { grid-column: 1; grid-row: 2; position: relative; min-height: 320px; }
-    .hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 6%; }
-    .hero__act { grid-column: 2; grid-row: 2; align-content: center; text-align: center; gap: 14px; }
-
-    .deal { padding: 30px 22px 20px; border-radius: 20px; }
-    .deal__price { gap: 4px 12px; }
-    .deal__price b { font-size: 44px; }
-    .deal__price span, .deal__price s { font-size: 16px; }
-    .deal__price em { font-size: 13px; }
-    .deal__list { gap: 14px; margin-top: 18px; padding-top: 18px; }
-    .deal__list li { font-size: 17px; gap: 12px; }
-    .deal__list svg { width: 22px; height: 22px; }
-    .hero__cta { height: 60px; font-size: 17px; }
+  .hero__in {
+    max-width: 1180px; margin-inline: auto; padding: 22px 18px 36px; text-align: center;
+    display: grid; grid-template-areas: 'copy' 'visual' 'act';
   }
-  @media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
+  .copy { grid-area: copy; }
+  .visual { grid-area: visual; }
+  .act { grid-area: act; }
+
+  .dot { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--warm); }
+  .dot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: ping 1.8s var(--ease) infinite; }
+  @keyframes ping { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+
+  h1 {
+    margin: 16px auto 0; font-family: var(--head); font-weight: 800; color: var(--ink-hi);
+    font-size: clamp(23px, 6.6vw, 40px); line-height: 1.16; letter-spacing: -0.03em; text-wrap: balance;
+  }
+  h1 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
+  .lead { margin: 12px auto 0; max-width: 540px; font-size: 15px; line-height: 1.5; color: #5b5873; text-wrap: pretty; }
+
+  /* The visual: arch + Dhruv + floating chips. Sized as one unit (--A = arch width). */
+  .visual { --A: min(64vw, 270px); position: relative; width: var(--A); margin: 44px auto 0; aspect-ratio: 1 / 1.08; }
+  .arch {
+    position: absolute; inset: 14% 0 0; border-radius: 999px 999px 28px 28px; overflow: hidden;
+    background: linear-gradient(160deg, #9a6bff 0%, var(--v2) 55%, #2a9dff 100%);
+    box-shadow: 0 40px 60px -34px rgba(61, 107, 255, .8), inset 0 1px 0 rgba(255, 255, 255, .35);
+  }
+  /* Soft rings radiating from behind his head, and a warm light from the bottom right. */
+  .rings {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 18%, transparent 0 22%, rgba(255, 255, 255, .14) 22.4% 22.8%, transparent 23.2% 34%, rgba(255, 255, 255, .1) 34.4% 34.8%, transparent 35.2% 47%, rgba(255, 255, 255, .07) 47.4% 47.8%, transparent 48.2%),
+      radial-gradient(60% 45% at 90% 100%, rgba(255, 154, 98, .55), transparent 70%);
+  }
+  .dhruv {
+    position: absolute; left: 50%; bottom: 0; translate: -50% 0; width: 92%; height: auto;
+    border-radius: 0 0 28px 28px;
+    filter: drop-shadow(0 18px 30px rgba(16, 14, 36, .28));
+  }
+
+  .chip {
+    position: absolute; z-index: 2; width: max-content; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px 7px 8px; border-radius: 99px;
+    background: #fff; white-space: nowrap; font-family: var(--head); font-size: 12.5px; font-weight: 700; color: var(--ink-hi);
+    box-shadow: 0 0 0 1px rgba(16, 14, 36, .06), 0 14px 26px -14px rgba(40, 30, 120, .5);
+    animation: bob 5s ease-in-out infinite alternate;
+  }
+  .chip img { width: 18px; height: 18px; }
+  .chip b { font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .c1 { left: -22%; top: 24%; rotate: -4deg; }
+  .c2 { right: -24%; top: 16%; rotate: 4deg; animation-delay: -1.2s; }
+  .c3 { left: -26%; top: 56%; rotate: 3deg; animation-delay: -2.4s; }
+  .c4 { right: -22%; top: 47%; rotate: -3deg; animation-delay: -3.6s; }
+  .c5 { right: -12%; top: 75%; rotate: 2deg; animation-delay: -.6s; padding-left: 12px; }
+  @keyframes bob { to { translate: 0 -7px; } }
+
+  .badge {
+    position: absolute; z-index: 3; left: 50%; bottom: -18px; translate: -50% 0; width: max-content;
+    display: inline-flex; align-items: center; gap: 9px; padding: 7px 16px 7px 7px; border-radius: 16px;
+    background: #fff; white-space: nowrap; text-align: left;
+    box-shadow: 0 0 0 1px rgba(124, 77, 255, .16), 0 18px 34px -16px rgba(40, 30, 120, .6);
+  }
+  .badge img { width: 30px; height: 30px; }
+  .badge span { display: grid; line-height: 1.15; }
+  .badge b { font-family: var(--head); font-size: 14px; font-weight: 800; color: var(--ink-hi); }
+  .badge small { font-size: 11.5px; font-weight: 600; color: #6c6888; }
+
+  .act { display: grid; gap: 10px; justify-items: center; margin-top: 38px; }
+  .cta {
+    position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px;
+    width: 100%; max-width: 470px; height: 60px; padding: 0 7px 0 26px; border-radius: 99px;
+    background: var(--grad); color: #fff; font-family: var(--head); font-size: 16.5px; font-weight: 800; letter-spacing: -0.01em;
+    box-shadow: 0 18px 32px -16px rgba(61, 107, 255, .9), inset 0 1px 0 rgba(255, 255, 255, .3);
+    transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+  }
+  .cta > span { flex: 1; }
+  .cta__ic { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 255, 255, .2); transition: transform .45s var(--ease); }
+  .cta__ic svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .cta::after { content: ''; position: absolute; inset: 0 auto 0 0; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .32), transparent); transform: translateX(-130%) skewX(-18deg); animation: shine 4.5s var(--ease) 1.2s infinite; }
+  @keyframes shine { 0% { transform: translateX(-130%) skewX(-18deg); } 40%, 100% { transform: translateX(330%) skewX(-18deg); } }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 24px 38px -16px rgba(61, 107, 255, 1), inset 0 1px 0 rgba(255, 255, 255, .3); }
+  .cta:hover .cta__ic { transform: translateX(3px) scale(1.05); }
+  .cta:active { transform: scale(.98); }
+
+  /* The offer card: limited-time tag, price with the old price struck out, the two bonuses. */
+  .offer {
+    position: relative; width: 100%; max-width: 470px; margin-top: 16px; text-align: left;
+    background: #fff; border: 1.5px solid var(--brand); border-radius: 18px; padding: 22px 16px 14px;
+    box-shadow: 0 18px 34px -26px rgba(81, 70, 217, .7);
+  }
+  .offer__tag {
+    position: absolute; top: -13px; left: 50%; translate: -50% 0; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px 4px 10px; border-radius: 99px;
+    background: #d9381e; color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .offer__tag .dot { width: 7px; height: 7px; background: #fff; }
+  .offer__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-family: var(--head); }
+  .offer__price b { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--ink-hi); }
+  .offer__price span { margin-left: -8px; font-size: 15px; font-weight: 700; color: var(--ink-hi); }
+  .offer__price s { font-size: 15px; font-weight: 600; color: #b1999a; }
+  .offer__price em { font-style: normal; font-size: 12px; font-weight: 700; color: #2f7d54; background: #e6f4ea; padding: 4px 10px; border-radius: 99px; }
+  .offer__list { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .offer__list li { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 600; color: var(--ink-hi); }
+  .offer__list svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--brand); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* 4x is the lead bonus: the one green accent. */
+  .x4 svg { stroke: #3f9b6a; }
+  .x4 b { color: #2f7d54; font-family: var(--head); font-size: 1.3em; font-weight: 800; letter-spacing: -0.02em; }
+  .rate { font-size: 13px; font-weight: 500; color: #6c6888; }
+  .rate span { color: #ffb01f; letter-spacing: 1px; margin-right: 4px; }
+
+  /* Phones: the button must be on the first screen, even inside the Instagram/Facebook in-app
+     browser (its bars eat 100-180px). Everything is tightened, and Dhruv's arch is sized from the
+     real screen height (svh = with the browser bars showing): the rest of the stack down to the button
+     is ~300px. */
+  @media (max-width: 959px) {
+    .hero__in { padding: 16px 16px 28px; }
+    h1 { margin-top: 6px; }
+    .lead { margin-top: 8px; font-size: 14.5px; line-height: 1.45; }
+    .visual { --A: min(62vw, 250px, max(150px, calc((100svh - 300px) / 1.08))); margin-top: 30px; }
+    .act { margin-top: 32px; gap: 8px; }
+    .offer { margin-top: 14px; padding: 18px 14px 10px; border-radius: 16px; }
+    .offer__tag { top: -12px; font-size: 11px; padding: 3px 11px 3px 9px; }
+    .offer__price b { font-size: 28px; }
+    .offer__price span, .offer__price s { font-size: 14px; }
+    .offer__price em { font-size: 11.5px; padding: 3px 9px; }
+    .offer__list { gap: 6px; margin-top: 9px; padding-top: 9px; }
+    .offer__list li { font-size: 14px; gap: 10px; }
+    .offer__list svg { width: 18px; height: 18px; }
+    .cta { height: 56px; font-size: 16px; }
+    .cta__ic { width: 42px; height: 42px; }
+  }
+
+  /* Desktop: words + offer on the left, the arch on the right. */
+  @media (min-width: 960px) {
+    .hero__in {
+      text-align: left; padding: 64px 40px 80px;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+      grid-template-areas: 'copy visual' 'act visual';
+      grid-template-rows: auto 1fr; column-gap: 56px;
+    }
+    h1 { margin: 22px 0 0; font-size: clamp(40px, 3.4vw, 50px); line-height: 1.08; letter-spacing: -0.035em; }
+    .lead { margin: 18px 0 0; font-size: 19px; max-width: 560px; }
+    .act { justify-items: start; align-content: start; margin-top: 30px; gap: 14px; }
+    .cta { height: 64px; font-size: 18px; }
+    .offer { padding: 26px 22px 18px; border-radius: 20px; }
+    .offer__price b { font-size: 40px; }
+    .offer__price span, .offer__price s { font-size: 16px; }
+    .offer__list li { font-size: 16.5px; }
+    .visual { --A: min(340px, 30vw); align-self: center; margin: 0 auto; }
+    .chip { font-size: 14px; padding: 9px 15px 9px 10px; gap: 8px; }
+    .chip img { width: 20px; height: 20px; }
+    .badge b { font-size: 15px; }
+  }
+
+  /* Tablets: same stack as phones, with more side room. */
+  @media (min-width: 640px) and (max-width: 959px) {
+    .hero__in { padding-inline: 48px; }
+    .lead { font-size: 16px; }
+  }
+  /* Small laptops: the photo column is narrow, so the chips hug the arch instead of the screen edge. */
+  @media (min-width: 960px) and (max-width: 1279px) {
+    .visual { --A: min(300px, 27vw); }
+    .c1 { left: -16%; } .c3 { left: -20%; }
+    .c2 { right: -14%; } .c4 { right: -16%; } .c5 { right: -6%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chip, .dot::after, .cta::after { animation: none; }
+  }
 </style>
