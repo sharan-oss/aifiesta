@@ -7,6 +7,9 @@ export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-
 export const CTA_HREF = CTA_HREF_META;
 // Home B test: the sales video (Wistia media id) shown in the hero.
 export const VSL_MEDIA_ID = 'ivkaw954dt';
+// Black Friday sale (Home + GA): top bar, hero offer tag, sticky-bar badge. ends: ISO date-time
+// (e.g. '2026-11-30T23:59:59+05:30') turns on the bar's countdown; '' = no countdown.
+export const SALE = { name: 'Black Friday Sale', ends: '' };
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
 // Every CTA goes straight to the page's Cashfree checkout (one less step than scrolling to pricing).
@@ -118,4 +121,16 @@ export const faqs = [
   { q: 'Can I use AI Fiesta on my phone?', a: 'Yes. AI Fiesta is available on mobile browsers at chat.aifiesta.ai or as a dedicated Android and iOS app.' },
   { q: 'Will I get free upgrades when new AI versions are released?', a: 'Yes. If ChatGPT releases Model 6 or another AI provider launches a higher version, you will get access at no extra cost.' },
   { q: 'Who owns AI Fiesta?', a: 'AI Fiesta is an all-in-one AI subscription platform owned by Fiesta Labs Inc. Fiesta Labs Inc is owned by Dhruv Rathee, an entrepreneur and digital content creator.' },
+];
+
+// Real App Store / Google Play reviews (from anniversary.aifiesta.ai), quoted word for word and
+// trimmed only with "…". hl = the phrase to highlight. Shown under the hero offer card.
+export const STORE_PROOF = { downloads: '1M+', reviews: '15K+' };
+export const STORE_REVIEWS = [
+  { name: 'Samir', store: 'Google Play', quote: 'You get so many AI tools… in one place… Best part is the price, much cheaper than paying for each AI separately.', hl: 'much cheaper than paying for each AI separately' },
+  { name: 'Akash', store: 'App Store', quote: 'Been using this app daily for work and it actually saves me time. Gives real answers, not just generic stuff.', hl: 'it actually saves me time' },
+  { name: 'Kunal Purohit', store: 'Google Play', quote: '…access to Claude and its latest capabilities, at nearly half the price of Claude… It has become an essential part of my workflow.', hl: 'at nearly half the price of Claude' },
+  { name: 'A Kutty', store: 'App Store', quote: 'The standout feature is the ability to compare different AI models side-by-side, which is incredibly practical… it boasts nearly 100% uptime.', hl: 'compare different AI models side-by-side' },
+  { name: 'Saurabh Goswami', store: 'Google Play', quote: 'I frequently use AI Fiesta for my presentations, for help in statistical analysis, for image generation and editing as well as for day to day queries.', hl: 'presentations, for help in statistical analysis, for image generation' },
+  { name: 'G Chuuu', store: 'App Store', quote: 'AI Fiesta is a game-changer!… And the support team? Absolutely fantastic — friendly, responsive, and always ready to help.', hl: 'game-changer' },
 ];
