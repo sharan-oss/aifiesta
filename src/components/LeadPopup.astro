@@ -9,10 +9,10 @@ import { CHECKOUT_PREFIX, PLAN_VALUE, PLAN_CURRENCY, plan, offer } from '../data
 interface Props { variant?: string }
 const { variant = 'b' } = Astro.props;
 const fields = [
-  { name: 'name', label: 'Name', hint: '', type: 'text', mode: 'text', ac: 'name', max: 100, extra: { autocapitalize: 'words' } },
-  { name: 'phone', label: 'Mobile number', hint: '', type: 'tel', mode: 'numeric', ac: 'tel-national', max: 16, extra: {} },
-  { name: 'email', label: 'Email', hint: '', type: 'email', mode: 'email', ac: 'email', max: 120, extra: { autocapitalize: 'off' } },
-  { name: 'pincode', label: 'Pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*' } },
+  { name: 'name', label: 'Name', hint: '', type: 'text', mode: 'text', ac: 'name', max: 100, extra: { autocapitalize: 'words', placeholder: 'Your full name' } },
+  { name: 'phone', label: 'Mobile number', hint: '', type: 'tel', mode: 'numeric', ac: 'tel-national', max: 16, extra: { placeholder: '98765 43210' } },
+  { name: 'email', label: 'Email', hint: '', type: 'email', mode: 'email', ac: 'email', max: 120, extra: { autocapitalize: 'off', placeholder: 'you@gmail.com' } },
+  { name: 'pincode', label: 'Pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: '6-digit pincode' } },
 ] as const;
 ---
 <dialog id="lead-popup" class="lp" aria-labelledby="lp-title">
@@ -29,7 +29,7 @@ const fields = [
     </div>
 
     <form class="lp__form" novalidate>
-      <h2 id="lp-title" tabindex="-1">Where do we send your access?</h2>
+      <h2 id="lp-title" class="lp__sr" tabindex="-1">Your details for checkout</h2>
       <p class="lp__back" hidden>Didn't finish paying? Your details are saved. Continue when you're ready.</p>
 
       <div class="lp__order">
@@ -151,7 +151,8 @@ const fields = [
       });
       input.addEventListener('focus', function () {
         if (!touch) return;
-        setTimeout(function () { try { input.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }, 300);
+        // Once the keyboard has opened (and the sheet has been lifted above it), bring the field into view.
+        setTimeout(function () { fitToKeyboard(); reveal(input); }, 320);
       });
     });
     form.querySelectorAll('input').forEach(function (i) {
@@ -200,7 +201,7 @@ const fields = [
       form.querySelector('.lp__back').hidden = !fromReturn;
       var filled = prefill();
       document.documentElement.classList.add('lp-open');
-      dlg.showModal(); openedAt = Date.now();
+      dlg.showModal(); openedAt = Date.now(); fitToKeyboard();
       if (!pushed) { try { history.pushState({ lp: 1 }, ''); pushed = true; } catch (e) {} }
       var empty = ORDER.filter(function (k) { return !el(k).value; })[0];
       if (!empty) goBtn.focus();
@@ -214,7 +215,34 @@ const fields = [
       dlg.close();
       ev('lead_close', { method: method, filled_count: filled });
     }
+    // ---- keyboard: keep the sheet above it ----
+    // iOS (Safari and the Instagram/Facebook in-app browsers) and recent Chrome on Android open the
+    // keyboard OVER the page without resizing it, so a bottom-pinned sheet would sit behind it.
+    // visualViewport reports the area left above the keyboard: lift the sheet by the keyboard's
+    // height and cap its height to the space above, so the focused field is always visible.
+    var vv = window.visualViewport;
+    function isSheet() { return matchMedia('(max-width: 719px)').matches; }
+    function fitToKeyboard() {
+      if (!vv || !dlg.open || !isSheet()) return;
+      var kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      if (kb < 80) kb = 0; // URL bar wobble, not a keyboard
+      dlg.style.bottom = kb + 'px';
+      dlg.style.maxHeight = Math.round(vv.height - (kb ? 6 : 12)) + 'px';
+      dlg.classList.toggle('kb', kb > 0);
+    }
+    function reveal(input) {
+      try {
+        var box = input.closest('.lp__f') || input, r = box.getBoundingClientRect(), d = dlg.getBoundingClientRect();
+        if (r.top < d.top + 8 || r.bottom > d.bottom - 8) dlg.scrollTop += r.top - d.top - (d.height - r.height) / 2;
+      } catch (e) {}
+    }
+    if (vv) {
+      vv.addEventListener('resize', function () { fitToKeyboard(); if (dlg.contains(document.activeElement)) reveal(document.activeElement); });
+      vv.addEventListener('scroll', fitToKeyboard);
+    }
+
     dlg.addEventListener('close', function () {
+      dlg.style.bottom = ''; dlg.style.maxHeight = ''; dlg.classList.remove('kb');
       document.documentElement.classList.remove('lp-open');
       if (pushed) { pushed = false; try { history.back(); } catch (e) {} }
     });
@@ -314,6 +342,7 @@ const fields = [
   .lp__form { display: grid; gap: 10px; }
   .lp__form[hidden], .lp__handoff[hidden] { display: none; }
   .lp h2 { font-family: 'Manrope', 'Inter', sans-serif; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; outline: none; }
+  .lp__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .lp__back { font-size: 13px; font-weight: 600; color: #2f7d54; background: #eef8f1; border-radius: 10px; padding: 8px 10px; }
 
   .lp__order { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 10px; margin: 2px 0 4px; padding: 10px 12px; border-radius: 14px; background: #f7f5ff; }
@@ -330,6 +359,7 @@ const fields = [
   .lp__box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(106, 77, 255, .16); }
   .lp__cc { padding: 0 10px 0 14px; margin-right: 2px; border-right: 1.5px solid var(--line); font: 500 16px/1 'Inter', sans-serif; color: var(--muted); }
   .lp__box input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; padding: 0 40px 0 14px; font: 500 16px/1 'Inter', sans-serif; color: var(--ink); border-radius: 12px; }
+  .lp__box input::placeholder { color: #b3aec6; opacity: 1; }
   .lp__box input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fff inset; -webkit-text-fill-color: var(--ink); }
   .lp__ok { position: absolute; right: 14px; width: 18px; height: 18px; fill: none; stroke: #2f7d54; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .15s; }
   .lp__f.good .lp__ok { opacity: 1; }
@@ -371,6 +401,9 @@ const fields = [
     .lp::backdrop { background: rgba(16, 14, 36, .6); backdrop-filter: none; }
     .lp[open] { animation: lp-up .28s cubic-bezier(.32, .72, 0, 1); }
     @keyframes lp-up { from { transform: translateY(100%); } }
+    /* Keyboard open: the sheet sits right on top of it, so give it full corners and less padding. */
+    .lp.kb { border-radius: 18px 18px 0 0; transition: bottom .12s ease-out; }
+    .lp.kb .lp__in { padding-bottom: 10px; }
     .lp__in { padding: 16px 20px max(12px, env(safe-area-inset-bottom)); }
     .lp h2 { font-size: 21px; }
     .lp__form { gap: 8px; }
