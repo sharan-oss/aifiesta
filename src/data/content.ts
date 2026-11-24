@@ -5,6 +5,8 @@ export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basi
 export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga-addon';
 // Home's checkout (also the default for any page not listed below).
 export const CTA_HREF = CTA_HREF_META;
+// Home B test: the sales video (Wistia media id) shown in the hero.
+export const VSL_MEDIA_ID = 'ivkaw954dt';
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
 // Every CTA goes straight to the page's Cashfree checkout (one less step than scrolling to pricing).

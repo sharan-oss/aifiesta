@@ -485,3 +485,28 @@ test('Code.gs LP_NAMES and lib/apps-script.js LP_FORM_IDS list the same forms', 
   const { LP_FORM_IDS } = await import('../lib/apps-script.js');
   assert.deepEqual(Object.keys(ctx.LP_NAMES).sort(), [...LP_FORM_IDS].sort());
 });
+
+// --- Home B popup leads ---
+
+const LEAD = { lead_id: 'Lmabc12345xy', variant: 'b', name: 'Asha Rao', phone: '9876543210', email: 'asha@example.com',
+  pincode: '560001', persona: 'Student', purpose: 'Coding', consent: 'yes', landing_lp: 'home-b', utm_source: 'fb',
+  ad_id: '120252522213760096', landed_at: '2026-11-24T10:00:00.000Z' };
+
+test('lead: one row per lead_id in the Leads tab, phone and ad id kept as text', () => {
+  assert.deepEqual(post({ secret: 'shh', kind: 'lead', data: LEAD, received_at: '2026-11-24T10:05:00.000Z' }), { ok: true, stored: 'lead' });
+  assert.equal(post({ secret: 'shh', kind: 'lead', data: LEAD }).stored, 'duplicate');
+  const [h, row] = sheets.Leads.rows;
+  const r = Object.fromEntries(h.map((k, i) => [k, row[i]]));
+  assert.equal(sheets.Leads.rows.length, 2);
+  assert.equal(r.received_at, '2026-11-24 15:35:00');
+  assert.equal(r.phone, "'9876543210");
+  assert.equal(r.ad_id, "'120252522213760096");
+  assert.equal(r.persona, 'Student');
+  assert.equal(r.landed_at, '2026-11-24 15:30:00');
+  assert.equal(sheets.Payments, undefined);
+});
+
+test('lead: wrong secret writes nothing', () => {
+  assert.equal(post({ secret: 'bad', kind: 'lead', data: LEAD }).ok, false);
+  assert.equal(sheets.Leads, undefined);
+});

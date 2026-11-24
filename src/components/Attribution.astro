@@ -11,6 +11,8 @@
       'ad_id', 'adset_content', 'device', 'gclid', 'gbraid', 'wbraid', 'fbclid'];
     var LP = { '/': 'home', '/basic-plan-ga': 'ga', '/basic-plan-v2-fb': 'meta', '/basic-plan-v3-fb': 'meta-v3' };
     var path = location.pathname.replace(/\/+$/, '') || '/';
+    // A/B variants share a URL, so the page names itself (<html data-lp>) when it needs to.
+    var lpName = document.documentElement.getAttribute('data-lp') || LP[path] || path;
     var q = new URLSearchParams(location.search);
     function load() {
       try {
@@ -26,7 +28,7 @@
       if (fromAd || !load()) {
         try {
           localStorage.setItem(KEY, JSON.stringify({
-            landed_at: Date.now(), landing_lp: LP[path] || path, landing_url: location.href.slice(0, 500),
+            landed_at: Date.now(), landing_lp: lpName, landing_url: location.href.slice(0, 500),
             referrer: document.referrer.slice(0, 500), params: params,
           }));
         } catch (e) {}
