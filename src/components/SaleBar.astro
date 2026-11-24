@@ -5,9 +5,9 @@
 // Optional live countdown via SALE.ends (off while it's '').
 import { checkoutHrefFor, plan, offer, SALE } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
-const items = ['Sale is live', `${plan.price}/year`, 'Save 33%', `${offer.multiple} usage in month 1`, 'Free custom domain'];
+const items = ['Sale is live', `${plan.price}/year`, 'Save 33%', `${offer.multiple} usage in month 1`, 'Free custom domain worth ₹1,500'];
 ---
-<a class="sb" href={checkout} data-cta="sale-bar" aria-label={`${SALE.name}: ${plan.price} per year, save 33%, ${offer.multiple} usage in month 1 and a free custom domain.`}>
+<a class="sb" href={checkout} data-cta="sale-bar" aria-label={`${SALE.name}: ${plan.price} per year, save 33%, ${offer.multiple} usage in month 1 and a free custom domain worth ₹1,500.`}>
   <span class="sb__tag" aria-hidden="true"><b>Black Friday</b></span>
   <span class="sb__track" aria-hidden="true">
     <span class="sb__run">
