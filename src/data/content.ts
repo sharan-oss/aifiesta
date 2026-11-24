@@ -5,6 +5,9 @@ export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basi
 export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga-addon';
 // Home's checkout (also the default for any page not listed below).
 export const CTA_HREF = CTA_HREF_META;
+// Black Friday sale (Home + GA): top bar, hero offer tag, sticky-bar badge. ends: ISO date-time
+// (e.g. '2026-11-30T23:59:59+05:30') turns on the bar's countdown; '' = no countdown.
+export const SALE = { name: 'Black Friday Sale', ends: '' };
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
 // Every CTA goes straight to the page's Cashfree checkout (one less step than scrolling to pricing).

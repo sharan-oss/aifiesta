@@ -2,7 +2,7 @@
 // Hero, "Arch": energetic but clean. Words and offer on one side; on the other, Dhruv (clean
 // cut-out from his official photos) standing in a tall gradient arch, head breaking out of the
 // top, with the models you get floating around him and one AI Fiesta badge at the base.
-import { CTA, checkoutHrefFor, offer, plan } from '../data/content';
+import { CTA, checkoutHrefFor, offer, plan, SALE } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
 const chips = [
   ['ChatGPT', '/logos/calc-openai.svg', 'c1'],
@@ -35,7 +35,7 @@ const chips = [
         <i class="cta__ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg></i>
       </a>
       <div class="offer">
-        <p class="offer__tag"><i class="dot" aria-hidden="true"></i>Limited-time offer</p>
+        <p class="offer__tag"><i class="dot" aria-hidden="true"></i>{SALE.name}</p>
         <p class="offer__price"><b>{plan.price}</b><span>/year</span> <s>{plan.was}</s> <em>Save 33%</em></p>
         <ul class="offer__list">
           <li class="x4">
@@ -156,9 +156,11 @@ const chips = [
   .offer__tag {
     position: absolute; top: -13px; left: 50%; translate: -50% 0; white-space: nowrap;
     display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px 4px 10px; border-radius: 99px;
-    background: #d9381e; color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    background: #0b0a14; color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   }
-  .offer__tag .dot { width: 7px; height: 7px; background: #fff; }
+  /* Black Friday: black tag, the dot in the brand gradient. */
+  .offer__tag .dot { background: linear-gradient(135deg, #7c4dff, #22b8ff); }
+  .offer__tag .dot { width: 7px; height: 7px; }
   .offer__price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-family: var(--head); }
   .offer__price b { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--ink-hi); }
   .offer__price span { margin-left: -8px; font-size: 15px; font-weight: 700; color: var(--ink-hi); }
