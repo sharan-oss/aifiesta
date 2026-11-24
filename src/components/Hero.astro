@@ -7,6 +7,8 @@ import { CTA, checkoutHrefFor, offer, plan } from '../data/content';
 interface Props { vsl?: string }
 const { vsl } = Astro.props;
 const checkout = checkoutHrefFor(Astro.url.pathname);
+// Logo stack next to "100+ AI models" (video version).
+const stack = ['openai', 'claude', 'gemini', 'perplexity', 'grok', 'deepseek'];
 const chips = [
   ['ChatGPT', '/logos/calc-openai.svg', 'c1'],
   ['Claude', '/logos/calc-claude.svg', 'c2'],
@@ -29,6 +31,10 @@ const chips = [
           <script is:inline src={`https://fast.wistia.com/embed/${vsl}.js`} async type="module"></script>
           <wistia-player media-id={vsl} aspect="1.7777777777777777"></wistia-player>
         </div>
+        <p class="vsl-models">
+          <span class="vsl-models__stack" aria-hidden="true">{stack.map((l) => <img src={`/logos/calc-${l}.svg`} alt="" width="22" height="22" />)}</span>
+          <span><b>100+ AI models</b> in one app</span>
+        </p>
       </div>
     ) : (
     <div class="visual">
@@ -253,11 +259,23 @@ const chips = [
     background: center / contain no-repeat var(--swatch, none); filter: blur(5px);
   }
   .hero--vsl .visual { width: 100%; max-width: 620px; aspect-ratio: auto; margin: 22px auto 0; }
+  /* The models you get, right under the video (version A shows them as floating chips). */
+  .vsl-models {
+    display: flex; align-items: center; gap: 10px; width: fit-content; margin: 12px auto 0; padding: 6px 14px 6px 6px; border-radius: 99px;
+    background: #fff; box-shadow: 0 0 0 1px rgba(16, 14, 36, .08), 0 10px 22px -14px rgba(40, 30, 120, .5);
+    font-family: var(--head); font-size: 13.5px; font-weight: 700; color: var(--ink-hi); white-space: nowrap;
+  }
+  .vsl-models b { font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vsl-models__stack { display: flex; }
+  .vsl-models__stack img { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px rgba(16, 14, 36, .08); }
+  .vsl-models__stack img + img { margin-left: -7px; }
   .hero--vsl .act { margin-top: 24px; }
   @media (min-width: 960px) {
     .hero--vsl .hero__in { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 48px; }
     .hero--vsl h1 { font-size: clamp(34px, 2.8vw, 42px); }
     .hero--vsl .visual { margin: 0; align-self: center; }
+    .vsl-models { margin-top: 16px; font-size: 14.5px; }
+    .vsl-models__stack img { width: 30px; height: 30px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
