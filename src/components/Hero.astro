@@ -74,7 +74,7 @@ const chips = [
   .copy { grid-area: copy; }
   .visual { grid-area: visual; }
   .act { grid-area: act; }
-  .proof { grid-area: proof; min-width: 0; margin-top: 22px; }
+  .proof { grid-area: proof; min-width: 0; margin-top: 32px; }
 
   .dot { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--warm); }
   .dot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: ping 1.8s var(--ease) infinite; }
@@ -188,7 +188,7 @@ const chips = [
     .lead { margin-top: 8px; font-size: 14.5px; line-height: 1.45; }
     .visual { --A: min(62vw, 250px, max(150px, calc((100svh - 300px) / 1.08))); margin-top: 30px; }
     .act { margin-top: 32px; gap: 8px; }
-    .offer { margin-top: 14px; padding: 18px 14px 10px; border-radius: 16px; }
+    .offer { margin-top: 22px; padding: 18px 14px 10px; border-radius: 16px; }
     .offer__tag { top: -12px; font-size: 11px; padding: 3px 11px 3px 9px; }
     .offer__price b { font-size: 28px; }
     .offer__price span, .offer__price s { font-size: 14px; }
@@ -203,7 +203,7 @@ const chips = [
   /* Desktop: words + offer on the left, the arch on the right. */
   @media (min-width: 960px) {
     .hero__in {
-      text-align: left; padding: 64px 40px 80px;
+      text-align: left; padding: 64px 40px 44px;
       grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
       grid-template-areas: 'copy visual' 'act visual' 'proof proof';
       grid-template-rows: auto 1fr auto; column-gap: 56px;
@@ -211,7 +211,7 @@ const chips = [
     h1 { margin: 22px 0 0; font-size: clamp(40px, 3.4vw, 50px); line-height: 1.08; letter-spacing: -0.035em; }
     .lead { margin: 18px 0 0; font-size: 19px; max-width: 560px; }
     .act { justify-items: start; align-content: start; margin-top: 30px; gap: 14px; }
-    .proof { margin-top: 44px; }
+    .proof { margin-top: 48px; }
     .cta { height: 64px; font-size: 18px; }
     .offer { padding: 26px 22px 18px; border-radius: 20px; }
     .offer__price b { font-size: 40px; }
