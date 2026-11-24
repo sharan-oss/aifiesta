@@ -1,65 +1,72 @@
 ---
-// Black Friday top bar (Home + GA). One slim black line: sale name, the deal, an optional live
-// countdown (SALE.ends) and a "Claim" arrow. The whole bar is the page's checkout link, so it
-// behaves like the main button (and opens the lead popup on Home B). Scrolls away; not sticky.
+// Black Friday top bar (Home + GA). Black with the Black Friday neon yellow: a pinned
+// "BLACK FRIDAY" label and a slow ticker of the deal. The whole bar is the page's checkout link
+// (behaves like the main button; opens the lead popup on Home B). Scrolls away; not sticky.
+// Optional live countdown via SALE.ends (off while it's '').
 import { checkoutHrefFor, plan, offer, SALE } from '../data/content';
 const checkout = checkoutHrefFor(Astro.url.pathname);
+const items = ['Sale is live', `${plan.price}/year`, 'Save 33%', `${offer.multiple} usage in month 1`, 'Free custom domain'];
 ---
-<a class="sb" href={checkout} data-cta="sale-bar" aria-label={`${SALE.name}: ${plan.price} per year, ${offer.multiple} usage and a free domain. Claim the offer.`}>
-  <span class="sb__in">
-    <span class="sb__tag"><i aria-hidden="true"></i><b>{SALE.name}</b></span>
-    <span class="sb__deal" aria-hidden="true">{plan.price}/yr<em>·</em>{offer.multiple} usage<span class="sb__wide"><em>·</em>Free domain</span></span>
-    {SALE.ends && <span class="sb__end" data-ends={SALE.ends} aria-hidden="true" hidden>Ends in <time></time></span>}
-    <span class="sb__go" aria-hidden="true">Claim<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg></span>
+<a class="sb" href={checkout} data-cta="sale-bar" aria-label={`${SALE.name}: ${plan.price} per year, save 33%, ${offer.multiple} usage in month 1 and a free custom domain.`}>
+  <span class="sb__tag" aria-hidden="true"><b>Black Friday</b></span>
+  <span class="sb__track" aria-hidden="true">
+    <span class="sb__run">
+      {[0, 1].map(() => (
+        <span class="sb__set">
+          {items.map((t) => <><span>{t}</span><i>✦</i></>)}
+          {SALE.ends && <><span class="sb__end" data-ends={SALE.ends}>Ends in <time>--</time></span><i>✦</i></>}
+        </span>
+      ))}
+    </span>
   </span>
 </a>
 {SALE.ends && (
   <script is:inline>
     (function () {
-      var el = document.querySelector('.sb__end'); if (!el) return;
-      var end = Date.parse(el.getAttribute('data-ends')), t = el.querySelector('time');
+      var els = document.querySelectorAll('.sb__end'); if (!els.length) return;
+      var end = Date.parse(els[0].getAttribute('data-ends'));
       function pad(n) { return (n < 10 ? '0' : '') + n; }
       function tick() {
         var s = Math.floor((end - Date.now()) / 1000);
-        if (!(s > 0)) { el.hidden = true; return; }
-        var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
-        t.textContent = (d ? d + 'd ' : '') + pad(h) + ':' + pad(m) + ':' + pad(x);
-        el.hidden = false; setTimeout(tick, 1000);
+        var txt = s > 0 ? (Math.floor(s / 86400) ? Math.floor(s / 86400) + 'd ' : '') + pad(Math.floor(s % 86400 / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60) : '';
+        els.forEach(function (el) { el.hidden = !txt; el.querySelector('time').textContent = txt; if (!txt && el.nextElementSibling) el.nextElementSibling.hidden = true; });
+        if (txt) setTimeout(tick, 1000);
       }
       tick();
     })();
   </script>
 )}
 <style>
-  .sb { display: block; background: #0b0a14; color: #fff; text-decoration: none; }
-  .sb__in {
-    display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 1180px; height: 38px; margin-inline: auto; padding: 0 14px;
-    font: 600 12.5px/1 'Inter', system-ui, sans-serif; white-space: nowrap;
+  .sb {
+    --bf: #ffe234;
+    position: relative; display: flex; align-items: stretch; height: 40px; overflow: hidden;
+    background: #0a0a0a; color: #fff; text-decoration: none;
+    font: 800 12.5px/1 'Manrope', 'Inter', system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
   }
-  .sb__tag { display: inline-flex; align-items: center; gap: 7px; }
-  .sb__tag i { position: relative; width: 7px; height: 7px; border-radius: 50%; background: #3dd68c; }
-  .sb__tag i::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: sb-ping 1.8s cubic-bezier(.32, .72, 0, 1) infinite; }
-  .sb__tag b {
-    font-family: 'Manrope', 'Inter', sans-serif; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
-    background: linear-gradient(100deg, #a98bff, #6c9bff 55%, #5fd4ff); -webkit-background-clip: text; background-clip: text; color: transparent;
+  /* Pinned label: neon yellow block with a slanted edge, the ticker slides under it. */
+  .sb__tag {
+    position: relative; z-index: 2; flex: none; display: flex; align-items: center; padding: 0 22px 0 16px;
+    background: var(--bf); color: #0a0a0a; clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
   }
-  .sb__deal { display: inline-flex; gap: 6px; color: rgba(255, 255, 255, .88); }
-  .sb__deal em { font-style: normal; color: rgba(255, 255, 255, .35); }
-  .sb__wide { display: none; gap: 6px; }
-  .sb__end { color: rgba(255, 255, 255, .7); }
-  .sb__end[hidden] { display: none; }
-  .sb__end time { font-variant-numeric: tabular-nums; color: #fff; font-weight: 700; }
-  .sb__go { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 99px; background: rgba(255, 255, 255, .12); font-weight: 700; transition: background .2s; }
-  .sb__go svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
-  .sb:hover .sb__go { background: rgba(255, 255, 255, .2); }
-  .sb:hover .sb__go svg { transform: translateX(2px); }
-  @keyframes sb-ping { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
-  /* Very small phones: drop the deal line, keep name + Claim. */
-  @media (max-width: 359px) { .sb__deal { display: none; } }
+  .sb__tag b { font-weight: 800; letter-spacing: .1em; }
+  .sb__track {
+    position: relative; flex: 1; min-width: 0; display: flex; align-items: center; overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .sb__run { display: flex; width: max-content; animation: sb-run 28s linear infinite; }
+  .sb__set { display: flex; align-items: center; gap: 14px; padding-right: 14px; white-space: nowrap; }
+  .sb__set i { font-style: normal; color: var(--bf); font-size: 11px; }
+  .sb__set span:first-child { color: var(--bf); }
+  .sb__end time { font-variant-numeric: tabular-nums; color: var(--bf); }
+  .sb__end[hidden], .sb__set i[hidden] { display: none; }
+  .sb:hover .sb__run { animation-play-state: paused; }
+  @keyframes sb-run { to { transform: translateX(-50%); } }
+
   @media (min-width: 640px) {
-    .sb__in { height: 40px; gap: 14px; font-size: 13.5px; }
-    .sb__wide { display: inline-flex; }
-    .sb__go { padding: 6px 12px; }
+    .sb { height: 42px; font-size: 13px; }
+    .sb__tag { padding: 0 28px 0 22px; }
+    .sb__set { gap: 18px; padding-right: 18px; }
   }
-  @media (prefers-reduced-motion: reduce) { .sb__tag i::after { animation: none; } }
+  /* No motion: the deal sits still, starting with the most important items. */
+  @media (prefers-reduced-motion: reduce) { .sb__run { animation: none; } }
 </style>
