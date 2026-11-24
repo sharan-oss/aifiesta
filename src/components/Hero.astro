@@ -252,7 +252,7 @@ const chips = [
      shows until the player loads. */
   .vsl {
     position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0d0b1f;
-    box-shadow: 0 0 0 1px rgba(124, 77, 255, .25), 0 28px 50px -28px rgba(61, 107, 255, .85);
+    box-shadow: 0 0 0 1px rgba(124, 77, 255, .25);
   }
   .vsl :global(wistia-player) { display: block; width: 100%; height: 100%; }
   .vsl :global(wistia-player[media-id]:not(:defined)) {
@@ -262,7 +262,7 @@ const chips = [
   /* The models you get, right under the video (version A shows them as floating chips). */
   .vsl-models {
     display: flex; align-items: center; gap: 10px; width: fit-content; margin: 12px auto 0; padding: 6px 14px 6px 6px; border-radius: 99px;
-    background: #fff; box-shadow: 0 0 0 1px rgba(16, 14, 36, .08), 0 10px 22px -14px rgba(40, 30, 120, .5);
+    background: #fff; box-shadow: 0 0 0 1px rgba(16, 14, 36, .1);
     font-family: var(--head); font-size: 13.5px; font-weight: 700; color: var(--ink-hi); white-space: nowrap;
   }
   .vsl-models b { font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
