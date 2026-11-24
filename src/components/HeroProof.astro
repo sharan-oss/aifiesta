@@ -4,13 +4,14 @@
 // with reduced motion it becomes a plain swipeable row.
 import { STORE_PROOF, STORE_REVIEWS } from '../data/content';
 const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+const icon = (store: string) => (store === 'App Store' ? '/logos/store-apple.svg' : '/logos/store-play.svg');
 const parts = (q: string, hl: string) => { const i = q.indexOf(hl); return i < 0 ? [q, '', ''] : [q.slice(0, i), hl, q.slice(i + hl.length)]; };
 ---
 <div class="hp">
   <p class="hp__head">
     <span class="hp__stars" aria-hidden="true">★★★★★</span>
     <span><b>{STORE_PROOF.downloads} downloads</b><i aria-hidden="true">·</i><b>{STORE_PROOF.reviews} reviews</b></span>
-    <span class="hp__on">on App Store &amp; Google Play</span>
+    <span class="hp__on">on <img src="/logos/store-apple.svg" alt="" width="12" height="14" />App Store &amp; <img src="/logos/store-play.svg" alt="" width="13" height="14" />Google Play</span>
   </p>
   <div class="hp__track">
     <ul class="hp__run">
@@ -20,7 +21,7 @@ const parts = (q: string, hl: string) => { const i = q.indexOf(hl); return i < 0
           <li class="hp__card" aria-hidden={copy ? 'true' : undefined}>
             <div class="hp__who">
               <span class="hp__av" aria-hidden="true">{initials(r.name)}</span>
-              <span><b>{r.name}</b><small>{r.store} review</small></span>
+              <span><b>{r.name}</b><small><img src={icon(r.store)} alt="" width="11" height="13" />{r.store} review</small></span>
               <span class="hp__s" aria-label="5 out of 5 stars">★★★★★</span>
             </div>
             <p>“{a}{h && <mark>{h}</mark>}{z}”</p>
@@ -35,6 +36,8 @@ const parts = (q: string, hl: string) => { const i = q.indexOf(hl); return i < 0
   .hp__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; font-size: 13px; color: var(--muted); }
   .hp__head b { font-weight: 700; color: var(--ink); }
   .hp__head i { font-style: normal; margin: 0 6px; color: #c3bed0; }
+  .hp__on { display: inline-flex; align-items: center; gap: 5px; }
+  .hp__on img { height: 14px; width: auto; margin-left: 2px; }
   .hp__stars { color: #ffb01f; letter-spacing: 1px; font-size: 14px; }
   .hp__track {
     margin-top: 12px; overflow: hidden;
@@ -53,7 +56,8 @@ const parts = (q: string, hl: string) => { const i = q.indexOf(hl); return i < 0
     background: linear-gradient(135deg, #7c4dff, #3d6bff 60%, #22b8ff); color: #fff; font: 800 12.5px/1 'Manrope', 'Inter', sans-serif;
   }
   .hp__who b { display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); }
-  .hp__who small { display: block; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+  .hp__who small { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+  .hp__who small img { height: 12px; width: auto; }
   .hp__s { color: #ffb01f; font-size: 12px; letter-spacing: 1px; }
   .hp__card p { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: #3d3a55; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
   .hp__card mark { background: linear-gradient(transparent 55%, rgba(124, 77, 255, .2) 55%); color: var(--ink); font-weight: 600; }
