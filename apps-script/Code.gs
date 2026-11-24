@@ -60,6 +60,7 @@ var RAW_TAB = 'Payments_Raw';
 var PAYMENTS_TAB = 'Payments';
 var ATTR_TAB = 'Attribution';
 var LEADS_TAB = 'Leads';
+var PROFILES_TAB = 'Profiles';
 
 var FORM_EVENT = 'PAYMENT_FORM_ORDER_WEBHOOK';
 var PG_EVENTS = ['PAYMENT_SUCCESS_WEBHOOK', 'PAYMENT_FAILED_WEBHOOK', 'PAYMENT_USER_DROPPED_WEBHOOK'];
@@ -82,6 +83,8 @@ var ATTR_HEADERS = ['received_at', 'order_id', 'thank_you_page', 'landing_lp', '
 // Home B popup (VSL test): who they are, why they buy, how to reach them. Joined to orders by phone/email.
 var LEAD_HEADERS = ['received_at', 'lead_id', 'variant', 'name', 'phone', 'email', 'pincode', 'persona', 'purpose',
   'consent', 'landing_lp', 'landing_url', 'referrer', 'landed_at', 'page_url'].concat(AD_PARAMS);
+// Thank-you page card: optional persona/purpose answers from buyers, one row per order.
+var PROFILE_HEADERS = ['received_at', 'order_id', 'lead_id', 'persona', 'purpose'];
 var PAYMENT_HEADERS = [
   'received_at', 'event_type', 'event_time', 'order_id', 'status', 'payment_id',
   'amount', 'currency', 'name', 'email', 'phone', 'payment_method', 'error', 'form_id',
@@ -113,6 +116,10 @@ function doPost(e) {
     if (body.kind === 'lead') {
       lock.waitLock(20000);
       return json_(saveLead_(SpreadsheetApp.getActiveSpreadsheet(), body));
+    }
+    if (body.kind === 'profile') {
+      lock.waitLock(20000);
+      return json_(saveProfile_(SpreadsheetApp.getActiveSpreadsheet(), body));
     }
 
     var payload = JSON.parse(body.raw);
@@ -395,6 +402,28 @@ function saveLead_(ss, body) {
     return safe_(v);
   }));
   return { ok: true, stored: 'lead' };
+}
+
+// Thank-you card answer -> Profiles tab. Each tap sends one answer; the row for the order is
+// created on the first and updated by later ones (an empty value never overwrites an answer).
+function saveProfile_(ss, body) {
+  var d = body.data || {};
+  var orderId = String(d.order_id || '');
+  if (!lpName_('', orderId)) return { ok: true, stored: 'ignored' };
+  var sh = sheet_(ss, PROFILES_TAB, PROFILE_HEADERS);
+  var row = findRow_(sh, orderId, PROFILE_HEADERS.indexOf('order_id') + 1);
+  if (!row) {
+    sh.appendRow([ist_(body.received_at || new Date().toISOString()), orderId, d.lead_id || '', d.persona || '', d.purpose || ''].map(safe_));
+    return { ok: true, stored: 'profile' };
+  }
+  var range = sh.getRange(row, 1, 1, PROFILE_HEADERS.length);
+  var cur = range.getValues()[0];
+  ['lead_id', 'persona', 'purpose'].forEach(function (h) {
+    var i = PROFILE_HEADERS.indexOf(h);
+    if (d[h]) cur[i] = safe_(String(d[h]));
+  });
+  range.setValues([cur]);
+  return { ok: true, stored: 'profile_updated' };
 }
 
 // Thank-you page record -> Attribution tab (first per order wins) -> the

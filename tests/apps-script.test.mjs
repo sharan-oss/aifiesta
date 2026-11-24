@@ -510,3 +510,18 @@ test('lead: wrong secret writes nothing', () => {
   assert.equal(post({ secret: 'bad', kind: 'lead', data: LEAD }).ok, false);
   assert.equal(sheets.Leads, undefined);
 });
+
+test('profile: first tap creates the order row, second fills the other answer', () => {
+  const order_id = 'CFPay_am-yearly-basic-plan-meta_c3d4_1795600000000';
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id, lead_id: 'Lmabc12345xy', persona: 'Student', purpose: '' } }).stored, 'profile');
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id, lead_id: '', persona: '', purpose: 'Coding' } }).stored, 'profile_updated');
+  const [h, row] = sheets.Profiles.rows;
+  assert.equal(sheets.Profiles.rows.length, 2);
+  const r = Object.fromEntries(h.map((k, i) => [k, row[i]]));
+  assert.deepEqual([r.order_id, r.lead_id, r.persona, r.purpose], [order_id, 'Lmabc12345xy', 'Student', 'Coding']);
+});
+
+test('profile: other forms are ignored', () => {
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id: 'CFPay_anniversary-yearly-basic_e346_1', persona: 'Student' } }).stored, 'ignored');
+  assert.equal(sheets.Profiles, undefined);
+});

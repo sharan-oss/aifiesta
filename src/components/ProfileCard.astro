@@ -1,0 +1,75 @@
+---
+// Thank-you page: optional two-tap card ("I'm a…", "I'll mostly use it for…"). Each tap saves
+// on its own (/api/lead-profile -> Profiles tab, keyed by the Cashfree order id). Shown only
+// when the page has an order id; after both answers it collapses to "Thanks, saved".
+import { PERSONAS, PURPOSES } from '../../lib/lead-options.js';
+const qs = [
+  { key: 'persona', label: "I'm a…", options: PERSONAS },
+  { key: 'purpose', label: "I'll mostly use it for…", options: PURPOSES },
+];
+---
+<section class="pc" id="profile-card" hidden aria-labelledby="pc-title">
+  <div class="pc__head">
+    <h2 id="pc-title">Help us set up AI Fiesta for you</h2>
+    <span class="pc__tag">Optional · 2 taps</span>
+  </div>
+  {qs.map((q) => (
+    <fieldset class="pc__q" data-q={q.key}>
+      <legend>{q.label}</legend>
+      <div class="pc__chips">{q.options.map((o) => <label><input type="radio" name={`pc-${q.key}`} value={o} /><span>{o}</span></label>)}</div>
+    </fieldset>
+  ))}
+  <p class="pc__done" hidden>Thanks, saved. We'll use this to point you to the right tools.</p>
+</section>
+
+<script is:inline>
+  (function () {
+    var card = document.getElementById('profile-card');
+    var q = new URLSearchParams(location.search);
+    var orderId = q.get('id') || q.get('order_id') || '';
+    if (!card || !/^CFPay_[\w-]+$/.test(orderId)) return;
+    var KEY = 'af_profile_' + orderId, answers = {};
+    try { answers = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+    var leadId = ''; try { leadId = (JSON.parse(localStorage.getItem('af_lead')) || {}).lead_id || ''; } catch (e) {}
+    function done() { return answers.persona && answers.purpose; }
+    function render() {
+      ['persona', 'purpose'].forEach(function (k) {
+        var r = card.querySelector('input[name="pc-' + k + '"][value="' + (answers[k] || '').replace(/"/g, '') + '"]');
+        if (r) r.checked = true;
+      });
+      if (done()) { card.querySelectorAll('.pc__q').forEach(function (f) { f.hidden = true; }); card.querySelector('.pc__done').hidden = false; }
+    }
+    card.hidden = false; render();
+    if (window.clarity) clarity('event', 'profile_shown');
+    card.addEventListener('change', function (e) {
+      var t = e.target; if (!t || t.type !== 'radio') return;
+      var key = t.name.replace('pc-', '');
+      answers[key] = t.value;
+      try { localStorage.setItem(KEY, JSON.stringify(answers)); } catch (x) {}
+      var body = JSON.stringify({ order_id: orderId, lead_id: leadId, persona: key === 'persona' ? t.value : '', purpose: key === 'purpose' ? t.value : '' });
+      var sent = false;
+      try { sent = navigator.sendBeacon('/api/lead-profile', new Blob([body], { type: 'text/plain' })); } catch (x) {}
+      if (!sent) { try { fetch('/api/lead-profile', { method: 'POST', body: body, keepalive: true }); } catch (x) {} }
+      if (window.clarity) { clarity('event', 'profile_answer'); clarity('set', 'profile_' + key, t.value); }
+      if (done()) { if (window.clarity) clarity('event', 'profile_done'); setTimeout(render, 350); }
+    });
+  })();
+</script>
+
+<style>
+  .pc { background: #fff; border: 1px solid var(--line, #ddd6ed); border-radius: 24px; padding: 20px; box-shadow: 0 8px 20px rgba(36, 32, 61, .07); display: grid; gap: 14px; }
+  .pc[hidden], .pc__q[hidden], .pc__done[hidden] { display: none; }
+  .pc__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 10px; }
+  .pc h2 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .pc__tag { font-size: 12px; font-weight: 600; color: #6a4dff; background: #f1ecff; padding: 3px 9px; border-radius: 99px; }
+  .pc__q { border: 0; padding: 0; margin: 0; }
+  .pc__q legend { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #3d3a55; }
+  .pc__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pc__chips label { cursor: pointer; }
+  .pc__chips input { position: absolute; opacity: 0; pointer-events: none; }
+  .pc__chips span { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 99px; border: 1.5px solid #ddd6ed; font-size: 13.5px; font-weight: 600; color: #4a475f; transition: background .15s, border-color .15s; }
+  .pc__chips input:checked + span { border-color: #6a4dff; background: #f1ecff; color: #4b33d6; }
+  .pc__chips input:focus-visible + span { box-shadow: 0 0 0 3px rgba(106, 77, 255, .25); }
+  .pc__done { font-size: 14px; font-weight: 600; color: #2f7d54; }
+  @media (min-width: 768px) { .pc { padding: 28px 32px; } }
+</style>

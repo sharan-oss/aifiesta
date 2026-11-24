@@ -45,3 +45,22 @@ test('lead: rejects bad phone, email, pincode or id', () => {
     assert.equal(cleanLead({ ...LEAD, ...bad }), null, JSON.stringify(bad));
   }
 });
+
+import { cleanProfile } from '../api/lead-profile.js';
+
+test('lead: answers are optional (popup sends only contact details)', () => {
+  const { persona, purpose, ...contactOnly } = LEAD;
+  const l = cleanLead(contactOnly);
+  assert.equal(l.persona, '');
+  assert.equal(l.purpose, '');
+  assert.equal(l.phone, '9876543210');
+});
+
+test('profile: needs a landing-page order id and at least one known answer', () => {
+  const order_id = 'CFPay_am-yearly-basic-plan-meta_c3d4_1795600000000';
+  assert.deepEqual(cleanProfile({ order_id, persona: 'Student', lead_id: 'Lmabc12345xy' }), { order_id, lead_id: 'Lmabc12345xy', persona: 'Student', purpose: '' });
+  assert.equal(cleanProfile({ order_id, purpose: 'Something else' }).purpose, 'Something else');
+  assert.equal(cleanProfile({ order_id, persona: 'Hacker' }), null);
+  assert.equal(cleanProfile({ order_id: 'CFPay_anniversary-yearly-basic_e346_1', persona: 'Student' }), null);
+  assert.equal(cleanProfile({ order_id, persona: 'Student', lead_id: 'x"; DROP' }).lead_id, '');
+});
