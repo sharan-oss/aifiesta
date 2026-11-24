@@ -120,3 +120,15 @@ export const faqs = [
   { q: 'Will I get free upgrades when new AI versions are released?', a: 'Yes. If ChatGPT releases Model 6 or another AI provider launches a higher version, you will get access at no extra cost.' },
   { q: 'Who owns AI Fiesta?', a: 'AI Fiesta is an all-in-one AI subscription platform owned by Fiesta Labs Inc. Fiesta Labs Inc is owned by Dhruv Rathee, an entrepreneur and digital content creator.' },
 ];
+
+// Real App Store / Google Play reviews (from anniversary.aifiesta.ai), quoted word for word and
+// trimmed only with "…". hl = the phrase to highlight. Shown under the hero offer card.
+export const STORE_PROOF = { downloads: '1M+', reviews: '15K+' };
+export const STORE_REVIEWS = [
+  { name: 'Samir', store: 'Google Play', quote: 'You get so many AI tools… in one place… Best part is the price, much cheaper than paying for each AI separately.', hl: 'much cheaper than paying for each AI separately' },
+  { name: 'Akash', store: 'App Store', quote: 'Been using this app daily for work and it actually saves me time. Gives real answers, not just generic stuff.', hl: 'it actually saves me time' },
+  { name: 'Kunal Purohit', store: 'Google Play', quote: '…access to Claude and its latest capabilities, at nearly half the price of Claude… It has become an essential part of my workflow.', hl: 'at nearly half the price of Claude' },
+  { name: 'A Kutty', store: 'App Store', quote: 'The standout feature is the ability to compare different AI models side-by-side, which is incredibly practical… it boasts nearly 100% uptime.', hl: 'compare different AI models side-by-side' },
+  { name: 'Saurabh Goswami', store: 'Google Play', quote: 'I frequently use AI Fiesta for my presentations, for help in statistical analysis, for image generation and editing as well as for day to day queries.', hl: 'presentations, for help in statistical analysis, for image generation' },
+  { name: 'G Chuuu', store: 'App Store', quote: 'AI Fiesta is a game-changer!… And the support team? Absolutely fantastic — friendly, responsive, and always ready to help.', hl: 'game-changer' },
+];
