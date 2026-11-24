@@ -38,8 +38,8 @@ test('forwards a valid record with the secret, only known fields, trimmed', asyn
   assert.equal('evil' in sent[0].data, false);
 });
 
-test('all three landing-page order ids are accepted', async () => {
-  for (const f of ['am-ads-yearly-basic-plan', 'am-yearly-basic-plan-ga', 'am-yearly-basic-plan-meta']) {
+test('all landing-page order ids are accepted (old, offer and addon forms)', async () => {
+  for (const f of ['am-ads-yearly-basic-plan', 'am-yearly-basic-plan-ga', 'am-yearly-basic-plan-meta', 'am-yearly-basic-plan-ga-a']) {
     assert.equal((await call({ body: JSON.stringify({ order_id: `CFPay_${f}_ab12_123` }) })).status, 200, f);
   }
 });

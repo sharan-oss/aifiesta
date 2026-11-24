@@ -1,9 +1,10 @@
 export const CTA = 'Get AI Fiesta for ₹7,999/year';
-export const CTA_HREF = 'https://payments.cashfree.com/forms/am-ads-yearly-basic-plan-offer';
-// The Google Ads LP (/basic-plan-ga) checks out on its own Cashfree form.
-export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga-offer';
-// The Meta LP (/basic-plan-v2-fb) checks out on its own Cashfree form.
-export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-meta-offer';
+// Two Cashfree forms: one for Meta traffic (Home, v2, v3), one for Google (/basic-plan-ga).
+// Which Meta page sold is still recorded per order (landing_lp in the Sheet).
+export const CTA_HREF_META = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-meta-addon';
+export const CTA_HREF_GA = 'https://payments.cashfree.com/forms/am-yearly-basic-plan-ga-addon';
+// Home's checkout (also the default for any page not listed below).
+export const CTA_HREF = CTA_HREF_META;
 // Any Cashfree form link counts as checkout (AddToCart, ad params passed through).
 export const CHECKOUT_PREFIX = 'https://payments.cashfree.com/forms/';
 // Every CTA goes straight to the page's Cashfree checkout (one less step than scrolling to pricing).

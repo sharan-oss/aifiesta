@@ -454,6 +454,28 @@ test('new offer forms: truncated order ids are recognised (PG events, attributio
   }
 });
 
+// --- "-addon" forms (current since Nov 24: meta-addon for all Meta pages, ga-addon for Google) ---
+
+const ADDON_FORMS = [
+  ['am-yearly-basic-plan-meta-addon', 'meta', 'CFPay_am-yearly-basic-plan-meta_c3d4_1795600000000'],
+  ['am-yearly-basic-plan-ga-addon', 'ga', 'CFPay_am-yearly-basic-plan-ga-a_a1b2_1795600000001'],
+  ['am-ads-yearly-basic-plan-addon', 'home', 'CFPay_am-ads-yearly-basic-plan-_e5f6_1795600000002'],
+];
+
+test('addon forms are kept, with the right lp_name', () => {
+  for (const [f, , id] of ADDON_FORMS) assert.equal(hook(form(f, id)).stored, 'payment', f);
+  assert.deepEqual(payments().map((r) => [r.form_id, r.lp_name]), ADDON_FORMS.map(([f, lp]) => [f, lp]));
+});
+
+test('addon forms: autopay events count as ours; truncated order ids are recognised', () => {
+  assert.equal(hook(sub('SUBSCRIPTION_PAYMENT_FAILED', 'form_132700000_am-yearly-basic-plan-ga-addon')).stored, 'raw_only');
+  for (const [, lp, id] of ADDON_FORMS) {
+    assert.equal(hook(pg('PAYMENT_SUCCESS_WEBHOOK', 'SUCCESS', { order_id: id, order_tags: null })).stored, 'payment', id);
+    assert.equal(post({ secret: 'shh', kind: 'attribution', data: { order_id: id, utm_source: 'fb' } }).stored, 'attribution', id);
+    assert.equal(ctx.lpName_('', id), lp, id);
+  }
+});
+
 test('old forms still count after the switch', () => {
   assert.equal(hook(form('am-yearly-basic-plan-ga', 'CFPay_am-yearly-basic-plan-ga_0347_1793879286610')).stored, 'payment');
   assert.equal(payments()[0].lp_name, 'ga');

@@ -31,9 +31,13 @@
  * date-time). Set File > Settings > Time zone to India to match.
  */
 
-// Cashfree form id -> landing page. Each landing page links to its own form.
+// Cashfree form id -> landing page. Current forms: meta-addon (all Meta pages: Home, v2, v3) and
+// ga-addon (Google page). ads-addon is unused but listed in case it gets linked.
 // Old forms stay listed: late autopay events and in-flight buyers still use them.
 var LP_NAMES = {
+  'am-yearly-basic-plan-meta-addon': 'meta',
+  'am-yearly-basic-plan-ga-addon': 'ga',
+  'am-ads-yearly-basic-plan-addon': 'home',
   'am-ads-yearly-basic-plan-offer': 'home',
   'am-yearly-basic-plan-ga-offer': 'ga',
   'am-yearly-basic-plan-meta-offer': 'meta',
