@@ -538,7 +538,9 @@ function addMissedAutopayPayments() {
       var txn = String(e.data.cf_txn_id || '');
       if (!txn || findRow_(pay, txn, PAYMENT_ID_COLUMN)) return;
       var row = PAYMENT_HEADERS.map(function () { return ''; });
-      row[col('received_at')] = r[RAW_HEADERS.indexOf('received_at')];
+      var at = r[RAW_HEADERS.indexOf('received_at')];
+      // Sheets turns the raw tab's time text into a Date; write it back as the same IST text as other rows.
+      row[col('received_at')] = at instanceof Date ? Utilities.formatDate(at, TZ, 'yyyy-MM-dd HH:mm:ss') : at;
       row[col('event_type')] = 'AUTOPAY_ONLY';
       row[col('event_time')] = ist_(e.event_time || '');
       row[col('order_id')] = String(e.data.cf_order_id || '');
