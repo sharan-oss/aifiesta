@@ -562,6 +562,72 @@ function addMissedAutopayPayments() {
   }
 }
 
+// The client's "am-yearly-basic-plan leads — meta vs ga" sheet (Status, Date, Name, Number, Email).
+var CLIENT_LEADS_SHEET = '1Prtw8Qm4nM97xgBhOL-y3czEIWpOnAqv4pCCk0JqNXU';
+
+// Run once by hand (Apps Script editor > fillAutopayContacts > Run): fills name/phone/email on
+// AUTOPAY_ONLY rows from the client's sheet. Candidates are its Success rows not already in Payments
+// (by phone or email), from the same channel tab (meta / ga), dated the row's day or the day before;
+// paired in time order. Only blank cells are written, so it is safe to re-run.
+function fillAutopayContacts() {
+  return fillAutopayContactsFrom_(CLIENT_LEADS_SHEET);
+}
+
+function fillAutopayContactsFrom_(sheetId) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var pay = sheet_(ss, PAYMENTS_TAB, PAYMENT_HEADERS);
+    if (pay.getLastRow() < 2) return 0;
+    var col = function (h) { return PAYMENT_HEADERS.indexOf(h); };
+    var rows = pay.getRange(2, 1, pay.getLastRow() - 1, PAYMENT_HEADERS.length).getValues();
+    var digits = function (v) { return String(v === undefined || v === null ? '' : v).replace(/\D/g, '').slice(-10); };
+    var day = function (v) { return (v instanceof Date ? Utilities.formatDate(v, TZ, 'yyyy-MM-dd') : String(v || '')).slice(0, 10); };
+    var known = {};
+    rows.forEach(function (r) {
+      if (digits(r[col('phone')])) known[digits(r[col('phone')])] = true;
+      if (r[col('email')]) known[String(r[col('email')]).trim().toLowerCase()] = true;
+    });
+
+    var pools = { meta: [], ga: [] };
+    SpreadsheetApp.openById(sheetId).getSheets().forEach(function (sh) {
+      var tab = sh.getName().toLowerCase();
+      var ch = /\bga\b/.test(tab) ? 'ga' : (/meta/.test(tab) ? 'meta' : '');
+      if (!ch) return;
+      sh.getDataRange().getValues().forEach(function (r) {
+        if (String(r[0]).trim() !== 'Success') return;
+        var phone = String(r[3] === undefined ? '' : r[3]).trim(), email = String(r[4] || '').trim();
+        if (known[digits(phone)] || (email && known[email.toLowerCase()])) return;
+        pools[ch].push({ day: day(r[1]), name: String(r[2] || '').trim(), phone: phone, email: email });
+      });
+    });
+
+    var filled = 0;
+    rows.forEach(function (r, i) {
+      if (r[col('event_type')] !== 'AUTOPAY_ONLY' || r[col('name')] || r[col('email')] || r[col('phone')]) return;
+      var pool = pools[/-ga-/.test(String(r[col('form_id')])) ? 'ga' : 'meta'];
+      var d = day(r[col('event_time')] || r[col('received_at')]);
+      var before = Utilities.formatDate(new Date(new Date(d + 'T12:00:00+05:30').getTime() - 864e5), TZ, 'yyyy-MM-dd').slice(0, 10);
+      for (var k = 0; k < pool.length; k++) {
+        if (pool[k].day !== d && pool[k].day !== before) continue;
+        var c = pool.splice(k, 1)[0];
+        var at = i + 2;
+        pay.getRange(at, col('name') + 1).setValue(safe_(c.name));
+        pay.getRange(at, col('email') + 1).setValue(safe_(c.email));
+        pay.getRange(at, col('phone') + 1).setValue(phoneCell_(c.phone));
+        pay.getRange(at, col('error') + 1).setValue('order webhook missed; contact from client sheet');
+        filled++;
+        break;
+      }
+    });
+    if (typeof Logger !== 'undefined') Logger.log('Filled contact details on ' + filled + ' AUTOPAY_ONLY row(s)');
+    return filled;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // ISO timestamps (UTC "Z" from Vercel/the browser, "+05:30" from Cashfree) ->
 // "yyyy-MM-dd HH:mm:ss" in IST. Anything else is returned unchanged.
 function ist_(v) {
