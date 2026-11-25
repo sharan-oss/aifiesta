@@ -531,3 +531,10 @@ test('other forms without a reference id are still ignored, and logged without p
   assert.equal(r.order_id, 'CFPay_sx-ads-yearly-basic-plan-o_aa_1');
   assert.ok(!JSON.stringify(row).includes('a@b.co'));
 });
+
+test('addon forms with an empty form_id (how Cashfree sends them) are kept as payments', () => {
+  assert.equal(hook(noRefForm('am-yearly-basic-plan-meta-addon', 'CFPay_am-yearly-basic-plan-meta_51ab_1795530000000')).stored, 'payment');
+  assert.equal(hook(noRefForm('am-yearly-basic-plan-ga-addon', 'CFPay_am-yearly-basic-plan-ga-a_77cd_1795530000001')).stored, 'payment');
+  assert.deepEqual(payments().map((r) => [r.form_id, r.lp_name]), [['am-yearly-basic-plan-meta-addon', 'meta'], ['am-yearly-basic-plan-ga-addon', 'ga']]);
+  assert.equal(sheets.Ignored, undefined);
+});
