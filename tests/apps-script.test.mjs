@@ -487,6 +487,46 @@ test('Code.gs LP_NAMES and lib/apps-script.js LP_FORM_IDS list the same forms', 
   assert.deepEqual(Object.keys(ctx.LP_NAMES).sort(), [...LP_FORM_IDS].sort());
 });
 
+// --- Home B popup leads ---
+
+const LEAD = { lead_id: 'Lmabc12345xy', variant: 'b', name: 'Asha Rao', phone: '9876543210', email: 'asha@example.com',
+  pincode: '560001', persona: 'Student', purpose: 'Coding', consent: 'yes', landing_lp: 'home-b', utm_source: 'fb',
+  ad_id: '120252522213760096', landed_at: '2026-11-24T10:00:00.000Z' };
+
+test('lead: one row per lead_id in the Leads tab, phone and ad id kept as text', () => {
+  assert.deepEqual(post({ secret: 'shh', kind: 'lead', data: LEAD, received_at: '2026-11-24T10:05:00.000Z' }), { ok: true, stored: 'lead' });
+  assert.equal(post({ secret: 'shh', kind: 'lead', data: LEAD }).stored, 'duplicate');
+  const [h, row] = sheets.Leads.rows;
+  const r = Object.fromEntries(h.map((k, i) => [k, row[i]]));
+  assert.equal(sheets.Leads.rows.length, 2);
+  assert.equal(r.received_at, '2026-11-24 15:35:00');
+  assert.equal(r.phone, "'9876543210");
+  assert.equal(r.ad_id, "'120252522213760096");
+  assert.equal(r.persona, 'Student');
+  assert.equal(r.landed_at, '2026-11-24 15:30:00');
+  assert.equal(sheets.Payments, undefined);
+});
+
+test('lead: wrong secret writes nothing', () => {
+  assert.equal(post({ secret: 'bad', kind: 'lead', data: LEAD }).ok, false);
+  assert.equal(sheets.Leads, undefined);
+});
+
+test('profile: first tap creates the order row, second fills the other answer', () => {
+  const order_id = 'CFPay_am-yearly-basic-plan-meta_c3d4_1795600000000';
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id, lead_id: 'Lmabc12345xy', persona: 'Student', purpose: '' } }).stored, 'profile');
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id, lead_id: '', persona: '', purpose: 'Coding' } }).stored, 'profile_updated');
+  const [h, row] = sheets.Profiles.rows;
+  assert.equal(sheets.Profiles.rows.length, 2);
+  const r = Object.fromEntries(h.map((k, i) => [k, row[i]]));
+  assert.deepEqual([r.order_id, r.lead_id, r.persona, r.purpose], [order_id, 'Lmabc12345xy', 'Student', 'Coding']);
+});
+
+test('profile: other forms are ignored', () => {
+  assert.equal(post({ secret: 'shh', kind: 'profile', data: { order_id: 'CFPay_anniversary-yearly-basic_e346_1', persona: 'Student' } }).stored, 'ignored');
+  assert.equal(sheets.Profiles, undefined);
+});
+
 // --- forms without a reference id: the order webhook's form_id is empty ---
 // Cashfree's form webhook puts the form's reference_id in data.form.form_id. The new
 // "-offer" forms have none, so form_id arrives empty/null; the form URL and the order id

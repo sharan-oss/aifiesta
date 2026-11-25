@@ -64,6 +64,8 @@ var TIME_COLUMNS = ['received_at', 'event_time', 'paid_at', 'landed_at'];
 var RAW_TAB = 'Payments_Raw';
 var PAYMENTS_TAB = 'Payments';
 var ATTR_TAB = 'Attribution';
+var LEADS_TAB = 'Leads';
+var PROFILES_TAB = 'Profiles';
 var IGNORED_TAB = 'Ignored';
 var IGNORED_HEADERS = ['received_at', 'type', 'form_id', 'form_slug', 'order_id', 'amount'];
 
@@ -85,6 +87,11 @@ var AD_PARAMS = [
 ];
 var ATTR_HEADERS = ['received_at', 'order_id', 'thank_you_page', 'landing_lp', 'landing_url', 'referrer', 'landed_at']
   .concat(AD_PARAMS);
+// Home B popup (VSL test): who they are, why they buy, how to reach them. Joined to orders by phone/email.
+var LEAD_HEADERS = ['received_at', 'lead_id', 'variant', 'name', 'phone', 'email', 'pincode', 'persona', 'purpose',
+  'consent', 'landing_lp', 'landing_url', 'referrer', 'landed_at', 'page_url'].concat(AD_PARAMS);
+// Thank-you page card: optional persona/purpose answers from buyers, one row per order.
+var PROFILE_HEADERS = ['received_at', 'order_id', 'lead_id', 'persona', 'purpose'];
 var PAYMENT_HEADERS = [
   'received_at', 'event_type', 'event_time', 'order_id', 'status', 'payment_id',
   'amount', 'currency', 'name', 'email', 'phone', 'payment_method', 'error', 'form_id',
@@ -112,6 +119,14 @@ function doPost(e) {
     if (body.kind === 'attribution') {
       lock.waitLock(20000);
       return json_(saveAttribution_(SpreadsheetApp.getActiveSpreadsheet(), body));
+    }
+    if (body.kind === 'lead') {
+      lock.waitLock(20000);
+      return json_(saveLead_(SpreadsheetApp.getActiveSpreadsheet(), body));
+    }
+    if (body.kind === 'profile') {
+      lock.waitLock(20000);
+      return json_(saveProfile_(SpreadsheetApp.getActiveSpreadsheet(), body));
     }
 
     var payload = JSON.parse(body.raw);
@@ -416,6 +431,45 @@ function enrich_(ss, paySheet, rowIndex) {
     add[col('attribution')] = fromAd ? 'ad' : (a2.landing_lp ? 'organic' : 'unknown');
   }
   return fillBlanks_(paySheet, rowIndex, add.map(safe_));
+}
+
+// Home B popup lead -> Leads tab (one row per lead_id; a resubmit of the same lead is ignored).
+function saveLead_(ss, body) {
+  var d = body.data || {};
+  var leadId = String(d.lead_id || '');
+  if (!leadId) return { ok: false, error: 'no lead_id' };
+  var sh = sheet_(ss, LEADS_TAB, LEAD_HEADERS);
+  if (findRow_(sh, leadId, LEAD_HEADERS.indexOf('lead_id') + 1)) return { ok: true, stored: 'duplicate' };
+  sh.appendRow(LEAD_HEADERS.map(function (h) {
+    if (h === 'received_at') return ist_(body.received_at || new Date().toISOString());
+    var v = d[h] === undefined || d[h] === null ? '' : String(d[h]);
+    if (h === 'phone') return phoneCell_(v);
+    if (h === 'landed_at') return ist_(v);
+    return safe_(v);
+  }));
+  return { ok: true, stored: 'lead' };
+}
+
+// Thank-you card answer -> Profiles tab. Each tap sends one answer; the row for the order is
+// created on the first and updated by later ones (an empty value never overwrites an answer).
+function saveProfile_(ss, body) {
+  var d = body.data || {};
+  var orderId = String(d.order_id || '');
+  if (!lpName_('', orderId)) return { ok: true, stored: 'ignored' };
+  var sh = sheet_(ss, PROFILES_TAB, PROFILE_HEADERS);
+  var row = findRow_(sh, orderId, PROFILE_HEADERS.indexOf('order_id') + 1);
+  if (!row) {
+    sh.appendRow([ist_(body.received_at || new Date().toISOString()), orderId, d.lead_id || '', d.persona || '', d.purpose || ''].map(safe_));
+    return { ok: true, stored: 'profile' };
+  }
+  var range = sh.getRange(row, 1, 1, PROFILE_HEADERS.length);
+  var cur = range.getValues()[0];
+  ['lead_id', 'persona', 'purpose'].forEach(function (h) {
+    var i = PROFILE_HEADERS.indexOf(h);
+    if (d[h]) cur[i] = safe_(String(d[h]));
+  });
+  range.setValues([cur]);
+  return { ok: true, stored: 'profile_updated' };
 }
 
 // Thank-you page record -> Attribution tab (first per order wins) -> the

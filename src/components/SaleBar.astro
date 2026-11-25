@@ -1,0 +1,72 @@
+---
+// Black Friday top bar (Home + GA). Black with the Black Friday neon yellow: a pinned
+// "BLACK FRIDAY" label and a slow ticker of the deal. The whole bar is the page's checkout link
+// (behaves like the main button; opens the lead popup on Home B). Scrolls away; not sticky.
+// Optional live countdown via SALE.ends (off while it's '').
+import { checkoutHrefFor, plan, offer, SALE } from '../data/content';
+const checkout = checkoutHrefFor(Astro.url.pathname);
+const items = ['Sale is live', `${plan.price}/year`, 'Save 33%', `${offer.multiple} usage in month 1`, 'Free custom domain worth ₹1,500'];
+---
+<a class="sb" href={checkout} data-cta="sale-bar" aria-label={`${SALE.name}: ${plan.price} per year, save 33%, ${offer.multiple} usage in month 1 and a free custom domain worth ₹1,500.`}>
+  <span class="sb__tag" aria-hidden="true"><b>Black Friday</b></span>
+  <span class="sb__track" aria-hidden="true">
+    <span class="sb__run">
+      {[0, 1].map(() => (
+        <span class="sb__set">
+          {items.map((t) => <><span>{t}</span><i>✦</i></>)}
+          {SALE.ends && <><span class="sb__end" data-ends={SALE.ends}>Ends in <time>--</time></span><i>✦</i></>}
+        </span>
+      ))}
+    </span>
+  </span>
+</a>
+{SALE.ends && (
+  <script is:inline>
+    (function () {
+      var els = document.querySelectorAll('.sb__end'); if (!els.length) return;
+      var end = Date.parse(els[0].getAttribute('data-ends'));
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      function tick() {
+        var s = Math.floor((end - Date.now()) / 1000);
+        var txt = s > 0 ? (Math.floor(s / 86400) ? Math.floor(s / 86400) + 'd ' : '') + pad(Math.floor(s % 86400 / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60) : '';
+        els.forEach(function (el) { el.hidden = !txt; el.querySelector('time').textContent = txt; if (!txt && el.nextElementSibling) el.nextElementSibling.hidden = true; });
+        if (txt) setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+  </script>
+)}
+<style>
+  .sb {
+    --bf: #ffe234;
+    position: relative; display: flex; align-items: stretch; height: 40px; overflow: hidden;
+    background: #0a0a0a; color: #fff; text-decoration: none;
+    font: 800 12.5px/1 'Manrope', 'Inter', system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+  }
+  /* Pinned label: neon yellow block with a slanted edge, the ticker slides under it. */
+  .sb__tag {
+    position: relative; z-index: 2; flex: none; display: flex; align-items: center; padding: 0 22px 0 16px;
+    background: var(--bf); color: #0a0a0a; clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  }
+  .sb__tag b { font-weight: 800; letter-spacing: .1em; }
+  .sb__track {
+    position: relative; flex: 1; min-width: 0; display: flex; align-items: center; overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .sb__run { display: flex; width: max-content; animation: sb-run 28s linear infinite; }
+  .sb__set { display: flex; align-items: center; gap: 14px; padding-right: 14px; white-space: nowrap; }
+  .sb__set i { font-style: normal; color: var(--bf); font-size: 11px; }
+  .sb__set span:first-child { color: var(--bf); }
+  .sb__end time { font-variant-numeric: tabular-nums; color: var(--bf); }
+  .sb__end[hidden], .sb__set i[hidden] { display: none; }
+  .sb:hover .sb__run { animation-play-state: paused; }
+  @keyframes sb-run { to { transform: translateX(-50%); } }
+
+  @media (min-width: 640px) {
+    .sb { height: 42px; font-size: 13px; }
+    .sb__tag { padding: 0 28px 0 22px; }
+    .sb__set { gap: 18px; padding-right: 18px; }
+  }
+  /* No motion: the deal sits still, starting with the most important items. */
+  @media (prefers-reduced-motion: reduce) { .sb__run { animation: none; } }
+</style>

@@ -6,17 +6,20 @@ import Clarity from '../components/Clarity.astro';
 import CtaEvents from '../components/CtaEvents.astro';
 import CheckoutParams from '../components/CheckoutParams.astro';
 import Attribution from '../components/Attribution.astro';
-interface Props { title: string; description?: string; noindex?: boolean; metaPixel?: boolean }
-const { title, noindex = false, metaPixel = true, description = 'One subscription for 100+ AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
+// lp: landing-page name stored with each order (A/B variants of one URL need it: the path is the same).
+interface Props { title: string; description?: string; noindex?: boolean; metaPixel?: boolean; lp?: string; canonical?: string }
+const { title, noindex = false, metaPixel = true, lp, canonical, description = 'One subscription for 100+ AI models. ChatGPT, Claude, Gemini and more, priced for India.' } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-lp={lp}>
   <head>
     <meta charset="utf-8" />
     <GoogleTag />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- interactive-widget: Chrome Android resizes the page for the keyboard, so sheets stay above it. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
+    {canonical && <link rel="canonical" href={canonical} />}
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192" />
@@ -27,6 +30,7 @@ const { title, noindex = false, metaPixel = true, description = 'One subscriptio
     <title>{title}</title>
     {metaPixel && <MetaPixel />}
     <Clarity />
+    {lp && <script is:inline define:vars={{ lp }}>if (window.clarity) clarity('set', 'lp', lp);</script>}
     <CtaEvents />
     <CheckoutParams />
     <Attribution />

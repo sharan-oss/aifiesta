@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ProfileCard from '../components/ProfileCard.astro';
 import { PLAN_VALUE, PLAN_CURRENCY } from '../data/content';
 
 const APP_URL = 'https://chat.aifiesta.ai';
@@ -23,6 +24,8 @@ const steps = [
       <p class="lead">You've just unlocked <b>1 year of access to 100+ AI tools</b> with AI Fiesta.</p>
       <p class="lead">No more juggling multiple subscriptions. It's time to explore more AI possibilities, simplify your workflows, and get more done.</p>
     </section>
+
+    <ProfileCard />
 
     <section class="next" aria-labelledby="next-title">
       <h2 id="next-title">🚀 Here's what happens next</h2>

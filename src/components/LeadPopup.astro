@@ -1,0 +1,445 @@
+---
+// Home B test: checkout step 1 of 2. Every checkout button opens this sheet: four fields (the
+// exact four Cashfree needs, so its form arrives pre-filled and shows only "Proceed to pay"),
+// and one button. On submit: save the lead (/api/lead -> Leads tab),
+// fire Meta Lead + AddToCart, show "Opening secure payment…" with a UPI AutoPay tip, then redirect.
+// Plus one optional "You are a…" chip row (single swipeable line, so the form barely grows); the
+// answer goes with the lead (Leads tab: persona). Purpose is asked on the thank-you page (ProfileCard).
+// Design spec: Fable, Nov 2026.
+import { CHECKOUT_PREFIX, PLAN_VALUE, PLAN_CURRENCY, plan, offer } from '../data/content';
+import { PERSONAS } from '../../lib/lead-options.js';
+interface Props { variant?: string }
+const { variant = 'b' } = Astro.props;
+const fields = [
+  { name: 'name', label: 'Name', hint: '', type: 'text', mode: 'text', ac: 'name', max: 100, extra: { autocapitalize: 'words', placeholder: 'Your full name' } },
+  { name: 'phone', label: 'Mobile number', hint: '', type: 'tel', mode: 'numeric', ac: 'tel-national', max: 16, extra: { placeholder: '98765 43210' } },
+  { name: 'email', label: 'Email', hint: '', type: 'email', mode: 'email', ac: 'email', max: 120, extra: { autocapitalize: 'off', placeholder: 'you@gmail.com' } },
+  { name: 'pincode', label: 'Area pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: 'e.g. 560001' } },
+] as const;
+---
+<dialog id="lead-popup" class="lp" aria-labelledby="lp-title">
+  <div class="lp__in">
+    <div class="lp__top">
+      <ol class="lp__steps" aria-label="Step 1 of 2: your details">
+        <li class="on"><i>1</i>Details</li>
+        <li class="lp__line" aria-hidden="true"></li>
+        <li><i>2</i>Payment</li>
+      </ol>
+      <button type="button" class="lp__x" aria-label="Close" data-close>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" /></svg>
+      </button>
+    </div>
+
+    <form class="lp__form" novalidate>
+      <h2 id="lp-title" class="lp__sr" tabindex="-1">Your details for checkout</h2>
+      <p class="lp__back" hidden>Didn't finish paying? Your details are saved. Continue when you're ready.</p>
+
+      <div class="lp__order">
+        <span class="lp__stack" aria-hidden="true">{['openai', 'claude', 'gemini'].map((l) => <img src={`/logos/calc-${l}.svg`} alt="" width="16" height="16" />)}</span>
+        <div><b>100+ AI models · 1 year</b><small>{offer.multiple} usage + free domain</small></div>
+        <strong>{plan.price}</strong>
+      </div>
+
+      {fields.map((f) => (
+        <div class="lp__f" data-field={f.name}>
+          <div class="lp__lab"><label for={`lp-${f.name}`}>{f.label}</label>{f.hint && <span id={`lp-${f.name}-hint`}>{f.hint}</span>}</div>
+          <div class="lp__box">
+            {f.name === 'phone' && <span class="lp__cc" aria-hidden="true">+91</span>}
+            <input id={`lp-${f.name}`} name={f.name} type={f.type} inputmode={f.mode} autocomplete={f.ac} maxlength={f.max}
+              spellcheck="false" autocorrect="off" enterkeyhint={f.name === 'pincode' ? 'done' : 'next'} required
+              aria-describedby={`${f.hint ? `lp-${f.name}-hint ` : ''}lp-${f.name}-err`} {...f.extra} />
+            <svg class="lp__ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" /></svg>
+          </div>
+          {f.name === 'email' && (
+            <div class="lp__domains" hidden>
+              {['@gmail.com', '@yahoo.com', '@outlook.com', '@icloud.com'].map((d) => <button type="button" tabindex="-1" data-domain={d}>{d}</button>)}
+            </div>
+          )}
+          {f.name === 'email' && <p class="lp__fix" hidden>Did you mean <b></b>? <button type="button">Use this</button></p>}
+          <p class="lp__err" id={`lp-${f.name}-err`} role="alert"></p>
+        </div>
+      ))}
+
+      <fieldset class="lp__who">
+        <legend>You are a… <span>optional</span></legend>
+        <div class="lp__chips">{PERSONAS.map((o) => <label><input type="radio" name="persona" value={o} /><span>{o}</span></label>)}</div>
+      </fieldset>
+
+      <button class="lp__go" type="submit"><span>Continue to payment</span><i aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" /></svg></i></button>
+      <p class="lp__trust"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Secure payment by Cashfree · UPI or card</p>
+    </form>
+
+    <div class="lp__handoff" hidden aria-live="polite">
+      <span class="lp__spin" aria-hidden="true"></span>
+      <h2>Opening secure payment…</h2>
+      <p>Next, you'll see an AutoPay request for <b>{plan.price}</b> in your UPI app. Approve it with your UPI PIN to activate.</p>
+      <a class="lp__manual" hidden>Not redirected? Tap here.</a>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ checkoutPrefix: CHECKOUT_PREFIX, variant, value: PLAN_VALUE, currency: PLAN_CURRENCY }}>
+  (function () {
+    var dlg = document.getElementById('lead-popup');
+    if (!dlg || typeof dlg.showModal !== 'function') return; // old browsers: buttons keep going straight to Cashfree
+    var form = dlg.querySelector('form'), handoff = dlg.querySelector('.lp__handoff');
+    var goBtn = form.querySelector('.lp__go'), title = form.querySelector('#lp-title');
+    var domains = form.querySelector('.lp__domains'), fix = form.querySelector('.lp__fix');
+    var KEY = 'af_lead', DRAFT = 'af_lead_draft', AWAY = 'af_lead_away', DAYS = 30;
+    var ORDER = ['name', 'phone', 'email', 'pincode'];
+    var href = '', cta = 'other', openedAt = 0, pushed = false;
+    var touch = matchMedia('(pointer: coarse)').matches;
+    var TYPOS = { 'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gmail.con': 'gmail.com', 'gmail.co': 'gmail.com',
+      'gmal.com': 'gmail.com', 'gmail.cm': 'gmail.com', 'yaho.com': 'yahoo.com', 'yahoo.co': 'yahoo.com', 'hotmial.com': 'hotmail.com', 'outlok.com': 'outlook.com' };
+
+    function ev(name, tags) {
+      try { if (!window.clarity) return; clarity('event', name); for (var k in tags || {}) clarity('set', name + '_' + k, String(tags[k])); } catch (e) {}
+    }
+    function get(k, store) { try { return JSON.parse((store || localStorage).getItem(k)); } catch (e) { return null; } }
+    function put(k, v, store) { try { (store || localStorage).setItem(k, JSON.stringify(v)); } catch (e) {} }
+    function el(n) { return form.elements[n]; }
+    function wrap(n) { return form.querySelector('[data-field="' + n + '"]'); }
+
+    // ---- normalising + validation (mirrors Cashfree's own rules) ----
+    function norm(n, v) {
+      v = String(v || '');
+      if (n === 'name') return v.replace(/\s+/g, ' ').trim();
+      if (n === 'phone') { var d = v.replace(/\D/g, ''); if (d.length > 10) d = d.replace(/^(91|0)(?=\d{10}$)/, ''); return d.slice(0, 10); }
+      if (n === 'email') return v.trim().toLowerCase();
+      if (n === 'pincode') return v.replace(/\D/g, '').slice(0, 6);
+      return v;
+    }
+    function check(n, v) {
+      if (n === 'name') return v.length >= 2 ? '' : 'Please enter your name';
+      if (n === 'phone') return !v ? 'Enter your mobile number' : /^[6-9]\d{9}$/.test(v) ? '' : 'Enter a valid 10-digit mobile number';
+      if (n === 'email') return !v ? 'Enter your email' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : "That email doesn't look right. Check for typos";
+      if (n === 'pincode') return /^[1-9]\d{5}$/.test(v) ? '' : 'Enter your 6-digit area pincode';
+      return '';
+    }
+    function show(n, msg) {
+      var w = wrap(n), input = el(n);
+      w.classList.toggle('bad', !!msg);
+      w.classList.toggle('good', !msg && !!input.value);
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      w.querySelector('.lp__err').textContent = msg || '';
+      if (msg) ev('lead_field_error', { field: n });
+    }
+    function validate(n) { var v = norm(n, el(n).value); show(n, check(n, v)); return !check(n, v); }
+    function allValid() { return ORDER.every(function (n) { return !check(n, norm(n, el(n).value)); }); }
+
+    ORDER.forEach(function (n) {
+      var input = el(n);
+      input.addEventListener('blur', function () {
+        if (n === 'phone' || n === 'pincode' || n === 'name') input.value = norm(n, input.value);
+        if (input.value) validate(n);
+        if (n === 'email') suggestFix();
+      });
+      input.addEventListener('input', function () {
+        if (n === 'phone') { var d = input.value.replace(/\D/g, ''); if (d !== input.value && d.length <= 10) input.value = d; }
+        if (n === 'pincode') input.value = input.value.replace(/\D/g, '').slice(0, 6);
+        var w = wrap(n), v = norm(n, input.value);
+        // Errors only clear while typing (never appear); valid fields tick as soon as they are complete.
+        if (w.classList.contains('bad')) validate(n);
+        else if ((n === 'phone' && v.length === 10) || (n === 'pincode' && v.length === 6)) validate(n);
+        else w.classList.remove('good');
+        if (n === 'email') toggleDomains();
+        if (n === 'pincode' && v.length === 6 && allValid()) input.blur(); // keyboard down, button in view
+        saveDraft();
+      });
+      // Autofill fires change: tidy and tick whatever arrived.
+      input.addEventListener('change', function () { if (input.value) { input.value = n === 'email' ? input.value.trim() : norm(n, input.value); validate(n); } });
+      input.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        if (allValid()) { form.requestSubmit ? form.requestSubmit() : submit(); return; }
+        validate(n);
+        var next = ORDER.filter(function (m) { return check(m, norm(m, el(m).value)); })[0];
+        if (next) el(next).focus();
+      });
+      input.addEventListener('focus', function () {
+        if (!touch) return;
+        // Once the keyboard has opened (and the sheet has been lifted above it), bring the field into view.
+        setTimeout(function () { fitToKeyboard(); reveal(input); }, 320);
+      });
+    });
+    form.querySelectorAll('input').forEach(function (i) {
+      i.addEventListener('focus', function once() { ev('lead_first_focus', { field: i.name }); form.querySelectorAll('input').forEach(function (j) { j.removeEventListener('focus', once); }); });
+    });
+
+    // ---- email helpers ----
+    function toggleDomains() {
+      var v = el('email').value;
+      domains.hidden = !(v && v.indexOf('@') === -1 && document.activeElement === el('email'));
+    }
+    el('email').addEventListener('focus', toggleDomains);
+    el('email').addEventListener('blur', function () { setTimeout(function () { domains.hidden = true; }, 150); });
+    domains.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest('[data-domain]'); if (!b) return;
+      e.preventDefault(); // keep the keyboard up
+      el('email').value = el('email').value.trim().replace(/@.*$/, '') + b.getAttribute('data-domain');
+      domains.hidden = true; validate('email'); el('pincode').focus(); saveDraft();
+    });
+    function suggestFix() {
+      var v = norm('email', el('email').value), m = /^([^@\s]+)@(.+)$/.exec(v);
+      var better = m && TYPOS[m[2]] ? m[1] + '@' + TYPOS[m[2]] : '';
+      fix.hidden = !better; if (better) fix.querySelector('b').textContent = better;
+    }
+    fix.querySelector('button').addEventListener('click', function () {
+      el('email').value = fix.querySelector('b').textContent; fix.hidden = true; validate('email'); saveDraft(); ev('lead_email_fix');
+    });
+
+    // ---- remembering people ----
+    function saveDraft() { var d = {}; ORDER.forEach(function (n) { d[n] = el(n).value; }); put(DRAFT, d, sessionStorage); }
+    function prefill() {
+      var saved = get(KEY), draft = get(DRAFT, sessionStorage) || {};
+      if (saved && Date.now() - (saved.at || 0) > DAYS * 864e5) saved = null;
+      var n = 0;
+      ORDER.forEach(function (k) {
+        var v = draft[k] || (saved && saved[k]) || '';
+        if (v && !el(k).value) el(k).value = v;
+        if (el(k).value) { n++; validate(k); }
+      });
+      return n;
+    }
+
+    // ---- open / close ----
+    function open(fromReturn) {
+      handoff.hidden = true; form.hidden = false; goBtn.disabled = false;
+      form.querySelector('.lp__back').hidden = !fromReturn;
+      var filled = prefill();
+      document.documentElement.classList.add('lp-open');
+      dlg.showModal(); openedAt = Date.now(); fitToKeyboard();
+      if (!pushed) { try { history.pushState({ lp: 1 }, ''); pushed = true; } catch (e) {} }
+      var empty = ORDER.filter(function (k) { return !el(k).value; })[0];
+      if (!empty) goBtn.focus();
+      else if (touch) title.focus();
+      else el(empty).focus();
+      ev(fromReturn ? 'lead_return' : 'lead_open', { cta: cta, prefilled_count: filled });
+    }
+    function close(method) {
+      if (!dlg.open) return;
+      var filled = ORDER.filter(function (k) { return el(k).value; }).length;
+      dlg.close();
+      ev('lead_close', { method: method, filled_count: filled });
+    }
+    // ---- keyboard: keep the sheet above it ----
+    // iOS (Safari and the Instagram/Facebook in-app browsers) and recent Chrome on Android open the
+    // keyboard OVER the page without resizing it, so a bottom-pinned sheet would sit behind it.
+    // visualViewport reports the area left above the keyboard: lift the sheet by the keyboard's
+    // height and cap its height to the space above, so the focused field is always visible.
+    var vv = window.visualViewport;
+    function isSheet() { return matchMedia('(max-width: 719px)').matches; }
+    function fitToKeyboard() {
+      if (!vv || !dlg.open || !isSheet()) return;
+      var kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      if (kb < 80) kb = 0; // URL bar wobble, not a keyboard
+      dlg.style.bottom = kb + 'px';
+      dlg.style.maxHeight = Math.round(vv.height - (kb ? 6 : 12)) + 'px';
+      dlg.classList.toggle('kb', kb > 0);
+    }
+    function reveal(input) {
+      try {
+        var box = input.closest('.lp__f') || input, r = box.getBoundingClientRect(), d = dlg.getBoundingClientRect();
+        if (r.top < d.top + 8 || r.bottom > d.bottom - 8) dlg.scrollTop += r.top - d.top - (d.height - r.height) / 2;
+      } catch (e) {}
+    }
+    if (vv) {
+      vv.addEventListener('resize', function () { fitToKeyboard(); if (dlg.contains(document.activeElement)) reveal(document.activeElement); });
+      vv.addEventListener('scroll', fitToKeyboard);
+    }
+
+    dlg.addEventListener('close', function () {
+      dlg.style.bottom = ''; dlg.style.maxHeight = ''; dlg.classList.remove('kb');
+      document.documentElement.classList.remove('lp-open');
+      if (pushed) { pushed = false; try { history.back(); } catch (e) {} }
+    });
+    dlg.addEventListener('cancel', function (e) { e.preventDefault(); close('esc'); });
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg) close('backdrop');
+      else if (e.target.closest('[data-close]')) close('x');
+    });
+    window.addEventListener('popstate', function () { if (dlg.open) { pushed = false; close('back'); } });
+
+    // Capture phase on window: runs before the pixel's AddToCart handler and stops it.
+    window.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a || a.href.indexOf(checkoutPrefix) !== 0 || dlg.contains(a)) return;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      try {
+        e.preventDefault(); e.stopPropagation();
+        href = a.href; cta = a.getAttribute('data-cta') || 'other';
+        open(false);
+      } catch (err) { location.href = a.href; } // never block a buyer
+    }, true);
+
+    // ---- submit ----
+    function submit() {
+      var bad = ORDER.filter(function (n) { return !validate(n); });
+      if (bad.length) { ev('lead_submit_blocked', { first_invalid: bad[0] }); el(bad[0]).focus(); return; }
+      var d = {}; ORDER.forEach(function (n) { d[n] = norm(n, el(n).value); el(n).value = d[n]; });
+      var saved = get(KEY) || {};
+      var leadId = saved.lead_id && saved.phone === d.phone && saved.email === d.email ? saved.lead_id
+        : 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      var who = form.querySelector('input[name="persona"]:checked'); d.persona = who ? who.value : '';
+      put(KEY, { name: d.name, phone: d.phone, email: d.email, pincode: d.pincode, persona: d.persona, lead_id: leadId, at: Date.now() });
+      var consent = false; // no marketing opt-in on the form
+      var attr = get('af_attr') || {};
+      var lead = Object.assign({}, attr.params || {}, d, {
+        lead_id: leadId, variant: variant, consent: consent,
+        landing_lp: attr.landing_lp || '', landing_url: attr.landing_url || '', referrer: attr.referrer || '',
+        landed_at: attr.landed_at ? new Date(attr.landed_at).toISOString() : '', page_url: location.href.slice(0, 500),
+      });
+      var body = JSON.stringify(lead), sent = false;
+      try { sent = navigator.sendBeacon('/api/lead', new Blob([body], { type: 'text/plain' })); } catch (x) {}
+      if (!sent) { try { fetch('/api/lead', { method: 'POST', body: body, keepalive: true }); } catch (x) {} }
+      if (window.fbq) {
+        fbq('track', 'Lead', { content_name: 'AI Fiesta yearly plan', value: value, currency: currency }, { eventID: leadId });
+        fbq('track', 'AddToCart', { value: value, currency: currency, content_name: 'AI Fiesta yearly plan', cta: cta, variant: variant });
+      }
+      ev('lead_submit', { ms_open_to_submit: Date.now() - openedAt, consent: consent, persona: d.persona || 'skipped' });
+
+      // Cashfree pre-fills fields whose title matches the param name exactly; it doesn't read
+      // "+" as a space, so encode with %20 (encodeURIComponent), not URLSearchParams.
+      var pre = [['Name', d.name], ['Phone Number', d.phone], ['Email ID', d.email], ['Pincode', d.pincode], ['lead_id', leadId]]
+        .map(function (kv) { return encodeURIComponent(kv[0]) + '=' + encodeURIComponent(kv[1]); }).join('&');
+      var url = href + (href.indexOf('?') === -1 ? '?' : '&') + pre;
+
+      goBtn.disabled = true; form.hidden = true; handoff.hidden = false;
+      var manual = handoff.querySelector('.lp__manual'); manual.href = url; manual.hidden = true;
+      setTimeout(function () { manual.hidden = false; }, 4000);
+      try { sessionStorage.setItem(AWAY, '1'); } catch (x) {}
+      pushed = false; // leaving the page: don't pop history on the way out
+      setTimeout(function () { location.href = url; }, 300);
+    }
+    form.addEventListener('submit', function (e) { e.preventDefault(); submit(); });
+
+    // Back from Cashfree (bfcache or reload): unstick the button and offer to continue.
+    window.addEventListener('pageshow', function () {
+      var away = false; try { away = sessionStorage.getItem(AWAY) === '1'; sessionStorage.removeItem(AWAY); } catch (x) {}
+      goBtn.disabled = false; handoff.hidden = true; form.hidden = false;
+      if (away) { if (dlg.open) dlg.close(); href = href || (document.querySelector('a[data-cta="hero"]') || {}).href || ''; if (href) open(true); }
+    });
+  })();
+</script>
+
+<style>
+  .lp {
+    --ink: #100e24; --muted: #6c6888; --lab: #3d3a55; --line: #ddd6ed; --accent: #6a4dff;
+    --grad: linear-gradient(100deg, #7c4dff, #3d6bff 60%, #22b8ff);
+    width: 440px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 32px);
+    padding: 0; border: 0; border-radius: 24px; background: #fff; color: var(--ink);
+    box-shadow: 0 30px 80px -20px rgba(16, 14, 36, .45); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+  }
+  .lp::backdrop { background: rgba(16, 14, 36, .55); backdrop-filter: blur(3px); }
+  .lp[open] { animation: lp-pop .28s cubic-bezier(.32, .72, 0, 1); }
+  @keyframes lp-pop { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+  :global(html.lp-open) { overflow: hidden; }
+
+  .lp__in { padding: 24px 28px 22px; }
+  .lp__top { display: flex; align-items: center; justify-content: space-between; margin: -8px -10px 2px 0; }
+  .lp__steps { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .lp__steps li { display: flex; align-items: center; gap: 6px; }
+  .lp__steps i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #c9c4dc; font-style: normal; font-size: 11px; font-weight: 700; }
+  .lp__steps .on { color: var(--ink); }
+  .lp__steps .on i { border: 0; background: var(--grad); color: #fff; }
+  .lp__line { width: 20px; height: 1.5px; background: var(--line); }
+  .lp__x { display: grid; place-items: center; width: 44px; height: 44px; border: 0; background: none; color: var(--muted); cursor: pointer; border-radius: 50%; }
+  .lp__x svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .lp__x:hover { background: #f4f2fa; }
+
+  .lp__form { display: grid; gap: 10px; }
+  .lp__form[hidden], .lp__handoff[hidden] { display: none; }
+  .lp h2 { font-family: 'Manrope', 'Inter', sans-serif; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; outline: none; }
+  .lp__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .lp__back { font-size: 13px; font-weight: 600; color: #2f7d54; background: #eef8f1; border-radius: 10px; padding: 8px 10px; }
+
+  .lp__order { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; margin: 2px 0 4px; padding: 10px 12px; border-radius: 14px; background: #f7f5ff; }
+  .lp__stack { display: flex; }
+  .lp__stack img { width: 24px; height: 24px; padding: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1.5px #f7f5ff, 0 0 0 2.5px rgba(16, 14, 36, .08); }
+  .lp__stack img + img { margin-left: -6px; }
+  .lp__order b { display: block; font-size: 14px; font-weight: 600; }
+  .lp__order small { display: block; font-size: 12px; font-weight: 600; color: #2f7d54; }
+  .lp__order strong { font-family: 'Manrope', 'Inter', sans-serif; font-size: 17px; font-weight: 800; }
+
+  .lp__f { display: grid; gap: 5px; }
+  .lp__lab { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .lp__lab label { font-size: 13px; font-weight: 600; color: var(--lab); }
+  .lp__lab span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .lp__box { position: relative; display: flex; align-items: center; height: 50px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; transition: border-color .15s, box-shadow .15s; }
+  .lp__box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(106, 77, 255, .16); }
+  .lp__cc { padding: 0 10px 0 14px; margin-right: 2px; border-right: 1.5px solid var(--line); font: 500 16px/1 'Inter', sans-serif; color: var(--muted); }
+  .lp__box input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; padding: 0 40px 0 14px; font: 500 16px/1 'Inter', sans-serif; color: var(--ink); border-radius: 12px; }
+  .lp__box input::placeholder { color: #b3aec6; opacity: 1; }
+  .lp__box input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fff inset; -webkit-text-fill-color: var(--ink); }
+  .lp__ok { position: absolute; right: 14px; width: 18px; height: 18px; fill: none; stroke: #2f7d54; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .15s; }
+  .lp__f.good .lp__ok { opacity: 1; }
+  .lp__f.bad .lp__box { border-color: #d93025; background: #fff8f7; }
+  .lp__f.bad .lp__box:focus-within { box-shadow: 0 0 0 3px rgba(217, 48, 37, .12); }
+  .lp__err { font-size: 12.5px; font-weight: 600; color: #c62828; }
+  .lp__err:empty { display: none; }
+
+  .lp__domains { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .lp__domains[hidden] { display: none; }
+  .lp__domains button { flex: none; height: 32px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 99px; background: #fff; font: 600 13px/1 'Inter', sans-serif; color: var(--lab); cursor: pointer; }
+  .lp__fix { font-size: 12.5px; color: var(--lab); }
+  .lp__fix[hidden] { display: none; }
+  .lp__fix button { border: 0; background: none; padding: 0 2px; font: 700 12.5px/1 'Inter', sans-serif; color: var(--accent); text-decoration: underline; cursor: pointer; }
+
+
+  /* Optional persona row: one line of chips that scrolls sideways (fade hints there's more). */
+  .lp__who { min-width: 0; margin: 2px 0 0; padding: 0; border: 0; }
+  .lp__who legend { padding: 0; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--lab); }
+  .lp__who legend span { margin-left: 4px; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .lp__chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -28px; padding: 1px 28px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 32px), transparent); }
+  .lp__chips::-webkit-scrollbar { display: none; }
+  .lp__chips label { position: relative; flex: none; cursor: pointer; }
+  /* Radio sits on its chip (not at the sheet's edge) so focusing it never scrolls the sheet sideways. */
+  .lp__chips input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; pointer-events: none; }
+  .lp__chips span { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 99px; background: #fff; font: 600 13.5px/1 'Inter', sans-serif; color: var(--lab); white-space: nowrap; transition: background .15s, border-color .15s, color .15s; }
+  .lp__chips input:checked + span { border-color: var(--accent); background: #f1ecff; color: #4b33d6; }
+  .lp__chips input:focus-visible + span { box-shadow: 0 0 0 3px rgba(106, 77, 255, .25); }
+
+  .lp__go { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 54px; margin-top: 2px; padding: 0 7px 0 22px; border: 0; border-radius: 99px; background: var(--grad); color: #fff; font: 800 16.5px/1 'Manrope', 'Inter', sans-serif; cursor: pointer; box-shadow: 0 14px 28px -14px rgba(61, 107, 255, .75); transition: transform .15s; }
+  .lp__go span { flex: 1; text-align: center; padding-left: 40px; }
+  .lp__go i { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, .2); }
+  .lp__go svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .lp__go:active { transform: scale(.98); }
+  .lp__go:disabled { opacity: .7; }
+  .lp__trust { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+  .lp__trust svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+
+  .lp__handoff { display: grid; justify-items: center; gap: 12px; padding: 36px 6px 30px; text-align: center; }
+  .lp__handoff p { font-size: 14.5px; line-height: 1.5; color: var(--lab); max-width: 320px; }
+  .lp__spin { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #e8e3f8; border-top-color: var(--accent); animation: lp-spin .8s linear infinite; }
+  @keyframes lp-spin { to { transform: rotate(360deg); } }
+  .lp__manual { font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: underline; }
+  .lp__manual[hidden] { display: none; }
+
+  /* Phones: a bottom sheet, content at the top so fields stay above the keyboard. */
+  @media (max-width: 719px) {
+    .lp {
+      position: fixed; inset: auto 0 0 0; width: 100%; max-width: none; margin: 0;
+      max-height: calc(100vh - 12px); max-height: calc(100dvh - 12px); border-radius: 22px 22px 0 0;
+    }
+    .lp::backdrop { background: rgba(16, 14, 36, .6); backdrop-filter: none; }
+    .lp[open] { animation: lp-up .28s cubic-bezier(.32, .72, 0, 1); }
+    @keyframes lp-up { from { transform: translateY(100%); } }
+    /* Keyboard open: the sheet sits right on top of it, so give it full corners and less padding. */
+    .lp.kb { border-radius: 18px 18px 0 0; transition: bottom .12s ease-out; }
+    .lp.kb .lp__in { padding-bottom: 10px; }
+    .lp__in { padding: 16px 20px max(12px, env(safe-area-inset-bottom)); }
+    .lp h2 { font-size: 21px; }
+    .lp__form { gap: 8px; }
+    .lp__f { gap: 4px; }
+    .lp__box { height: 48px; }
+    .lp__order { padding: 8px 12px; margin: 0 0 2px; }
+    .lp__chips { margin: 0 -20px; padding: 1px 20px; }
+  }
+  @media (max-width: 719px) and (max-height: 660px) {
+    .lp__order small { display: none; }
+    .lp__box { height: 46px; }
+    .lp__form { gap: 7px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .lp[open], .lp__spin { animation: none; } }
+</style>

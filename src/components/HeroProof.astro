@@ -1,0 +1,84 @@
+---
+// Social proof right under the hero offer: "1M+ downloads · 15K+ reviews" and a slow, auto-
+// scrolling row of real store reviews, each with its key line highlighted. Pauses on hover/touch;
+// with reduced motion it becomes a plain swipeable row.
+import { STORE_PROOF, STORE_REVIEWS } from '../data/content';
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+const icon = (store: string) => (store === 'App Store' ? '/logos/store-apple.svg' : '/logos/store-play.svg');
+const parts = (q: string, hl: string) => { const i = q.indexOf(hl); return i < 0 ? [q, '', ''] : [q.slice(0, i), hl, q.slice(i + hl.length)]; };
+---
+<div class="hp">
+  <p class="hp__head">
+    <span class="hp__stars" aria-hidden="true">★★★★★</span>
+    <span><b>{STORE_PROOF.downloads} downloads</b><i aria-hidden="true">·</i><b>{STORE_PROOF.reviews} reviews</b></span>
+    <span class="hp__on">on <img src="/logos/store-apple.svg" alt="" width="12" height="14" />App Store &amp; <img src="/logos/store-play.svg" alt="" width="13" height="14" />Google Play</span>
+    <span class="hp__yc"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="#f26625" /><path d="M6.2 5.5h2.9l2.9 5.1 2.9-5.1h2.9l-4.4 7.4v5.6h-2.8v-5.6z" fill="#fff" /></svg>Built by <b>Y Combinator</b> alumni</span>
+  </p>
+  <div class="hp__track">
+    <ul class="hp__run">
+      {[0, 1].map((copy) => STORE_REVIEWS.map((r) => {
+        const [a, h, z] = parts(r.quote, r.hl);
+        return (
+          <li class="hp__card" aria-hidden={copy ? 'true' : undefined}>
+            <div class="hp__who">
+              <span class="hp__av" aria-hidden="true">{initials(r.name)}</span>
+              <span><b>{r.name}</b><small><img src={icon(r.store)} alt="" width="11" height="13" />{r.store} review</small></span>
+              <span class="hp__s" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+            <p>“{a}{h && <mark>{h}</mark>}{z}”</p>
+          </li>
+        );
+      }))}
+    </ul>
+  </div>
+</div>
+<style>
+  .hp { --ink: #100e24; --muted: #6c6888; width: 100%; min-width: 0; }
+  .hp__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; font-size: 13px; color: var(--muted); }
+  .hp__head b { font-weight: 700; color: var(--ink); }
+  .hp__head i { font-style: normal; margin: 0 6px; color: #c3bed0; }
+  .hp__on { display: inline-flex; align-items: center; gap: 5px; }
+  .hp__on img { height: 14px; width: auto; margin-left: 2px; }
+  /* YC line: its own row on phones, joins the header line on wider screens. */
+  .hp__yc { flex-basis: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 2px; }
+  .hp__yc svg { width: 16px; height: 16px; flex: none; }
+  .hp__yc b { color: #f26625; font-weight: 700; }
+  @media (min-width: 960px) {
+    .hp__yc { flex-basis: auto; margin-top: 0; padding-left: 12px; border-left: 1px solid #ddd6ed; }
+  }
+  .hp__stars { color: #ffb01f; letter-spacing: 1px; font-size: 14px; }
+  .hp__track {
+    margin-top: 12px; overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent);
+  }
+  .hp__run { display: flex; gap: 12px; width: max-content; margin: 0; padding: 4px 0 8px; list-style: none; animation: hp-run 60s linear infinite; }
+  .hp__track:hover .hp__run, .hp__track:active .hp__run { animation-play-state: paused; }
+  @keyframes hp-run { to { transform: translateX(calc(-50% - 6px)); } }
+  .hp__card {
+    flex: none; width: 272px; padding: 14px; border-radius: 16px; background: #fff; text-align: left;
+    box-shadow: 0 0 0 1px rgba(16, 14, 36, .08);
+  }
+  .hp__who { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px; }
+  .hp__av {
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c4dff, #3d6bff 60%, #22b8ff); color: #fff; font: 800 12.5px/1 'Manrope', 'Inter', sans-serif;
+  }
+  .hp__who b { display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .hp__who small { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+  .hp__who small img { height: 12px; width: auto; }
+  .hp__s { color: #ffb01f; font-size: 12px; letter-spacing: 1px; }
+  .hp__card p { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: #3d3a55; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .hp__card mark { background: linear-gradient(transparent 55%, rgba(124, 77, 255, .2) 55%); color: var(--ink); font-weight: 600; }
+  @media (min-width: 960px) {
+    .hp__head { font-size: 14px; }
+    .hp__card { width: 320px; padding: 16px; }
+    .hp__card p { font-size: 14px; }
+  }
+  /* No motion: a swipeable row instead of the ticker. */
+  @media (prefers-reduced-motion: reduce) {
+    .hp__track { overflow-x: auto; scroll-snap-type: x mandatory; mask-image: none; }
+    .hp__run { animation: none; }
+    .hp__card { scroll-snap-align: start; }
+    .hp__card[aria-hidden='true'] { display: none; }
+  }
+</style>
