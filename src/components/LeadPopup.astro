@@ -14,7 +14,7 @@ const fields = [
   { name: 'name', label: 'Name', hint: '', type: 'text', mode: 'text', ac: 'name', max: 100, extra: { autocapitalize: 'words', placeholder: 'Your full name' } },
   { name: 'phone', label: 'Mobile number', hint: '', type: 'tel', mode: 'numeric', ac: 'tel-national', max: 16, extra: { placeholder: '98765 43210' } },
   { name: 'email', label: 'Email', hint: '', type: 'email', mode: 'email', ac: 'email', max: 120, extra: { autocapitalize: 'off', placeholder: 'you@gmail.com' } },
-  { name: 'pincode', label: 'Pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: '6-digit pincode' } },
+  { name: 'pincode', label: 'Area pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: 'Area pincode, e.g. 560001' } },
 ] as const;
 ---
 <dialog id="lead-popup" class="lp" aria-labelledby="lp-title">
@@ -113,7 +113,7 @@ const fields = [
       if (n === 'name') return v.length >= 2 ? '' : 'Please enter your name';
       if (n === 'phone') return !v ? 'Enter your mobile number' : /^[6-9]\d{9}$/.test(v) ? '' : 'Enter a valid 10-digit mobile number';
       if (n === 'email') return !v ? 'Enter your email' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : "That email doesn't look right. Check for typos";
-      if (n === 'pincode') return /^[1-9]\d{5}$/.test(v) ? '' : 'Enter your 6-digit pincode';
+      if (n === 'pincode') return /^[1-9]\d{5}$/.test(v) ? '' : 'Enter your 6-digit area pincode';
       return '';
     }
     function show(n, msg) {
