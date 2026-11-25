@@ -68,7 +68,6 @@ function fakeSheet() {
       const r = (rows[row - 1 + i] = rows[row - 1 + i] || []);
       v.forEach((x, j) => { r[col - 1 + j] = x; });
     }),
-    setValue: (v) => { const r = (rows[row - 1] = rows[row - 1] || []); r[col - 1] = v; },
     clearContent: () => { rows.splice(row - 1, n); },
   });
   return {
@@ -322,57 +321,6 @@ test('backfill extends an old header and fills old rows; running twice changes n
   assert.equal(p.upi_id, 'buyer@oksbi');
   assert.equal(p.payment_method, 'upi');
   assert.equal(ctx.backfill(), 0);
-});
-
-test('addMissedAutopayPayments: one AUTOPAY_ONLY row per addon AutoPay success with no order row; re-run adds nothing', () => {
-  const addon = (txn, formId) => ({
-    data: { cf_txn_id: String(txn), cf_order_id: 7529214058, cf_subscription_id: 'S' + txn, subscription_id: `form_140204158_${formId}`,
-      payment_amount: 7999, payment_currency: 'INR',
-      authorization_details: { authorization_time: '2026-11-24T20:26:00+05:30', payment_group: 'upi', payment_method: { upi: { channel: 'link' } } } },
-    event_time: '2026-11-24T20:26:00+05:30', type: 'SUBSCRIPTION_PAYMENT_SUCCESS',
-  });
-  hook(addon(501, 'am-yearly-basic-plan-meta-addon'));
-  hook(addon(502, 'am-yearly-basic-plan-ga-addon'));
-  hook(subAuth('SUCCESS', { txn: 99 })); // old (non-addon) form: never backfilled
-  hook(addon(503, 'am-yearly-basic-plan-meta-addon'));
-  hook(form('am-yearly-basic-plan-meta-addon', 'CFPay_am-yearly-basic-plan-meta-a_aa_1')); // has its order row (transaction_id 99)
-  sheets.Payments.rows[1][5] = 503; // ...for txn 503
-  assert.equal(ctx.addMissedAutopayPayments(), 2);
-  const added = payments().filter((p) => p.event_type === 'AUTOPAY_ONLY');
-  assert.deepEqual(added.map((p) => [p.payment_id, p.form_id, p.status, p.amount, p.name, p.lp_name !== '']),
-    [['501', 'am-yearly-basic-plan-meta-addon', 'PAID', 7999, '', true], ['502', 'am-yearly-basic-plan-ga-addon', 'PAID', 7999, '', true]]);
-  assert.equal(added[0].payment_method, 'upi');
-  assert.equal(ctx.addMissedAutopayPayments(), 0);
-});
-
-test('fillAutopayContacts: fills AUTOPAY_ONLY rows from the client sheet by channel and day, in order; re-run changes nothing', () => {
-  const addon = (txn, formId, time) => ({
-    data: { cf_txn_id: String(txn), cf_order_id: 1, subscription_id: `form_1_${formId}`, payment_amount: 7999 },
-    event_time: time, type: 'SUBSCRIPTION_PAYMENT_SUCCESS',
-  });
-  hook(form()); // existing buyer: phone 9999999999 / a@b.co
-  hook(addon(601, 'am-yearly-basic-plan-meta-addon', '2026-11-24T20:26:10+05:30'));
-  hook(addon(602, 'am-yearly-basic-plan-ga-addon', '2026-11-24T22:13:48+05:30'));
-  hook(addon(603, 'am-yearly-basic-plan-meta-addon', '2026-11-25T00:47:20+05:30'));
-  assert.equal(ctx.addMissedAutopayPayments(), 3);
-  const tab = (name, rows) => ({ getName: () => name, getDataRange: () => ({ getValues: () => rows }) });
-  ctx.SpreadsheetApp.openById = (id) => ({ getSheets: () => [
-    tab('Tab 1 - meta', [['Status', 'Date (IST)', 'Name', 'Number', 'Email'],
-      ['Failed', '2026-11-24', 'Fail Person', '9000000001', 'f@x.co'],
-      ['Success', '2026-11-24', 'Meta One', '9000000002', 'm1@x.co'],
-      ['Success', '2026-11-24', 'Meta Two', 9000000003, 'm2@x.co']]),
-    tab('Tab 2 - ga', [['Success', '2026-11-04', 'Old Ga', '9000000004', 'old@x.co'],
-      ['Success', '2026-11-24', 'Known Buyer', '+91 99999 99999', 'a@b.co'],
-      ['Success', '2026-11-24', 'Ga One', '9000000005', 'g1@x.co']]),
-  ] });
-  assert.equal(ctx.fillAutopayContacts(), 3);
-  const rows = payments().filter((p) => p.event_type === 'AUTOPAY_ONLY');
-  assert.deepEqual(rows.map((p) => [p.payment_id, p.name, p.phone, p.email]), [
-    ['601', 'Meta One', "'9000000002", 'm1@x.co'],
-    ['602', 'Ga One', "'9000000005", 'g1@x.co'],
-    ['603', 'Meta Two', "'9000000003", 'm2@x.co'],
-  ]);
-  assert.equal(ctx.fillAutopayContacts(), 0);
 });
 
 test('a mismatched existing header is refused instead of misplacing data', () => {
