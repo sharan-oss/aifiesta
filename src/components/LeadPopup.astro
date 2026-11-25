@@ -14,7 +14,7 @@ const fields = [
   { name: 'name', label: 'Name', hint: '', type: 'text', mode: 'text', ac: 'name', max: 100, extra: { autocapitalize: 'words', placeholder: 'Your full name' } },
   { name: 'phone', label: 'Mobile number', hint: '', type: 'tel', mode: 'numeric', ac: 'tel-national', max: 16, extra: { placeholder: '98765 43210' } },
   { name: 'email', label: 'Email', hint: '', type: 'email', mode: 'email', ac: 'email', max: 120, extra: { autocapitalize: 'off', placeholder: 'you@gmail.com' } },
-  { name: 'pincode', label: 'Area pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: 'Area pincode, e.g. 560001' } },
+  { name: 'pincode', label: 'Area pincode', hint: '', type: 'text', mode: 'numeric', ac: 'postal-code', max: 6, extra: { pattern: '[0-9]*', placeholder: 'e.g. 560001' } },
 ] as const;
 ---
 <dialog id="lead-popup" class="lp" aria-labelledby="lp-title">
