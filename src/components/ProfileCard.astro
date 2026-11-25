@@ -30,7 +30,11 @@ const qs = [
     if (!card || !/^CFPay_[\w-]+$/.test(orderId)) return;
     var KEY = 'af_profile_' + orderId, answers = {};
     try { answers = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-    var leadId = ''; try { leadId = (JSON.parse(localStorage.getItem('af_lead')) || {}).lead_id || ''; } catch (e) {}
+    var lead = {}; try { lead = JSON.parse(localStorage.getItem('af_lead')) || {}; } catch (e) {}
+    var leadId = lead.lead_id || '';
+    // Already answered "You are a…" in the Home B popup: only ask the purpose here.
+    if (lead.persona && !answers.persona) answers.persona = lead.persona;
+    if (lead.persona) { card.querySelector('[data-q="persona"]').hidden = true; card.querySelector('.pc__tag').textContent = 'Optional · 1 tap'; }
     function done() { return answers.persona && answers.purpose; }
     function render() {
       ['persona', 'purpose'].forEach(function (k) {
@@ -46,7 +50,7 @@ const qs = [
       var key = t.name.replace('pc-', '');
       answers[key] = t.value;
       try { localStorage.setItem(KEY, JSON.stringify(answers)); } catch (x) {}
-      var body = JSON.stringify({ order_id: orderId, lead_id: leadId, persona: key === 'persona' ? t.value : '', purpose: key === 'purpose' ? t.value : '' });
+      var body = JSON.stringify({ order_id: orderId, lead_id: leadId, persona: answers.persona || '', purpose: key === 'purpose' ? t.value : '' });
       var sent = false;
       try { sent = navigator.sendBeacon('/api/lead-profile', new Blob([body], { type: 'text/plain' })); } catch (x) {}
       if (!sent) { try { fetch('/api/lead-profile', { method: 'POST', body: body, keepalive: true }); } catch (x) {} }
