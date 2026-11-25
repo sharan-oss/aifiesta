@@ -513,6 +513,53 @@ function backfill() {
   }
 }
 
+// Run once by hand (Apps Script editor > addMissedAutopayPayments > Run): adds a Payments row for
+// each AutoPay success on an "-addon" form that has no order row. From 24 Nov ~18:30 to 25 Nov 09:58
+// (before v8) those forms' order webhooks were dropped and only the AutoPay event was kept, which has
+// no name/email/phone. Rows are marked AUTOPAY_ONLY. Safe to re-run: skips payments already in Payments.
+// If Cashfree later resends a missed order webhook, it adds its own full row: delete the AUTOPAY_ONLY one.
+function addMissedAutopayPayments() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var raw = ss.getSheetByName(RAW_TAB);
+    if (!raw || raw.getLastRow() < 2) return 0;
+    var pay = sheet_(ss, PAYMENTS_TAB, PAYMENT_HEADERS);
+    var col = function (h) { return PAYMENT_HEADERS.indexOf(h); };
+    var values = raw.getRange(2, 1, raw.getLastRow() - 1, RAW_HEADERS.length).getValues();
+    var added = 0;
+    values.forEach(function (r) {
+      var e; try { e = JSON.parse(r[RAW_HEADERS.indexOf('raw_body')]); } catch (x) { return; }
+      if (!e || e.type !== SUB_SUCCESS || !e.data) return;
+      var m = /^form_\d+_(.+)$/.exec(e.data.subscription_id || '');
+      var formId = m ? m[1] : '';
+      if (!/-addon$/.test(formId) || LP_FORMS.indexOf(formId) === -1) return;
+      var txn = String(e.data.cf_txn_id || '');
+      if (!txn || findRow_(pay, txn, PAYMENT_ID_COLUMN)) return;
+      var row = PAYMENT_HEADERS.map(function () { return ''; });
+      row[col('received_at')] = r[RAW_HEADERS.indexOf('received_at')];
+      row[col('event_type')] = 'AUTOPAY_ONLY';
+      row[col('event_time')] = ist_(e.event_time || '');
+      row[col('order_id')] = String(e.data.cf_order_id || '');
+      row[col('status')] = 'PAID';
+      row[col('payment_id')] = txn;
+      row[col('amount')] = e.data.payment_amount;
+      row[col('currency')] = e.data.payment_currency || 'INR';
+      row[col('error')] = 'order webhook missed; no customer details';
+      row[col('form_id')] = formId;
+      row[col('dedupe_key')] = 'autopay|' + txn;
+      pay.appendRow(row.map(safe_));
+      enrich_(ss, pay, pay.getLastRow());
+      added++;
+    });
+    if (typeof Logger !== 'undefined') Logger.log('Added ' + added + ' AUTOPAY_ONLY row(s) to Payments');
+    return added;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // ISO timestamps (UTC "Z" from Vercel/the browser, "+05:30" from Cashfree) ->
 // "yyyy-MM-dd HH:mm:ss" in IST. Anything else is returned unchanged.
 function ist_(v) {

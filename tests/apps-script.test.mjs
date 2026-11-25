@@ -323,6 +323,27 @@ test('backfill extends an old header and fills old rows; running twice changes n
   assert.equal(ctx.backfill(), 0);
 });
 
+test('addMissedAutopayPayments: one AUTOPAY_ONLY row per addon AutoPay success with no order row; re-run adds nothing', () => {
+  const addon = (txn, formId) => ({
+    data: { cf_txn_id: String(txn), cf_order_id: 7529214058, cf_subscription_id: 'S' + txn, subscription_id: `form_140204158_${formId}`,
+      payment_amount: 7999, payment_currency: 'INR',
+      authorization_details: { authorization_time: '2026-11-24T20:26:00+05:30', payment_group: 'upi', payment_method: { upi: { channel: 'link' } } } },
+    event_time: '2026-11-24T20:26:00+05:30', type: 'SUBSCRIPTION_PAYMENT_SUCCESS',
+  });
+  hook(addon(501, 'am-yearly-basic-plan-meta-addon'));
+  hook(addon(502, 'am-yearly-basic-plan-ga-addon'));
+  hook(subAuth('SUCCESS', { txn: 99 })); // old (non-addon) form: never backfilled
+  hook(addon(503, 'am-yearly-basic-plan-meta-addon'));
+  hook(form('am-yearly-basic-plan-meta-addon', 'CFPay_am-yearly-basic-plan-meta-a_aa_1')); // has its order row (transaction_id 99)
+  sheets.Payments.rows[1][5] = 503; // ...for txn 503
+  assert.equal(ctx.addMissedAutopayPayments(), 2);
+  const added = payments().filter((p) => p.event_type === 'AUTOPAY_ONLY');
+  assert.deepEqual(added.map((p) => [p.payment_id, p.form_id, p.status, p.amount, p.name, p.lp_name !== '']),
+    [['501', 'am-yearly-basic-plan-meta-addon', 'PAID', 7999, '', true], ['502', 'am-yearly-basic-plan-ga-addon', 'PAID', 7999, '', true]]);
+  assert.equal(added[0].payment_method, 'upi');
+  assert.equal(ctx.addMissedAutopayPayments(), 0);
+});
+
 test('a mismatched existing header is refused instead of misplacing data', () => {
   hook();
   sheets.Payments.rows[0][3] = 'something_else';
