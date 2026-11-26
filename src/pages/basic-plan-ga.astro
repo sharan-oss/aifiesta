@@ -1,6 +1,8 @@
 ---
 // Google Ads landing page: starts as a copy of the home page so it can be tuned for GA traffic.
 // noindex keeps this duplicate of the home page out of search results.
+// Now runs Home B's version (sales video in the hero + lead popup before checkout), keeping the
+// GA checkout form and no Meta pixel. lp="ga-vsl" tells these orders apart from the old GA page.
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ModelStrip from '../components/ModelStrip.astro';
@@ -14,12 +16,13 @@ import Faq from '../components/Faq.astro';
 import Footer from '../components/Footer.astro';
 import StickyCta from '../components/StickyCta.astro';
 import SaleBar from '../components/SaleBar.astro';
-import { CTA_HREF_GA } from '../data/content';
+import LeadPopup from '../components/LeadPopup.astro';
+import { CTA_HREF_GA, VSL_MEDIA_ID } from '../data/content';
 ---
-<Layout title="AI Fiesta - One subscription for 100+ AI models" noindex metaPixel={false}>
+<Layout title="AI Fiesta - One subscription for 100+ AI models" noindex metaPixel={false} lp="ga-vsl">
   <SaleBar />
   <main>
-    <Hero />
+    <Hero vsl={VSL_MEDIA_ID} />
     <ModelStrip />
     <Pricing checkoutHref={CTA_HREF_GA} />
     <Benefits />
@@ -31,4 +34,5 @@ import { CTA_HREF_GA } from '../data/content';
   </main>
   <Footer />
   <StickyCta />
+  <LeadPopup variant="ga" />
 </Layout>
